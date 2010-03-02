@@ -1,0 +1,21 @@
+-The tables mapping file names convention is that they bear the detail table name if it exists, the master one otherwise.
+-Each table mapping file contains the columns for both the master and detail table, as their mapping may change with different CSV.
+-The array name convention is the same as the file name.
+-The array is diveded in 3 parts
+--master contains the fields of the master table
+--detail contains the fields of the detail table
+--app_data contains information handled by the php code
+---file The csv file that this configuration must run on
+---pkey The primary key column name as listed in the csv (not to confuse with the database pkey)
+---child An array of the children tables of the current one. Those tables files will be checked upon each insert so that each child has his parent. The check is based on the pkey so you have to make sure they are in the same order in both files.
+---save_id If set to true, the auto_increment id will be saved in a temporary table for later use by this script
+---master_table_name The name of the database table referred by this file. This should be equal to the file name and the array name.
+---parent_key The key to replace with the last_insert_id of the parent table within the master table.
+---detail_parent_key The key to replace with the last_insert_id of the master table within the detail table.
+---additional_queries These queries will be run after the insertion of master + detail is done (after each line) 
+----%%last_master_insert_id%% will be replaced by the last insert id returned by a master table insert
+----%%last_detail_insert_id%% will be replaced by the last insert id returned by a detail table insert
+
+
+In the config
+-Fields definition starting with "@": Don't use the CSV but the value following the @
