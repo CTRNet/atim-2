@@ -1,0 +1,75 @@
+body{
+	font-family: arial;
+	font-size: 12px;
+}
+
+table{
+	font-family: arial;
+	font-size: 12px;
+}
+
+tbody tr:nth-child(odd){
+	background-color: #aed0ea;
+}
+
+tr.clickable:hover{
+	background-color: #00ffff;
+	cursor: pointer;
+}
+
+.clickable{
+	
+}
+
+input.readonly{
+	background-color: #dddddd;
+}
+
+td{
+	white-space: nowrap;
+}
+
+.test{
+	display: inline-block; border-style: solid; width: 200px; height: 100%; margin: -3px; overflow: scroll; float: left;
+}
+
+#databaseExplorer div div:first-child{
+	height: 38%; width: 220px; overflow: scroll; white-space: nowrap; display: inline-block; float: left;
+}
+#databaseExplorer div div:nth-child(2){
+	height: 38%; overflow: auto; white-space: nowrap;
+}
+
+span.button_icon{
+	left: 0.2em;
+	margin: -10px 0px 0px 0px;
+	position: absolute;
+	top: 50%;
+}
+
+a.button_link{
+	padding: 3px 5px 3px 20px;
+	position: relative;
+	text-decoration: none;
+	display: inline-block;
+}
+
+th.header { 
+	background-image: url(../img/bg.gif);
+    cursor: pointer; 
+    font-weight: bold; 
+    background-repeat: no-repeat; 
+    background-position: center left; 
+    padding-left: 20px; 
+    border-right: 1px solid #dad9c7; 
+    margin-left: -1px; 
+} 
+
+th.headerSortUp { 
+    background-image: url(../img/asc.gif); 
+}
+
+th.headerSortDown { 
+    background-image: url(../img/desc.gif); 
+}
+
