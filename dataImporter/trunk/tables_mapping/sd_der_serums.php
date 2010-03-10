@@ -1,6 +1,6 @@
 <?php
-$sd_der_serums["app_data"]["pkey"] = "sample_code_serum";
-$sd_der_serums["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/Sardex_DrBasikData_blood_out.csv";
+$sd_der_serums["app_data"]["pkey"] = "serum_group_id";
+$sd_der_serums["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/bloodsOut.csv";
 
 $sd_der_serums["detail"]["hemolyze_signs"] = "";
 
@@ -9,6 +9,7 @@ $sd_der_serums["master"]["sop_master_id"] = "";
 $sd_der_serums["master"]["product_code"] = "";
 $sd_der_serums["master"]["is_problematic"] = "";
 $sd_der_serums["master"]["notes"] = "";
+$sd_der_serums["master"]["parent_id"] = "blood_id";
 
 
 //do not modify this section
@@ -18,7 +19,6 @@ $sd_der_serums["master"]["sample_type"] = "@serum";
 $sd_der_serums["master"]["sample_control_id"] = "@10";
 $sd_der_serums["master"]["sample_category"] = "@derivative";
 $sd_der_serums["master"]["initial_specimen_sample_type"] = "@blood";
-$sd_der_serums["master"]["parent_id"] = "sample_code";
 $sd_der_serums["master"]["collection_id"] = "collection_id";
 $sd_der_serums["master"]["initial_specimen_sample_id"] = "initial_specimen_sample_id";
 

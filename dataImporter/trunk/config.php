@@ -3,7 +3,7 @@ $database['ip'] = "127.0.0.1";
 $database['port'] = "8889";
 $database['user'] = "root";
 $database['pwd'] = "root";
-$database['schema'] = "atim_old";
+$database['schema'] = "atim_lady";
 $database['charset'] = "latin1";
 
 global $created;

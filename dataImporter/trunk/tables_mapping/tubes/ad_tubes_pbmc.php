@@ -1,10 +1,10 @@
 <?php
-$ad_tubes_pbmc["app_data"]["pkey"] = "aliquot_buffy_coat";
-$ad_tubes_pbmc["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/Sardex_DrBasikData_blood_out.csv";
+$ad_tubes_pbmc["app_data"]["pkey"] = "buffy_parent_id";
+$ad_tubes_pbmc["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/bloodsOut.csv";
 
-$ad_tubes_pbmc["master"]["barcode"] = "buffy coat_barcodes";
+$ad_tubes_pbmc["master"]["barcode"] = "";
 $ad_tubes_pbmc["master"]["collection_id"] = "";
-$ad_tubes_pbmc["master"]["sample_master_id"] = "aliquot_buffy_coat";
+$ad_tubes_pbmc["master"]["sample_master_id"] = "buffy_parent_id";
 $ad_tubes_pbmc["master"]["sop_master_id"] = "";
 $ad_tubes_pbmc["master"]["initial_volume"] = "";
 $ad_tubes_pbmc["master"]["current_volume"] = "";

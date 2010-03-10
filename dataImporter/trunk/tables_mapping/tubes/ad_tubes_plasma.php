@@ -1,10 +1,10 @@
 <?php
-$ad_tubes_plasma["app_data"]["pkey"] = "aliquot_plasma";
-$ad_tubes_plasma["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/Sardex_DrBasikData_blood_out.csv";
+$ad_tubes_plasma["app_data"]["pkey"] = "plasma_parent_id";//not really pkey...
+$ad_tubes_plasma["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/bloodsOut.csv";
 
-$ad_tubes_plasma["master"]["barcode"] = "plasma_barcodes";
+$ad_tubes_plasma["master"]["barcode"] = "";
 $ad_tubes_plasma["master"]["collection_id"] = "";
-$ad_tubes_plasma["master"]["sample_master_id"] = "aliquot_plasma";
+$ad_tubes_plasma["master"]["sample_master_id"] = "plasma_parent_id";
 $ad_tubes_plasma["master"]["sop_master_id"] = "";
 $ad_tubes_plasma["master"]["initial_volume"] = "";
 $ad_tubes_plasma["master"]["current_volume"] = "";

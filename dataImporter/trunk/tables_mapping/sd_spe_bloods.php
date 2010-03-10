@@ -1,19 +1,20 @@
 <?php
-$sd_spe_bloods["app_data"]["pkey"] = "sample_code";
-$sd_spe_bloods["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/Sardex_DrBasikData_blood_out.csv";
+$sd_spe_bloods["app_data"]["pkey"] = "blood_id";
+$sd_spe_bloods["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/bloodsOut.csv";
 
-$sd_spe_bloods["detail"]["blood_type"] = "";
+$sd_spe_bloods["detail"]["blood_type"] = "blood type";
 $sd_spe_bloods["detail"]["collected_tube_nbr"] = "";
 $sd_spe_bloods["detail"]["collected_volume"] = "";
 $sd_spe_bloods["detail"]["collected_volume_unit"] = "";
 
 $sd_spe_bloods["master"]["sample_code"] = "sample_code";//Required
-$sd_spe_bloods["master"]["collection_id"] = "no_labo";
+$sd_spe_bloods["master"]["collection_id"] = "collection_id";
 $sd_spe_bloods["master"]["sop_master_id"] = "";
 $sd_spe_bloods["master"]["product_code"] = "";
 $sd_spe_bloods["master"]["is_problematic"] = "";
-$sd_spe_bloods["master"]["notes"] = "";
+$sd_spe_bloods["master"]["notes"] = "blood notes";
 
+$sd_spe_bloods["app_data"]['additional_queries'][] = "UPDATE sample_masters SET sample_code='sc-%%last_master_insert_id%%' WHERE id=%%last_master_insert_id%%";
 
 //do not modify this section
 $sd_spe_bloods["detail"]["sample_master_id"] = "sample_master_id";

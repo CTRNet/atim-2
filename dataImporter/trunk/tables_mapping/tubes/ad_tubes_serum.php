@@ -1,10 +1,10 @@
 <?php
-$ad_tubes_serum["app_data"]["pkey"] = "aliquot_serum";
-$ad_tubes_serum["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/Sardex_DrBasikData_blood_out.csv";
+$ad_tubes_serum["app_data"]["pkey"] = "serum_parent_id";
+$ad_tubes_serum["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/bloodsOut.csv";
 
-$ad_tubes_serum["master"]["barcode"] = "serum_barcodes";
+$ad_tubes_serum["master"]["barcode"] = "";
 $ad_tubes_serum["master"]["collection_id"] = "";
-$ad_tubes_serum["master"]["sample_master_id"] = "aliquot_serum";
+$ad_tubes_serum["master"]["sample_master_id"] = "serum_parent_id";
 $ad_tubes_serum["master"]["sop_master_id"] = "";
 $ad_tubes_serum["master"]["initial_volume"] = "";
 $ad_tubes_serum["master"]["current_volume"] = "";

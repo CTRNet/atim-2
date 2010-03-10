@@ -3,18 +3,18 @@
 require_once("commonFunctions.php");
 require_once("config.php");
 require_once("dataImporter.php");
-//require_once("tables_mapping/collections.php");
+require_once("tables_mapping/collections.php");
 require_once("tables_mapping/consents.php");
 require_once("tables_mapping/identifiers.php");
 require_once("tables_mapping/participants.php");
-//require_once("tables_mapping/sd_der_pbmcs.php");
-//require_once("tables_mapping/sd_der_plasmas.php");
-//require_once("tables_mapping/sd_der_serums.php");
-//require_once("tables_mapping/sd_spe_bloods.php");
-//require_once("tables_mapping/sd_spe_tissues.php");
-//require_once("tables_mapping/tubes/ad_tubes_plasma.php");
-//require_once("tables_mapping/tubes/ad_tubes_pbmc.php");
-//require_once("tables_mapping/tubes/ad_tubes_serum.php");
+require_once("tables_mapping/sd_der_pbmcs.php");
+require_once("tables_mapping/sd_der_plasmas.php");
+require_once("tables_mapping/sd_der_serums.php");
+require_once("tables_mapping/sd_spe_bloods.php");
+require_once("tables_mapping/sd_spe_tissues.php");
+require_once("tables_mapping/tubes/ad_tubes_plasma.php");
+require_once("tables_mapping/tubes/ad_tubes_pbmc.php");
+require_once("tables_mapping/tubes/ad_tubes_serum.php");
 
 //validate each file exists and prep them
 foreach($tables as $ref_name => &$table){
@@ -23,6 +23,7 @@ foreach($tables as $ref_name => &$table){
 			die("File for [".$ref_name."] does not exist. [".$table['app_data']['file']."]\n");
 		}
 		$table['app_data']['file_handler'] = fopen($table['app_data']['file'], 'r');
+		
 		if(!$table['app_data']['file_handler']){
 			die("fopen failed on ".$ref_name);
 		}
@@ -64,6 +65,12 @@ foreach($primary_tables as $table_name => $table){
 }
 
 //TODO: treat special tables such as collection links
+//INSERT INTO clinical_collection_links (`participant_id`, `collection_id`, `consent_master_id`) (
+//SELECT p.mysql_id, coll.mysql_id, c.mysql_id  FROM `id_linking` AS p
+//LEFT JOIN id_linking AS c ON substr(p.csv_id, 3)=substr(c.csv_id, 7)
+//LEFT JOIN id_coll AS collt ON p.csv_id=collt.link_to
+//LEFT JOIN id_linking AS coll ON collt.collection_id=coll.csv_id
+//WHERE p.model='participants' AND c.model='consent_masters' AND coll.model='collections')
 
 //validate that each file handler has reached the end of it's file so that no data is left behind
 $insert = true;
@@ -79,10 +86,10 @@ foreach($tables as $ref_name => &$table){
 if($insert){
 	mysqli_commit($connection);
 	echo("Insertions commited\n");
-	echo("*************************\n"
-		."********VictWare*********\n"
-		."* Integration completed *\n"
-		."*************************\n");
+	echo("#*************************\n"
+		."#********VictWare*********\n"
+		."#* Integration completed *\n"
+		."#*************************\n");
 }else{
 	echo("Insertions cancelled\n");
 }
@@ -139,8 +146,10 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 	$current_table = &$tables[$table_name];
 	$i = 0;
 	//debug info
-//	if($table_name == "ad_tubes_pbmc"){
+//	echo($table_name."\n");
+//	if($table_name == "ad_tubes_plasma"){
 //		echo("Size: ".sizeof($current_table['app_data']['values'])."\n");
+//		echo($current_table['app_data']['parent_key']." -> ".$current_table['master'][$current_table['app_data']['parent_key']]."\n");
 //		echo($current_table['app_data']['values'][$current_table['master'][$current_table['app_data']['parent_key']]]."  -  ".$csv_parent_key."\n");
 //		print_r($current_table['app_data']['values']);
 //		echo($current_table['app_data']['values'][$current_table['master'][$current_table['app_data']['parent_key']]]."\n");
@@ -244,3 +253,5 @@ function readLine(&$current_table){
 		}
 	}
 }
+
+

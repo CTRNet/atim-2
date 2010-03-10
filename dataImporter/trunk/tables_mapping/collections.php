@@ -1,14 +1,14 @@
 <?php
-$collections["app_data"]["pkey"] = "collection_pkey";
-$collections["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/test/collections_fake.csv";
+$collections["app_data"]["pkey"] = "collection_id";
+$collections["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/collections_fake.csv";
 
-$collections["master"]["acquisition_label"] = "collection_pkey";
+$collections["master"]["acquisition_label"] = "";
 $collections["master"]["bank_id"] = "";
-$collections["master"]["collection_site"] = "";
-$collections["master"]["collection_datetime"] = "";
+$collections["master"]["collection_site"] = "collection_site";
+$collections["master"]["collection_datetime"] = "collection_datetime";
 $collections["master"]["collection_datetime_accuracy"] = "";
 $collections["master"]["sop_master_id"] = "";
-$collections["master"]["collection_property"] = "collection_property";
+$collections["master"]["collection_property"] = "";
 $collections["master"]["collection_notes"] = "";
 
 //do not modify this section

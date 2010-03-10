@@ -1,17 +1,17 @@
 <?php
 $sd_spe_tissues["app_data"]["pkey"] = "tissue_id";
-$sd_spe_tissues["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/Sardex_DrBasikData_tissue.csv";
+$sd_spe_tissues["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/tissues.csv";
 
 $sd_spe_tissues["detail"]["sample_master_id"] = "";
 $sd_spe_tissues["detail"]["tissue_source"] = "";
 $sd_spe_tissues["detail"]["tissue_nature"] = "";
-$sd_spe_tissues["detail"]["tissue_laterality"] = "";
+$sd_spe_tissues["detail"]["tissue_laterality"] = "laterality";
 $sd_spe_tissues["detail"]["pathology_reception_datetime"] = "";
 $sd_spe_tissues["detail"]["tissue_size"] = "";
 $sd_spe_tissues["detail"]["tissue_size_unit"] = "";
 
 $sd_spe_tissues["master"]["sample_code"] = "tissue_id";//Required
-$sd_spe_tissues["master"]["collection_id"] = "no_labo";
+$sd_spe_tissues["master"]["collection_id"] = "collection_id";
 $sd_spe_tissues["master"]["sop_master_id"] = "";
 $sd_spe_tissues["master"]["product_code"] = "";
 $sd_spe_tissues["master"]["is_problematic"] = "";

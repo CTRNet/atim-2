@@ -1,6 +1,6 @@
 <?php
 $participants["app_data"]["pkey"] = "no_labo";
-$participants["app_data"]["file"] = "/Users/francois-michellheureux/Desktop/DataForMigration Lady Davies/Sardex_DrBasikData_patient.csv";
+$participants["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/participants.csv";
 
 $participants["master"]["title"] = "";
 $participants["master"]["first_name"] = "first_name";
