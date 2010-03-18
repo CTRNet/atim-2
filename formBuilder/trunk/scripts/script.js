@@ -473,7 +473,7 @@ function setTableGetField(){
 			if($("#table_autotype").attr("checked")){
 				var type = $(this).find(".Type").html();
 				var outType = "";
-				if(type.indexOf("int") != -1){
+				if(type.indexOf("int") != -1 || type.indexOf("float") != -1){
 					outType = "number";
 				}else if(type == "date"){
 					outType = "date";
@@ -543,6 +543,8 @@ function addLine(){
 		}
 		if($(this).children("input").attr("type") != "checkbox" || $(this).children("input").attr("checked")){
 				val = $(this).children("input").val();
+		}else if($(this).children("input").attr("type") == "checkbox"){
+			val = "0";
 		}
 		line += "<td>" + val + "</td>";
 	});

@@ -245,7 +245,7 @@ require_once("myFunctions.php");
 					<tr class='ui-widget-header'>
 						<th>plugin</th>
 						<th class="notEmpty">model</th>
-						<th class="notEmpty clear">tablename</th>
+						<th class="clear">tablename</th>
 						<th class="notEmpty clear">field</th>
 						<th class="clear">language_label</th>
 						<th class="clear">language_tag</th>

@@ -1,5 +1,5 @@
 <?php 
-$db_schema = 'atim_new';
+$db_schema = 'atim_hepato';
 
 $mysqli = @new mysqli('localhost', 'root', 'root', $db_schema);
 

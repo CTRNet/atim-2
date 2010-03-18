@@ -15,7 +15,7 @@ if($json->type == 'autoBuildData'){
 			."sfo.flag_override_type AS sfo_flag_override_type, sfo.type AS sfo_type, "
 			."sfo.flag_override_setting AS sfo_flag_override_setting, sfo.setting AS sfo_setting, " 
 			."sfo.flag_override_default AS sfo_flag_override_default, sfo.default AS sfo_default, "
-			."sfo.flag_add AS sfo_flag_add, sfo.flag_add_readonly AS sfo_flag_readonly, "
+			."sfo.flag_add AS sfo_flag_add, sfo.flag_add_readonly AS sfo_flag_add_readonly, "
 			."sfo.flag_edit AS sfo_flag_edit, sfo.flag_edit_readonly AS sfo_flag_edit_readonly, "
 			."sfo.flag_search AS sfo_flag_search, sfo.flag_search_readonly AS sfo_flag_search_readonly, "
 			."sfo.flag_datagrid AS sfo_flag_datagrid, sfo.flag_datagrid_readonly AS sfo_flag_datagrid_readonly, "
