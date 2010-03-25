@@ -11,7 +11,8 @@ $sd_der_pbmcs["master"]["parent_id"] = "blood_id";
 
 
 //do not modify this section
-$sd_der_pbmcs["detail"]["sample_master_id"] = "sample_master_id";
+$sd_der_pbmcs["detail"][0]["sample_master_id"] = "sample_master_id";
+$sd_der_pbmcs["detail"][1]["sample_master_id"] = "sample_master_id";
 
 $sd_der_pbmcs["master"]["sample_type"] = "@pbmc";
 $sd_der_pbmcs["master"]["sample_control_id"] = "@8";
@@ -22,7 +23,8 @@ $sd_der_pbmcs["master"]["initial_specimen_sample_id"] = "initial_specimen_sample
 
 $sd_der_pbmcs["app_data"]['child'][] = "ad_tubes_pbmc";
 $sd_der_pbmcs["app_data"]['master_table_name'] = "sample_masters";
-$sd_der_pbmcs["app_data"]['detail_table_name'] = "sd_der_pbmcs";
+$sd_der_pbmcs["app_data"]['detail_table_name'][0] = "sd_der_pbmcs";
+$sd_der_pbmcs["app_data"]['detail_table_name'][1] = "derivative_details";
 $sd_der_pbmcs["app_data"]['detail_parent_key'] = "sample_master_id";
 $sd_der_pbmcs["app_data"]['parent_key'] = "parent_id";
 $sd_der_pbmcs["app_data"]['ask_parent']["collection_id"] = "collection_id";

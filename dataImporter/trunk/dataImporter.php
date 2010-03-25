@@ -27,9 +27,23 @@ foreach($tables as $ref_name => &$table){
 		if(!$table['app_data']['file_handler']){
 			die("fopen failed on ".$ref_name);
 		}
-		$table['app_data']['query_master_insert'] = "INSERT INTO ".$table["app_data"]['master_table_name']." (".buildInsertQuery($tables[$ref_name]['master']).") VALUES(";
+		$table['app_data']['query_master_insert'] = " (".buildInsertQuery($tables[$ref_name]['master']);
+		$table['app_data']['query_master_insert_revs'] = "INSERT INTO ".$table["app_data"]['master_table_name']."_revs".$table['app_data']['query_master_insert'].", `id`) VALUES(";
+		$table['app_data']['query_master_insert'] = "INSERT INTO ".$table["app_data"]['master_table_name'].$table['app_data']['query_master_insert'].") VALUES(";
 		if(isset($table["app_data"]['detail_table_name'])){
-			$table['app_data']['query_detail_insert'] = "INSERT INTO ".$table["app_data"]['detail_table_name']." (".buildInsertQuery($tables[$ref_name]['detail']).") VALUES(";
+			if(is_array($table["app_data"]['detail_table_name'])){
+				//prep for multi detail tables
+				foreach($table["app_data"]['detail_table_name'] as $key => $value){
+					$table['app_data']['query_detail_insert'][$key] = " (".buildInsertQuery($tables[$ref_name]['detail'][$key]);
+					$table['app_data']['query_detail_insert_revs'][$key] = "INSERT INTO ".$table["app_data"]['detail_table_name'][$key]."_revs".$table['app_data']['query_detail_insert'][$key].", `id`) VALUES(";
+					$table['app_data']['query_detail_insert'][$key] = "INSERT INTO ".$table["app_data"]['detail_table_name'][$key].$table['app_data']['query_detail_insert'][$key].") VALUES(";
+				}
+			}else{
+				//prep for single detail table
+				$table['app_data']['query_detail_insert'] = " (".buildInsertQuery($tables[$ref_name]['detail']);
+				$table['app_data']['query_detail_insert_revs'] = "INSERT INTO ".$table["app_data"]['detail_table_name']."_revs".$table['app_data']['query_detail_insert'].", `id`) VALUES(";
+				$table['app_data']['query_detail_insert'] = "INSERT INTO ".$table["app_data"]['detail_table_name'].$table['app_data']['query_detail_insert'].") VALUES(";
+			}
 		}
 		$table['app_data']['keys'] = lineToArray(fgets($table['app_data']['file_handler'], 4096));
 		readLine($table);
@@ -50,6 +64,7 @@ mysqli_autocommit($connection, false);
 mysqli_query($connection, "DROP TABLE IF EXISTS id_linking ") or die("DROP tmp failed");
 $query = "CREATE TABLE id_linking(
 	csv_id varchar(10) not null,
+	csv_reference varchar(10) DEFAULT NULL,
 	mysql_id int unsigned not null, 
 	model varchar(15) not null
 	)Engine=InnoDB";
@@ -83,15 +98,24 @@ foreach($tables as $ref_name => &$table){
 	}
 }
 
+//proceed with addon querries
+foreach($addonQueries as $addonQuery){
+	mysqli_query($connection, $addonQuery) or die("[".$addonQuery."] ".mysqli_errno($connection) . ": " . mysqli_error($connection));
+	if($config['printQueries']){
+		echo($addonQuery."\n");
+	}
+		
+}
+
 if($insert){
 	mysqli_commit($connection);
-	echo("Insertions commited\n");
-	echo("#*************************\n"
+	echo("#Insertions commited\n"
+		."#*************************\n"
 		."#********VictWare*********\n"
 		."#* Integration completed *\n"
 		."#*************************\n");
 }else{
-	echo("Insertions cancelled\n");
+	echo("#Insertions cancelled\n");
 }
 
 
@@ -143,6 +167,7 @@ function buildValuesQuery($fields, $values){
  */
 function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_parent_id = null, $parent_data = null){
 	global $connection;
+	global $config;
 	$current_table = &$tables[$table_name];
 	$i = 0;
 	//debug info
@@ -169,36 +194,85 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 			}
 		}
 		
-		$query = $current_table['app_data']['query_master_insert'].buildValuesQuery($current_table["master"], $current_table['app_data']['values']).")";
+		//master main
+		$queryValues = buildValuesQuery($current_table["master"], $current_table['app_data']['values']);
+		$query = $current_table['app_data']['query_master_insert'].$queryValues.")";
 		mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
 		$last_id = mysqli_insert_id($connection);
-		$last_detail_id = 0;
-		echo $query.";\n";
+		if($config['printQueries']){
+			echo $query.";\n";
+		}
+		//master revs
+		$query = $current_table['app_data']['query_master_insert_revs'].$queryValues.", '".$last_id."')";
+		mysqli_query($connection, $query) or die("query failed[".$table_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+		if($config['printQueries']){
+			echo $query.";\n";
+		}
 		if(isset($current_table['app_data']['query_detail_insert'])){
 			//detail level
-			$current_table['detail'][$current_table['app_data']['detail_parent_key']] = "@".$last_id;
-			$query = $current_table['app_data']['query_detail_insert'].buildValuesQuery($current_table["detail"], $current_table['app_data']['values']).")";
-			mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
-			$last_detail_id = mysqli_insert_id($connection);
-			echo $query.";\n";
+			if(is_array($current_table['app_data']['query_detail_insert'])){
+				//insert into multi detail tables
+				foreach($current_table['app_data']['query_detail_insert'] as $key => $value){
+					//detail main
+					$current_table['detail'][$key][$current_table['app_data']['detail_parent_key']] = "@".$last_id;
+					$queryValues = buildValuesQuery($current_table["detail"][$key], $current_table['app_data']['values']);
+					$query = $current_table['app_data']['query_detail_insert'][$key].$queryValues.")";
+					mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+					$last_detail_id = mysqli_insert_id($connection);
+					if($config['printQueries']){
+						echo $query.";\n";
+					}
+					//detail revs
+					$query = $current_table['app_data']['query_detail_insert_revs'][$key].$queryValues.", '".$last_detail_id."')";
+					mysqli_query($connection, $query) or die("query failed[".$table_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+					if($config['printQueries']){
+						echo $query.";\n";
+					}
+				}
+			}else{
+				//insert insto single detail table
+				//detail main
+				$current_table['detail'][$current_table['app_data']['detail_parent_key']] = "@".$last_id;
+				$queryValues = buildValuesQuery($current_table["detail"], $current_table['app_data']['values']);
+				$query = $current_table['app_data']['query_detail_insert'].$queryValues.")";
+				mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+				$last_detail_id = mysqli_insert_id($connection);
+				if($config['printQueries']){
+					echo $query.";\n";
+				}
+				//detail revs
+				$query = $current_table['app_data']['query_detail_insert_revs'].$queryValues.", '".$last_detail_id."')";
+				mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+				if($config['printQueries']){
+					echo $query.";\n";
+				}
+			}
 		}
 		
 		
 		//treat additional querries
 		if(isset($current_table["app_data"]['additional_queries'])){
 			foreach($current_table["app_data"]['additional_queries'] as $ad_query){
-				$ad_query = str_replace("%%last_master_insert_id%%", $last_id, str_replace("%%last_detail_insert_id%%", $last_detail_id, $ad_query));
+				$ad_query = str_replace("%%last_master_insert_id%%", $last_id, $ad_query);
 				mysqli_query($connection, $ad_query) or die("ad query failed[".$table_name."][".$ad_query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
-				echo $ad_query.";\n";
+				if($config['printQueries']){
+					echo $ad_query.";\n";
+				}
+					
 			}
 		}
 		
 		//saving id if required
 		if(isset($current_table['app_data']['save_id']) && $current_table['app_data']['save_id']){
-			$query = "INSERT INTO id_linking (csv_id, mysql_id, model) VALUES('"
+			$query = "INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('"
 					.$current_table['app_data']['values'][$current_table['app_data']['pkey']]."', "
+					.(isset($current_table['app_data']['csv_reference']) && strlen($current_table['app_data']['csv_reference']) > 0 
+						? "'".$current_table['app_data']['values'][$current_table['app_data']['csv_reference']]."'" 
+						: "NULL").", " 
 					.$last_id.", '".$table_name."')";
-			//echo $query.";\n";
+			if($config['printQueries']){
+				echo $query.";\n";
+			}
 			mysqli_query($connection, $query) or die("tmp id query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");	
 		}
 		

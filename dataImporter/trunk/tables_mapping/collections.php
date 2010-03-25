@@ -1,6 +1,7 @@
 <?php
 $collections["app_data"]["pkey"] = "collection_id";
 $collections["app_data"]["file"] = "/Users/francois-michellheureux/Documents/jewish/newData/collections_fake.csv";
+$collections["app_data"]['csv_reference'] = "no_labo";
 
 $collections["master"]["acquisition_label"] = "";
 $collections["master"]["bank_id"] = "";

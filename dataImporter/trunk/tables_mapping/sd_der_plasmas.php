@@ -13,7 +13,8 @@ $sd_der_plasmas["master"]["parent_id"] = "blood_id";
 
 
 //do not modify this section
-$sd_der_plasmas["detail"]["sample_master_id"] = "sample_master_id";
+$sd_der_plasmas["detail"][0]["sample_master_id"] = "sample_master_id";
+$sd_der_plasmas["detail"][1]["sample_master_id"] = "sample_master_id";
 
 $sd_der_plasmas["master"]["sample_type"] = "@plasma";
 $sd_der_plasmas["master"]["sample_control_id"] = "@9";
@@ -24,7 +25,8 @@ $sd_der_plasmas["master"]["initial_specimen_sample_id"] = "initial_specimen_samp
 
 $sd_der_plasmas["app_data"]['child'][] = "ad_tubes_plasma";
 $sd_der_plasmas["app_data"]['master_table_name'] = "sample_masters";
-$sd_der_plasmas["app_data"]['detail_table_name'] = "sd_der_plasmas";
+$sd_der_plasmas["app_data"]['detail_table_name'][0] = "sd_der_plasmas";
+$sd_der_plasmas["app_data"]['detail_table_name'][1] = "derivative_details";
 $sd_der_plasmas["app_data"]['detail_parent_key'] = "sample_master_id";
 $sd_der_plasmas["app_data"]['parent_key'] = "parent_id";
 $sd_der_plasmas["app_data"]['ask_parent']["collection_id"] = "collection_id";
