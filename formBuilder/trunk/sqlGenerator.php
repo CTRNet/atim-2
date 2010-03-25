@@ -90,7 +90,6 @@ foreach($json->fields as $field){
 	$query = "SELECT '1' FROM structure_formats WHERE old_id='".$structureOldId."_".$oldId."' AND structure_id=(SELECT id FROM structures WHERE old_id='".$structureOldId."') AND structure_old_id='".$structureOldId."' AND structure_field_id=(SELECT id FROM structure_fields WHERE old_id='".$oldId."') AND structure_field_old_id='".$oldId."'";
 	$result = $mysqli->query($query) or die("Query failed B.1  ".$mysqli->error.$lineSeparator."Query: ".$query);
 	$update = ($result->fetch_assoc() ? true : false);
-		
 	$insertIntoStructureFormats = $insertIntoStructureFormatsHead."('".$structureOldId."_".$oldId."', (SELECT id FROM structures WHERE old_id='".$structureOldId."'), '".$structureOldId."', (SELECT id FROM structure_fields WHERE old_id='".$oldId."'), '".$oldId."', '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
 	$duplicatePart = "";
 	$sfOldIds[] = $structureOldId."_".$oldId;

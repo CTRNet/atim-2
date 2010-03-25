@@ -4,6 +4,22 @@ var lineWithoutChanges = "";
 
 
 $(function(){
+	$("#dbSelect").change(function(){
+		document.location = "?db=" + $(this).children(":selected").html();
+	});
+	
+	$("#runSql").click(function(){
+		$.ajax({ url: "sqlRunner.php", data: "sql=" + $("textarea").val(), type: "POST", success: function(data){
+	        alert(data);
+	    }});
+		return false;
+	});
+	
+	$("#clearSql").click(function(){
+		$("textarea").val("");
+		return false;
+	});
+	
 	$(".structLink").click(function(){
 		var oldId = $(this).attr('href').substring(1);
 		var val = 'json={"val" : "' + oldId + '", "type" : "structures"}';
