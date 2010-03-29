@@ -2,6 +2,19 @@
 require_once("myFunctions.php");
 $json = json_decode(stripslashes($_GET['json'])) or die("decode failed");
 if($json->type == 'autoBuildData'){
+	$query = "SELECT count(*) AS c, sfi.field AS field FROM structure_formats AS sfo "
+		."INNER JOIN structures AS s ON s.id=sfo.structure_id "
+		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
+		."WHERE s.alias='".$json->val."' GROUP BY sfo.structure_field_id HAVING c > 1";
+	$result = $mysqli->query($query) or die("<tr><td>Query failed ".$mysqli->error."</td></tr>");
+	if($result->num_rows > 0){
+		echo ("Duplicate fields detected on: ");
+		$fields = "";
+		while($row = $result->fetch_assoc()){
+			$fields .= $row['field'].", ";
+		}
+		echo(substr($fields, 0, strlen($fields) - 2)."\n");
+	}
 	$query = "SELECT sfi.plugin AS sfi_plugin, sfi.model AS sfi_model, sfi.tablename AS sfi_tablename, "
 			."sfi.field AS sfi_field, sfi.language_label AS sfi_language_label, sfi.language_tag AS sfi_language_tag, "
 			."sfi.type AS sfi_type, sfi.setting AS sfi_setting, sfi.default AS sfi_default, "

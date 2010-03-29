@@ -335,5 +335,10 @@ require_once("myFunctions.php");
 		<p><span class="ui-icon ui-icon-help" style="float:left; margin:0 7px 20px 0;"></span>
 		There is already a line beign edited. What do you wish to do?</p>
 	</div>
+	<div id="duplicateFieldsDialog">
+		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
+		WARNING: The current structure has duplicate fields. The form builder does not support that.</p>
+		<p id="duplicateFieldsMsg"></p>	
+	</div>
 </body>
 </html>
