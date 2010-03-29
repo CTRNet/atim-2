@@ -224,7 +224,7 @@ $(function(){
 					var val = 'json={"val" : "' + $("#autoBuild1_alias").val() + '", "type" : "autoBuildData"}';
 					$.ajax({ url: "autoBuildLoader.php", data: val, success: function(data){
 						if(data.length > 0){
-							if(data.indexOf("<tr>") != 0){
+							if(data.indexOf("<tr>") > 10){
 								$("#duplicateFieldsMsg").html(data.substr(0, data.indexOf("<tr>")));
 								$("#duplicateFieldsDialog").dialog('open');
 								data = data.substr(data.indexOf("<tr>"));
