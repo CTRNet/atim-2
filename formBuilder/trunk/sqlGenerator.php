@@ -133,7 +133,7 @@ foreach($sfOldIds as $sfOldId){
 $query = substr($query, 0, strlen($query) - 2).");".$lineSeparator;
 $result = $mysqli->query($query) or die("Query failed D ".$mysqli->error);
 $sfOldIds = array();
-if($row = $result->fetch_assoc()){
+while($row = $result->fetch_assoc()){
 	$sfOldIds[] = $row['old_id'];	
 }
 
