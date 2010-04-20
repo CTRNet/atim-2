@@ -339,6 +339,16 @@ $(function(){
 			}});
 		}
 	});
+	
+	$("#value_domains_search").keypress(function(event){
+		if(event.keyCode == 13){
+			var val = 'json={"val" : "' + $("#value_domains_search").val() + '", "type" : "value_domains"}';
+			$.ajax({ url: "loader.php", data: val, success: function(data){
+				$("#valueDomainResult").html(data);
+				
+			}});
+		}
+	});
 
 	$(".autoincrementButton").click(function(){
 		incrementField($(this).parent().children("input"));
@@ -398,7 +408,7 @@ $(function(){
 	$("#structure_fields_type").jsonSuggest(structureTypes);
 	$("#autoBuild2_type").jsonSuggest(structureTypes);
 	
-	$("#queryBuilder").tabs();
+	$("#queryBuilder").tabs({ selected : 4, disabled: [0, 1, 2] });
 	$("#databaseExplorer").tabs();
 	
 	$('.ui-state-default').hover(function(){
@@ -409,17 +419,13 @@ $(function(){
 	
 	$("#generateSQL").click(function(){
 		var proceed = true;
-		if($("#autoBuild1_Starting_old_id").val().length == 0){
-			flashColor($("#autoBuild1_Starting_old_id"), '#f00');
-			proceed = false;
-		}
+
 		if($("#autoBuild1_alias").val().length == 0){
 			flashColor($("#autoBuild1_alias"), '#f00');
 			proceed = false;
 		}
 		if(proceed){
-			var global = '{ "startingOldId" : "' + $("#autoBuild1_Starting_old_id").val() + '", '
-						+ ' "alias" : "' + $("#autoBuild1_alias").val() + '", '
+			var global = '{ "alias" : "' + $("#autoBuild1_alias").val() + '", '
 						+ ' "language_title" : "' + $("#autoBuild1_language_title").val() + '"}';
 			var fields = '[ ';
 			var headerArr = $("#autoBuild2").children("thead").children("tr").children("th");

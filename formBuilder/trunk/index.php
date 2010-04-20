@@ -67,10 +67,10 @@ require_once("myFunctions.php");
 				<br/>
 				<?php 
 				//structures
-				$query = "SELECT old_id, alias FROM structures ORDER BY alias";
+				$query = "SELECT id, alias FROM structures ORDER BY alias";
 				$result = $mysqli->query($query) or die("STI");
 				while($row = $result->fetch_assoc()){
-					echo("<a href='#".$row['old_id']."' class='structLink'>".$row['alias']."</a> - <a href='#".$row['old_id']."' class='structLinkAdd'>[+]</a><br/>");
+					echo("<a href='#".$row['id']."' class='structLink'>".$row['alias']."</a> - <a href='#".$row['id']."' class='structLinkAdd'>[+]</a><br/>");
 				}
 				?>
 			</div>
@@ -95,6 +95,8 @@ require_once("myFunctions.php");
 		</div>
 		<div id="tab4">
 			<div>
+			<input id="value_domains_search" type="search"/>[+]
+			<br/>
 			<?php 
 			//structures
 			$query = "SELECT domain_name FROM structure_value_domains ORDER BY domain_name";
@@ -266,7 +268,6 @@ require_once("myFunctions.php");
 			<table class="insert ui-widget ui-widget-content">
 				<thead class="custom autoBuild1">
 					<tr class='ui-widget-header'>
-						<th>Starting_old_id</th>
 						<th>alias</th>
 						<th>language_title</th>
 					</tr>
