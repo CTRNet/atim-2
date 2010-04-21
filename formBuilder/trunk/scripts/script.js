@@ -439,7 +439,7 @@ $(function(){
 			});
 			fields = fields.substr(0, fields.length - 2) + ' ]';
 			var val = 'json={"global" : ' + global + ', "fields" : ' + fields + ' }';
-			
+			val = val.replace(/%/g, "%25").replace(/&gt;/g, "%3E").replace(/&lt;/g, "%3C");
 			$.ajax({ url: "sqlGenerator.php", data: val, type: "POST", success: function(data){
 				$("textarea").val($("textarea").val() + data + "\n");
 			}});
