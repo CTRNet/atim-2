@@ -1,4 +1,5 @@
 <?php
+//TODO: do not return the id for structure_value_domain
 require_once("myFunctions.php");
 $lineSeparator = "\n";
 $structureFieldsFields = array("public_identifier", "old_id", "plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help", "validation_control", "value_domain_control", "field_control");
@@ -17,7 +18,7 @@ if(isset($_GET['json'])){
 }
 $json = json_decode(stripslashes($json)) or die("decode failed");
 
-$insertIntoStructures = "INSERT INTO structures(`alias`, `language_title`, `language_help`, `flag_add_columns`, `flag_edit_columns`, `flag_search_columns`, `flag_detail_columns`) VALUES ('".$json->global->startingOldId."', '".$json->global->alias."', '".$json->global->language_title."', '', '1', '1', '1', '1');";
+$insertIntoStructures = "INSERT INTO structures(`alias`, `language_title`, `language_help`, `flag_add_columns`, `flag_edit_columns`, `flag_search_columns`, `flag_detail_columns`) VALUES ('".$json->global->alias."', '".$json->global->language_title."', '', '1', '1', '1', '1');";
 $insertIntoStructureFields = "INSERT INTO structure_fields(`public_identifier`, `plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`, `validation_control`, `value_domain_control`, `field_control`) VALUES";
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_datagrid`, `flag_datagrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
 $structureOldId = $json->global->startingOldId;
@@ -45,7 +46,7 @@ if($row = $result->fetch_assoc()){
 foreach($json->fields as $field){
 	//building associations
 	//check if a proper structure_field exists
-	$structure_field_id_query = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `language_label`='".$field->language_label."' AND `language_tag`='".$field->language_tag."' AND `type`='".$field->type."' AND `setting`='".$field->setting."' AND `default`='".$field->default."' AND `structure_value_domain` ".valueToQueryWherePart($field->structure_value_domain)." AND `language_help`='".$field->language_help."' "; 
+	$structure_field_id_query = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `language_label`='".$field->language_label."' AND `language_tag`='".$field->language_tag."' AND `type`='".$field->type."' AND `setting`='".$field->setting."' AND `default`='".$field->default."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." AND `language_help`='".$field->language_help."' "; 
 	$id = "";
 	$override = false;
 	$insertStructureFormat = true;
@@ -60,7 +61,7 @@ foreach($json->fields as $field){
 			$insertStructureFormat = false;
 		}
 	}else{
-		$structure_field_id_query = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".valueToQueryWherePart($field->structure_value_domain)." ";
+		$structure_field_id_query = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
 		$result = $mysqli->query($structure_field_id_query) or die("Query failed C ".$mysqli->error);
 		if($row = $result->fetch_assoc()){
 			//override
@@ -68,7 +69,7 @@ foreach($json->fields as $field){
 			$override = true;
 		}else{
 			//doesn't exist at all
-			$insertIntoStructureFields .= "('', '".$field->plugin."', '".$field->model."', '".$field->tablename."', '".$field->field."', '".$field->language_label."', '".$field->language_tag."', '".$field->type."', '".$field->setting."', '".$field->default."', ".formatField($field->structure_value_domain).", '".$field->language_help."', 'open', 'open', 'open'), ";
+			$insertIntoStructureFields .= "('', '".$field->plugin."', '".$field->model."', '".$field->tablename."', '".$field->field."', '".$field->language_label."', '".$field->language_tag."', '".$field->type."', '".$field->setting."', '".$field->default."', ".castStructureValueDomain($field->structure_value_domain, false).", '".$field->language_help."', 'open', 'open', 'open'), ";
 			$newFields = true;
 		}
 	}
@@ -82,7 +83,7 @@ foreach($json->fields as $field){
 		$insertIntoStructureFormats .= "1, '".$field->language_label."', 1, '".$field->language_tag."', 1, '".$field->language_help."', 1, '".$field->type."', 1, '".$field->setting."', 1, '".$field->default."', ";
 		$duplicatePart = "`flag_override_label`='1', `language_label`='".$field->language_label."', `flag_override_tag`='1', `language_tag`='".$field->language_tag."', `flag_override_help`='1', `language_help`='".$field->language_help."', `flag_override_type`='1', `type`='".$field->type."', `flag_override_setting`='1', `setting`='".$field->setting."', `flag_override_default`='1', `default`='".$field->default."' ";
 	}else{
-		$insertIntoStructureFormats .= "0, '', 0, '', 0, '', 0, '', 0, '', 0, '', ";
+		$insertIntoStructureFormats .= "'0', '', '0', '', '0', '', '0', '', '0', '', '0', '', ";
 		$duplicatePart = "`flag_override_label`='0', `language_label`='', `flag_override_tag`='0', `language_tag`='', `flag_override_help`='0', `language_help`='', `flag_override_type`='0', `type`='', `flag_override_setting`='0', `setting`='', `flag_override_default`='0', `default`='' ";
 	}
 	$insertIntoStructureFormats .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."') ";	
@@ -93,6 +94,7 @@ foreach($json->fields as $field){
 	if($update){
 		$query = "SELECT '1' FROM structure_formats WHERE ".str_replace("', ", "' AND ", $duplicatePart)." AND structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
 		$result = $mysqli->query($query);
+		echo $query."\n\n";
 		if(!$result->fetch_assoc()){
 			$insertIntoStructureFormatsArray[] = "UPDATE structure_formats SET ".$duplicatePart." WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
 		}
@@ -144,19 +146,45 @@ function formatField($field){
 	return "'".$field."'";
 }
 
-function valueToQueryWherePart($value, $update = false){
-	$result = "";
-	if(strtoupper($value) == "NULL"){
-		if($update){
-			$result = " NULL ";
+function castStructureValueDomain($value, $where){
+	$q_result = "";
+	if(is_numeric($value)){
+		global $mysqli;
+		$result = $mysqli->query("SELECT domain_name FROM structure_value_domains WHERE id='".$value."'") or die("castStructureValueDomain query failed");
+		if($row = $result->fetch_assoc()){
+			if($where){
+				$q_result = "=";
+			}
+			$q_result .= "(SELECT id FROM structure_value_domains WHERE domain_name='".$row['domain_name']."')";
 		}else{
-			$result = " IS NULL ";
-		}	
-	}else if(strpos(strtoupper($value), "SELECT") > 0){
-		$result = "=".$value." ";	
+			//invalid! DIE!!!
+			die("Invalid structure_value_domain_id [".$value."]\n");
+		}
+		$result->close();
 	}else{
-		$result = "='".$value."' ";
+		$q_result = valueToQueryWherePart($value, $where);
 	}
-	return $result;
+	return $q_result;
+}
+
+function valueToQueryWherePart($value, $where = true){
+	$q_result = "";
+	if(strtoupper($value) == "NULL"){
+		if($where){
+			$q_result = " IS NULL ";
+		}else{
+			$q_result = " NULL ";
+		}	
+	}else{
+		if($where){
+			$q_result = "=";
+		}	
+		if(strpos(strtoupper($value), "SELECT") > 0){
+			$q_result .= $value." ";
+		}else{
+			$q_result .= "(SELECT id FROM structure_value_domains WHERE domain_name='".$value."') ";
+		}
+	}
+	return $q_result;
 }
 ?>

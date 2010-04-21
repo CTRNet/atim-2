@@ -255,7 +255,7 @@ require_once("myFunctions.php");
 						<th>value</th>
 						<th>language_alias</th>
 						<th>display_order</th>
-						<th>active</th>
+						<th>flag_active</th>
 					</tr>
 				</thead>
 				<tbody>

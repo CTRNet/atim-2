@@ -32,9 +32,11 @@ if($json->type == 'autoBuildData'){
 			."sfo.flag_edit AS sfo_flag_edit, sfo.flag_edit_readonly AS sfo_flag_edit_readonly, "
 			."sfo.flag_search AS sfo_flag_search, sfo.flag_search_readonly AS sfo_flag_search_readonly, "
 			."sfo.flag_datagrid AS sfo_flag_datagrid, sfo.flag_datagrid_readonly AS sfo_flag_datagrid_readonly, "
-			."sfo.flag_index AS sfo_flag_index, sfo.flag_detail AS sfo_flag_detail FROM structures AS s "
+			."sfo.flag_index AS sfo_flag_index, sfo.flag_detail AS sfo_flag_detail, svd.domain_name AS svd_domain_name " 
+		."FROM structures AS s "
 		."INNER JOIN structure_formats AS sfo ON s.id=sfo.structure_id "
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
+		."LEFT JOIN structure_value_domains AS svd ON sfi.structure_value_domain=svd.id "
 		."WHERE s.alias='".$json->val."'";//struct 208, 936-937
 	$result = $mysqli->query($query) or die("<tr><td>Query failed ".$mysqli->error."</td></tr>");
 	while($row = $result->fetch_assoc()){
@@ -49,7 +51,7 @@ if($json->type == 'autoBuildData'){
 			<td><?php echo($row['sfo_flag_override_type'] ? $row['sfo_type'] : $row['sfi_type']); ?></td>
 			<td><?php echo($row['sfo_flag_override_setting'] ? $row['sfo_setting'] : $row['sfi_setting']); ?></td>
 			<td><?php echo($row['sfo_flag_override_default'] ? $row['sfo_default'] : $row['sfi_default']); ?></td>
-			<td><?php echo($row['sfi_structure_value_domain'] == NULL ? "NULL" : $row['sfi_structure_value_domain'] ); ?></td>
+			<td><?php echo($row['sfi_structure_value_domain'] == NULL ? "NULL" : $row['svd_domain_name'] ); ?></td>
 			<td><?php echo($row['sfo_override_help'] ? $row['sfo_language_help'] : $row['sfi_language_help']); ?></td>
 			<td><?php echo($row['sfi_validation_control']); ?></td>
 			<td><?php echo($row['sfi_valude_domain_control']); ?></td>
