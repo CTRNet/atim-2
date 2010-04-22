@@ -94,7 +94,6 @@ foreach($json->fields as $field){
 	if($update){
 		$query = "SELECT '1' FROM structure_formats WHERE ".str_replace("', ", "' AND ", $duplicatePart)." AND structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
 		$result = $mysqli->query($query);
-		echo $query."\n\n";
 		if(!$result->fetch_assoc()){
 			$insertIntoStructureFormatsArray[] = "UPDATE structure_formats SET ".$duplicatePart." WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
 		}
