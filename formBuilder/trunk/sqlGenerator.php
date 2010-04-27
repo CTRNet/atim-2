@@ -22,7 +22,7 @@ $insertIntoStructures = "INSERT INTO structures(`alias`, `language_title`, `lang
 $insertIntoStructureFields = "INSERT INTO structure_fields(`public_identifier`, `plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`, `validation_control`, `value_domain_control`, `field_control`) VALUES";
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_datagrid`, `flag_datagrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
 $structureOldId = $json->global->startingOldId;
-$insertIntoStructureFormatsArray = array();
+$updateStructureFormatsArray = array();
 $sfOldIds = array();
 
 $newFields = false;
@@ -43,6 +43,7 @@ if($row = $result->fetch_assoc()){
 //#3: Otherwise create it and use format right on it.
 //#4: Delete all structure_formats of the current structures that have not been created/updated here 
 //FTW comrad! 
+$insertIntoStructureFormats = "";
 foreach($json->fields as $field){
 	//building associations
 	//check if a proper structure_field exists
@@ -76,17 +77,17 @@ foreach($json->fields as $field){
 	$query = "SELECT '1' FROM structure_formats WHERE structure_id='".$structureId."' AND structure_field_id='".$id."'";
 	$result = $mysqli->query($query) or die("Query failed B.1b  ".$mysqli->error.$lineSeparator."Query: ".$query);
 	$update = ($result->fetch_assoc() ? true : false);
-	$insertIntoStructureFormats = $insertIntoStructureFormatsHead."((".$structure_id_query."), (".$structure_field_id_query."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
+	$insertIntoStructureFormatsTmp = "((".$structure_id_query."), (".$structure_field_id_query."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
 	$duplicatePart = "";
 	$sfIds[] = $structureId."_".$id;
 	if($override){
-		$insertIntoStructureFormats .= "1, '".$field->language_label."', 1, '".$field->language_tag."', 1, '".$field->language_help."', 1, '".$field->type."', 1, '".$field->setting."', 1, '".$field->default."', ";
+		$insertIntoStructureFormatsTmp .= "1, '".$field->language_label."', 1, '".$field->language_tag."', 1, '".$field->language_help."', 1, '".$field->type."', 1, '".$field->setting."', 1, '".$field->default."', ";
 		$duplicatePart = "`flag_override_label`='1', `language_label`='".$field->language_label."', `flag_override_tag`='1', `language_tag`='".$field->language_tag."', `flag_override_help`='1', `language_help`='".$field->language_help."', `flag_override_type`='1', `type`='".$field->type."', `flag_override_setting`='1', `setting`='".$field->setting."', `flag_override_default`='1', `default`='".$field->default."' ";
 	}else{
-		$insertIntoStructureFormats .= "'0', '', '0', '', '0', '', '0', '', '0', '', '0', '', ";
+		$insertIntoStructureFormatsTmp .= "'0', '', '0', '', '0', '', '0', '', '0', '', '0', '', ";
 		$duplicatePart = "`flag_override_label`='0', `language_label`='', `flag_override_tag`='0', `language_tag`='', `flag_override_help`='0', `language_help`='', `flag_override_type`='0', `type`='', `flag_override_setting`='0', `setting`='', `flag_override_default`='0', `default`='' ";
 	}
-	$insertIntoStructureFormats .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."') ";	
+	$insertIntoStructureFormatsTmp .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."')";	
 		//."ON DUPLICATE KEY UPDATE 
 	$duplicatePart = "display_column='".$field->display_column."', display_order='".$field->display_order."', language_heading='".$field->language_heading."', "
 		."`flag_add`='".$field->flag_add."', `flag_add_readonly`='".$field->flag_add_readonly."', `flag_edit`='".$field->flag_edit."', `flag_edit_readonly`='".$field->flag_edit_readonly."', `flag_search`='".$field->flag_search."', `flag_search_readonly`='".$field->flag_search_readonly."', `flag_datagrid`='".$field->flag_datagrid."', `flag_datagrid_readonly`='".$field->flag_datagrid_readonly."', `flag_index`='".$field->flag_index."', `flag_detail`='".$field->flag_detail."', "
@@ -95,17 +96,22 @@ foreach($json->fields as $field){
 		$query = "SELECT '1' FROM structure_formats WHERE ".str_replace("', ", "' AND ", $duplicatePart)." AND structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
 		$result = $mysqli->query($query);
 		if(!$result->fetch_assoc()){
-			$insertIntoStructureFormatsArray[] = "UPDATE structure_formats SET ".$duplicatePart." WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
+			$updateStructureFormatsArray[] = "UPDATE structure_formats SET ".$duplicatePart." WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
 		}
 	}else{
-		$insertIntoStructureFormatsArray[] = $insertIntoStructureFormats; 
+		$insertIntoStructureFormats .= $insertIntoStructureFormatsTmp.",".$lineSeparator; 
 	}
 }
 echo $insertIntoStructures.$lineSeparator.$lineSeparator;
 if($newFields){
-	echo substr($insertIntoStructureFields, 0, strlen($insertIntoStructureFields) - 2).";".$lineSeparator.$lineSeparator;
+	echo substr($insertIntoStructureFields, 0, -2).";".$lineSeparator.$lineSeparator;
 }
-foreach($insertIntoStructureFormatsArray as $query){
+
+if(strlen($insertIntoStructureFormats) > 0){
+	echo($insertIntoStructureFormatsHead.$lineSeparator.substr($insertIntoStructureFormats, 0, -2).";".$lineSeparator);
+}
+
+foreach($updateStructureFormatsArray as $query){
 	echo $query.";".$lineSeparator.$lineSeparator;
 }
 

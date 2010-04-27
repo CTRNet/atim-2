@@ -179,8 +179,8 @@ $(function(){
 
 	$(".add.struct_val_domain").click(function(){
 		$("textarea").val($("textarea").val() 
-			+ "INSERT IGNORE INTO structure_permissible_values (`value`, `language_alias`) VALUES('" + $("#struct_val_domain_value").val() + "', '" + $("#struct_val_domain_language_alias").val() + "');\n"
-			+ "INSERT INTO structure_value_domains_permissible_values (`structure_value_domain_id`, `structure_permissible_value_id`, `display_order`, `flag_active`) VALUES((SELECT id FROM structure_value_domains WHERE domain_name='" + $("#struct_val_domain_domain_name").val() + "'),  (SELECT id FROM structure_permissible_values WHERE value='" + $("#struct_val_domain_value").val() + "' AND language_alias='" + $("#struct_val_domain_language_alias").val() + "'), '" + $("#struct_val_domain_display_order").val() + "', '" + $("#struct_val_domain_flag_active").val() + "');\n"  
+			+ 'INSERT IGNORE INTO structure_permissible_values (`value`, `language_alias`) VALUES("' + $("#struct_val_domain_value").val() + '", "' + $("#struct_val_domain_language_alias").val() + '");\n'
+			+ 'INSERT INTO structure_value_domains_permissible_values (`structure_value_domain_id`, `structure_permissible_value_id`, `display_order`, `flag_active`) VALUES((SELECT id FROM structure_value_domains WHERE domain_name="' + $("#struct_val_domain_domain_name").val() + '"),  (SELECT id FROM structure_permissible_values WHERE value="' + $("#struct_val_domain_value").val() + '" AND language_alias="' + $("#struct_val_domain_language_alias").val() + '"), "' + $("#struct_val_domain_display_order").val() + '", "' + $("#struct_val_domain_flag_active").val() + '");\n'  
 			+ "\n");
 		return false;
 	});
