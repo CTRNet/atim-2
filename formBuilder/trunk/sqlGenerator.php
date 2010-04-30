@@ -130,13 +130,13 @@ if(sizeof($sfIds) > 0){
 	echo "-- delete structure_formats\n";
 	$delete_query = "DELETE FROM structure_formats WHERE ";
 	foreach($sfIds as $sfId){
-		$result = $mysqli->query("SELECT * FROM structure_fields WHERE id='".$sfId."'") or die("Query failed E");
+		$result = $mysqli->query("SELECT * FROM structure_formats WHERE id='".$sfId."'") or die("Query failed E");
 		if($row = $result->fetch_assoc()){
-			echo $where_part = "";
+			$where_part = "";
 			foreach($row as $key => $val){
 				//NULL values are not possible in that table
 				if($key != 'id'){
-					$where_part .= $key."='".$val."' AND ";
+					$where_part .= "`".$key."`='".$val."' AND ";
 				}
 			}
 			echo($delete_query.substr($where_part, 0, -4).";\n");
