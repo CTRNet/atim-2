@@ -1,4 +1,4 @@
-var structureTypes = '[{"text" : "autocomplete"},{"text" : "checkbox"},{"text" : "date"},{"text" : "datetime"},{"text" : "file"},{"text" : "hidden"},{"text" : "input"},{"text" : "input-readonly"},{"text" : "number"},{"text" : "password"},{"text" : "radio"},{"text" : "radiolist"},{"text" : "select"},{"text" : "textarea"},{"text" : "time"}]';
+var structureTypes = '[{"text" : "autocomplete"},{"text" : "checkbox"},{"text" : "date"},{"text" : "datetime"},{"text" : "file"},{"text" : "hidden"},{"text" : "input"},{"text" : "input-readonly"},{"text" : "number"},{"text" : "password"},{"text" : "radio"},{"text" : "radiolist"},{"text" : "select"},{"text" : "textarea"},{"text" : "time"},{"text":"integer"},{"text":"integer_positive"},{"text":"float"},{"text":"float_positive"}]';
 var tmpLine = "";
 var lineWithoutChanges = "";
 
@@ -513,8 +513,12 @@ function setTableGetField(){
 			if($("#table_autotype").attr("checked")){
 				var type = $(this).find(".Type").html();
 				var outType = "";
-				if(type.indexOf("int") != -1 || type.indexOf("float") != -1){
-					outType = "number";
+				if(type.match(/^[a-z]*int\(\d+\)/)){
+					//integer
+					outType = type.match(/^[a-z]*int\(\d+\) unsigned$/) ? "integer_positive" : "integer";
+				}else if(type.match(/^(float|double|decimal)\(\d+,?\d*\)/)){
+					//float
+					outType = type.match(/^(float|double|decimal)\(\d+,?\d*\) unsigned$/) ? "float_positive" : "float";
 				}else if(type == "date"){
 					outType = "date";
 				}else if(type == "datetime"){
