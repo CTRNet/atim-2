@@ -1,10 +1,14 @@
 <?php
-//TODO: do not return the id for structure_value_domain
 require_once("myFunctions.php");
-$lineSeparator = "\n";
-$structureFieldsFields = array("public_identifier", "old_id", "plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help", "validation_control", "value_domain_control", "field_control");
-$structureFormatsFieds = array("old_id", "structure_id", "structure_old_id", "structure_field_id", "structure_field_old_id", "display_column", "display_order", "language_heading", "flag_override_label", "language_label", "flag_override_tag", "language_tag", "flag_override_help", "language_help", "flag_override_type", "type", "flag_override_setting", "setting", "flag_override_default", "default", "flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_datagrid", "flag_datagrid_readonly", "flag_index", "flag_detail");
-
+define("LS", "\n");
+global $OVERRIDES_NAMES; 
+$OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_tag" => "flag_override_tag", 
+	"language_help" => "flag_override_help", "type" => "flag_override_type", "setting" => "flag_override_setting", 
+	"default" => "flag_override_default");
+global $STRUCTURE_FIELDS_FIELDS;
+$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help", "validation_control", "field_control");
+global $STRUCTURE_FORMATS_FIELDS;
+$STRUCTURE_FORMATS_FIELDS = array("display_column", "display_order", "language_heading", "language_label", "language_tag", "language_help", "type", "setting", "default", "flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_datagrid", "flag_datagrid_readonly", "flag_index", "flag_detail");
 
 if(isset($_GET['json'])){
 	$json = $_GET['json'];
@@ -14,18 +18,21 @@ if(isset($_GET['json'])){
 	error_reporting(E_ALL);
 	ini_set('display_errors', '1');
 	$json = '{"global" : { "alias" : "bob",  "language_title" : ""}, "fields" : [ {  "plugin" : "Clinicalannotation",  "model" : "EventDetail",  "tablename" : "groups",  "field" : "bank_id",  "language_label" : "toto &gt; tata",  "language_tag" : "",  "type" : "number",  "setting" : "",  "default" : "",  "structure_value_domain" : "NULL",  "language_help" : "",  "validation_control" : "",  "value_domain_controld" : "",  "field_control" : "",  "display_column" : "1",  "display_order" : "1",  "language_heading" : "",  "flag_add" : "0",  "flag_add_readonly" : "0",  "flag_edit" : "0",  "flag_edit_readonly" : "0",  "flag_search" : "0",  "flag_search_readonly" : "0",  "flag_datagrid" : "0",  "flag_datagrid_readonly" : "0",  "flag_index" : "0",  "flag_detail" : "0" } ] }';
-	$lineSeparator = "<br/>";
+	define(LS, "<br/>");
 }
 
 $json = json_decode(stripslashes($json)) or die("decode failed ".$json);
 $insertIntoStructures = "INSERT INTO structures(`alias`, `language_title`, `language_help`, `flag_add_columns`, `flag_edit_columns`, `flag_search_columns`, `flag_detail_columns`) VALUES ('".$json->global->alias."', '".$json->global->language_title."', '', '1', '1', '1', '1');";
-$insertIntoStructureFields = "INSERT INTO structure_fields(`public_identifier`, `plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`, `validation_control`, `value_domain_control`, `field_control`) VALUES";
+$insertIntoStructureFieldsHead = "INSERT INTO structure_fields(`public_identifier`, `plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`, `validation_control`, `value_domain_control`, `field_control`) VALUES";
+$insertIntoStructureFields = "";
+$updateStructureField = "UPDATE structure_fields SET `public_identifier`=%s, `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s, `validation_control`=%s, `value_domain_control`=%s, `field_control`=%s WHERE id=%s";
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_datagrid`, `flag_datagrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
-$structureOldId = $json->global->startingOldId;
+$insertIntoStructureFormats = "";
+$insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_empty`, flag_required`, on_action`, `language_message`) VALUES ";
+$insertIntoStructureValidations = "";
+$updateStructureFieldsArray = array();
 $updateStructureFormatsArray = array();
 $sfOldIds = array();
-
-$newFields = false;
 
 $structure_id_query = "SELECT id FROM structures WHERE alias='".$json->global->alias."'";
 $result = $mysqli->query($structure_id_query) or die("Query failed A ".$mysqli->error);
@@ -33,94 +40,95 @@ if($row = $result->fetch_assoc()){
 	//structure already exists. This is an update.
 	$insertIntoStructures = "";
 	$structureId = $row['id'];
+}else{
+	$structureId = "";
 }
 
-//Tactics
-//#1: See if that strutures field exists precisely as we need it
-//	->Yes: Use it and use format right on it
-//#2: Otherwise see if there is a similar one
-//	-> Yes: Use it and use format with overrides
-//#3: Otherwise create it and use format right on it.
-//#4: Delete all structure_formats of the current structures that have not been created/updated here 
-//FTW comrad! 
-$insertIntoStructureFormats = "";
 foreach($json->fields as $field){
-	//building associations
-	//check if a proper structure_field exists
-	$structure_field_id_query = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `language_label`='".$field->language_label."' AND `language_tag`='".$field->language_tag."' AND `type`='".$field->type."' AND `setting`='".$field->setting."' AND `default`='".$field->default."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." AND `language_help`='".$field->language_help."' "; 
-	$id = "";
-	$override = false;
-	$insertStructureFormat = true;
-	$result = $mysqli->query($structure_field_id_query) or die("Query failed B  ".$mysqli->error.$lineSeparator."Query: ".$structure_field_id_query); 
-	if($row = $result->fetch_assoc()){
-		//identical
-		$id = $row['id'];
-		$query = "SELECT '1' FROM structure_formats WHERE structure_id='".$structureId."' AND structure_field_id='".$id."' AND display_column='".$field->display_column."' AND display_order='".$field->display_order."' AND language_heading='".$field->language_heading."' AND flag_override_label='0' AND language_label='' AND flag_override_tag='0' AND language_tag='' AND flag_override_help='0' AND language_help='' AND flag_override_type='0' AND type='' AND flag_override_setting='0' AND setting='' AND flag_override_default='0' AND `default`='' AND flag_add='".$field->flag_add."' AND flag_add_readonly='".$field->flag_add_readonly."' AND flag_edit='".$field->flag_edit."' AND flag_edit_readonly='".$field->flag_edit_readonly."' AND flag_search='".$field->flag_search."' AND flag_search_readonly='".$field->flag_search_readonly."' AND flag_datagrid='".$field->flag_datagrid."' AND flag_datagrid_readonly='".$field->flag_datagrid_readonly."' AND flag_index='".$field->flag_index."' AND flag_detail='".$field->flag_detail."'";
-		$result = $mysqli->query($query) or die("Query failed B.1a  ".$mysqli->error.$lineSeparator."Query: ".$query);
-		if($result->fetch_assoc()){
-			//no need to change it
-			$insertStructureFormat = false;
-		}
-	}else{
-		$structure_field_id_query = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
-		$result = $mysqli->query($structure_field_id_query) or die("Query failed C ".$mysqli->error);
-		if($row = $result->fetch_assoc()){
-			//override
-			$id = $row['id'];
-			$override = true;
+	echo("TREATING: ".$field->field.LS);
+	$sameSfi = getSameSfi($field);
+	$similarSfi = getSimilarSfi($field);
+	$sfo = getSfo($field);
+	if(strlen($field->sfi_id) > 0){
+		if($sameSfi['data']['id'] == $field->sfi_id){
+			//no change to structure field
+			if(strlen($field->sfo_id) > 0){
+				//generate update sfo if necessary
+				$str = getUpdateSfo($field, $sameSfi, $sfo);
+				if(strlen($str) > 0){
+					$updateStructureFormatsArray[] = $str;
+				}
+			}else{
+				//new sfo
+				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field);
+			}
+		}else if(getFieldUsageCount($field->sfi_id) < 2){
+			//we're alone
+			$updateStructureFieldsArray[] = getUpdateSfi($field);
+			$str = getUpdateSfo($field, NULL, $sfo);//clear sfo overrides if needed
+			if(strlen($str) > 0){
+				$updateStructureFormatsArray[] = $str;
+			}
+		}else if($similarSfi['data']['id'] == $field->sfi_id){
+			//override is possible
+			$str = getUpdateSfo($field, $similarSfi, $sfo);
+			if(strlen($str) > 0){
+				$updateStructureFormatsArray[] = $str;
+			}
 		}else{
-			//doesn't exist at all
-			$insertIntoStructureFields .= "('', '".$field->plugin."', '".$field->model."', '".$field->tablename."', '".$field->field."', '".$field->language_label."', '".$field->language_tag."', '".$field->type."', '".$field->setting."', '".$field->default."', ".castStructureValueDomain($field->structure_value_domain, false).", '".$field->language_help."', 'open', 'open', 'open'), ";
-			$newFields = true;
+			//no way to override, recreate new sfi , update sfo, copy validations
+			$insertIntoStructureFields .= getInsertIntoSfi($field);
+			$str = getUpdateSfo($field, NULL, $sfo);
+			if(strlen($str) > 0){
+				$updateStructureFormatsArray[] = $str;
+			}
+			$insertIntoStructureValidations .= getInsertStructureValidations($field);
 		}
-	}
-	$query = "SELECT '1' FROM structure_formats WHERE structure_id='".$structureId."' AND structure_field_id='".$id."'";
-	$result = $mysqli->query($query) or die("Query failed B.1b  ".$mysqli->error.$lineSeparator."Query: ".$query);
-	$update = ($result->fetch_assoc() ? true : false);
-	$insertIntoStructureFormatsTmp = "((".$structure_id_query."), (".$structure_field_id_query."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
-	$duplicatePart = "";
-	$sfIds[] = $structureId."_".$id;
-	if($override){
-		$insertIntoStructureFormatsTmp .= "1, '".$field->language_label."', 1, '".$field->language_tag."', 1, '".$field->language_help."', 1, '".$field->type."', 1, '".$field->setting."', 1, '".$field->default."', ";
-		$duplicatePart = "`flag_override_label`='1', `language_label`='".$field->language_label."', `flag_override_tag`='1', `language_tag`='".$field->language_tag."', `flag_override_help`='1', `language_help`='".$field->language_help."', `flag_override_type`='1', `type`='".$field->type."', `flag_override_setting`='1', `setting`='".$field->setting."', `flag_override_default`='1', `default`='".$field->default."' ";
+	}else if($sameSfi['data']['id'] != NULL){
+			//create sfo without overrides
+			$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field);
+	}else if($similarSfi['data']['id'] != NULL){
+			//create sfo with proper overrides
+			$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $similarSfi, $field);
 	}else{
-		$insertIntoStructureFormatsTmp .= "'0', '', '0', '', '0', '', '0', '', '0', '', '0', '', ";
-		$duplicatePart = "`flag_override_label`='0', `language_label`='', `flag_override_tag`='0', `language_tag`='', `flag_override_help`='0', `language_help`='', `flag_override_type`='0', `type`='', `flag_override_setting`='0', `setting`='', `flag_override_default`='0', `default`='' ";
-	}
-	$insertIntoStructureFormatsTmp .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."')";	
-		//."ON DUPLICATE KEY UPDATE 
-	$duplicatePart = "display_column='".$field->display_column."', display_order='".$field->display_order."', language_heading='".$field->language_heading."', "
-		."`flag_add`='".$field->flag_add."', `flag_add_readonly`='".$field->flag_add_readonly."', `flag_edit`='".$field->flag_edit."', `flag_edit_readonly`='".$field->flag_edit_readonly."', `flag_search`='".$field->flag_search."', `flag_search_readonly`='".$field->flag_search_readonly."', `flag_datagrid`='".$field->flag_datagrid."', `flag_datagrid_readonly`='".$field->flag_datagrid_readonly."', `flag_index`='".$field->flag_index."', `flag_detail`='".$field->flag_detail."', "
-		.$duplicatePart;
-	if($update){
-		$query = "SELECT '1' FROM structure_formats WHERE ".str_replace("', ", "' AND ", $duplicatePart)." AND structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
-		$result = $mysqli->query($query);
-		if(!$result->fetch_assoc()){
-			$updateStructureFormatsArray[] = "UPDATE structure_formats SET ".$duplicatePart." WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")";
-		}
-	}else{
-		$insertIntoStructureFormats .= $insertIntoStructureFormatsTmp.",".$lineSeparator; 
+		//create new sfi + sfo without overrides
+		$insertIntoStructureFields .= getInsertIntoSfi($field);
+		$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field);
 	}
 }
-echo $insertIntoStructures.$lineSeparator.$lineSeparator;
-if($newFields){
-	echo substr($insertIntoStructureFields, 0, -2).";".$lineSeparator.$lineSeparator;
+
+if(strlen($insertIntoStructures) > 0){
+	echo $insertIntoStructures.LS.LS;
+}
+if(strlen($insertIntoStructureFields) > 0){
+	echo substr($insertIntoStructureFieldsHead.$insertIntoStructureFields, 0, -2).";".LS.LS;
 }
 
 if(strlen($insertIntoStructureFormats) > 0){
-	echo($insertIntoStructureFormatsHead.$lineSeparator.substr($insertIntoStructureFormats, 0, -2).";".$lineSeparator);
+	echo($insertIntoStructureFormatsHead.LS.substr($insertIntoStructureFormats, 0, -2).";".LS);
+}
+
+if(strlen($insertIntoStructureFormats) > 0){
+	echo($insertIntoStructureFormatsHead.LS.substr($insertIntoStructureFormats, 0, -2).";".LS);
+}
+
+if(strlen($insertIntoStructureValidations) > 0){
+	echo($insertIntoStructureValidationsHead.LS.substr($insertIntoStructureValidations, 0, -2).";".LS);
+}
+
+foreach($updateStructureFieldsArray as $query){
+	echo $query.";".LS.LS;
 }
 
 foreach($updateStructureFormatsArray as $query){
-	echo $query.";".$lineSeparator.$lineSeparator;
+	echo $query.";".LS.LS;
 }
 
 $query = "SELECT id FROM structure_formats WHERE structure_id='".$structureId."' AND structure_field_id NOT IN(";
-foreach($sfIds as $sfId){
-	$tmp = explode("_", $sfId);
-	$query .= "'".$tmp[1]."', ";
+foreach($json->fields as $field){
+	$query .= "'".$field->sfi_id."', ";
 }
-$query = substr($query, 0, strlen($query) - 2).");".$lineSeparator;
+$query = substr($query, 0, strlen($query) - 2).");".LS;
 $result = $mysqli->query($query) or die("Query failed D ".$mysqli->error);
 $sfIds = array();
 while($row = $result->fetch_assoc()){
@@ -179,7 +187,7 @@ function valueToQueryWherePart($value, $where = true){
 			$q_result = " IS NULL ";
 		}else{
 			$q_result = " NULL ";
-		}	
+		}
 	}else{
 		if($where){
 			$q_result = "=";
@@ -191,5 +199,144 @@ function valueToQueryWherePart($value, $where = true){
 		}
 	}
 	return $q_result;
+}
+
+/**
+ * Generates a query UPDATE part to bring row to data on the fields array
+ * @param unknown_type $fields The fields to check
+ * @param unknown_type $row The current row
+ * @param unknown_type $data The targetted data
+ */
+function getUpdateQuery($fields, $row, $data){
+//	print_r($data);
+	$result = "";
+	foreach($fields as $field){
+		if($row[$field] != $data->{$field} && !($row[$field] == NULL && $data->{$field} == "NULL")){
+			$result .= " `".$field."`=";
+			if($field == "structure_value_domain"){
+				$result .= castStructureValueDomain($data->structure_value_domain, false);
+			}else if($data->{$field} == "NULL"){
+				$result .= "NULL";
+			}else{
+				$result .= "'".$data->{$field}."'";
+			}
+			$result .=", ";
+		}
+	}
+	return substr($result, 0, -2);
+}
+
+function getSameSfi($field){
+	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `language_label`='".$field->language_label."' AND `language_tag`='".$field->language_tag."' AND `type`='".$field->type."' AND `setting`='".$field->setting."' AND `default`='".$field->default."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." AND `language_help`='".$field->language_help."'";
+	$query_id = "SELECT id ".$query;
+	$query_all = "SELECT * ".$query;
+	return array("query_id" => $query_id, "data" => getDataFromQuery($query_all));
+}
+
+function getSimilarSfi($field){
+	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
+	$query_id = "SELECT id ".$query;
+	$query_all = "SELECT * ".$query;
+	return array("query_id" => $query_id, "data" => getDataFromQuery($query_all));
+}
+
+function getSfo($field){
+	$sfoData = getDataFromQuery("SELECT * FROM structure_formats WHERE id='".$field->sfo_id."'");
+	$structureData = getDataFromQuery("SELECT * FROM structures WHERE id='".$sfoData['structure_id']."'");
+	$structure_id_query = "SELECT id FROM structures WHERE alias='".$structureData['alias']."'";
+	$sfiData =  getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$sfoData['structure_field_id']."'");
+	$structure_field_id_query = "SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."'";
+	return array("query_id" => "SELECT id FROM structure_formats WHERE structure_id=(".$structure_id_query.") "
+		."AND structure_field_id=(".$structure_field_id_query.")", 'data' => $sfoData);
+}
+
+function getDataFromQuery($query){
+	global $mysqli;
+	$result = $mysqli->query($query) or die("Query failed getIdFromQuery  ".$mysqli->error.LS."Query: ".$query);
+	$data = NULL;
+	if($row = $result->fetch_assoc()){
+		$data = $row;
+	}
+	$result->close();
+	return $data;
+}
+
+function getInsertIntoSfi($field){
+	return "('', '".$field->plugin."', '".$field->model."', '".$field->tablename."', '".$field->field."', '".$field->language_label."', '".$field->language_tag."', '".$field->type."', '".$field->setting."', '".$field->default."', ".castStructureValueDomain($field->structure_value_domain, false).", '".$field->language_help."', 'open', 'open', 'open'), ";
+}
+
+function getInsertIntoSfo($field, $structure_id_query, $structure_field){
+	global $OVERRIDES_NAMES;
+	$query = "((".$structure_id_query."), (".$structure_field['query_id']."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
+	//look to override properly
+	foreach($OVERRIDES_NAMES as $override_name => $override_flag){
+		if(!isset($structure_field['data'][$override_name]) || $structure_field['data'][$override_name] == $field->{$override_name}){
+			$query .= "'0', '', ";
+		}else{
+			$query .= "'1', '".$field->{$override_name}."', ";
+		}
+	}
+	$query .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."')";
+	return $query;
+}
+
+function getUpdateSfo($field, $sfi, $sfo){
+	global $STRUCTURE_FORMATS_FIELDS;
+	global $OVERRIDES_NAMES;
+	$query = "";
+	foreach($STRUCTURE_FORMATS_FIELDS as $sfo_field){
+		if(isset($OVERRIDES_NAMES[$sfo_field])){
+			//overriden fields
+			if($sfi == NULL || $field->{$sfo_field} == $sfi['data'][$sfo_field]){
+				//same value, no need for override
+				if($sfo['data'][$OVERRIDES_NAMES[$sfo_field]] == "1"){
+					//cancel existing override
+					$query .= "`".$OVERRIDES_NAMES[$sfo_field]."`=0, `".$sfo_field."`='', ";
+				}
+			}else{
+				//different value, we need an override
+				if($sfo['data'][$OVERRIDES_NAMES[$sfo_field]] != "1" || $sfo['data'][$sfo_field] != $field->{$sfo_field}){
+					//override non existent, set it
+					$query .= "`".$OVERRIDES_NAMES[$sfo_field]."`=1, `".$sfo_field."`='".$field->{$sfo_field}."', ";
+				}
+			}
+		}else{
+			//standard fields
+			if($field->{$sfo_field} != $sfo['data'][$sfo_field]){
+				$query .= "`".$sfo_field."`='".$field->{$sfo_field}."', ";
+			}
+		}
+	}
+	//TODO: compare structure id and update if necessary
+	//TODO: compare structure_field_id and update if necessary
+	if(strlen($query) > 0){
+		$query = "UPDATE structure_formats SET ".substr($query, 0, -2)." WHERE id=(".$sfo['query_id'].")"; 
+	}
+	return $query;
+}
+
+function getFieldUsageCount($field_id){
+	global $mysqli;
+	$query = "SELECT count(*) AS c FROM structure_formats WHERE structure_field_id='".$field_id."'";
+	$result = $mysqli->query($query) or die("exec getFieldUsageCount failed");
+	$count = 0;
+	if($row = $result->fetch_assoc()){
+		$count = $row['c'];
+	}
+	$result->close();
+	return $count;
+}
+
+function getUpdateSfi($field){
+	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
+	return "UPDATE structure_fields SET ".getUpdateQuery($STRUCTURE_FIELDS_FIELDS, $sfiData, $field)
+		."WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['tablename']."';"; 
+}
+
+function getInsertStructureValidations($field){
+	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
+	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."'), `rule`, `flag_empty`, flag_required`, on_action`, `language_message` FROM structure_validations "
+		."WHERE structure_field_id=(SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['tablename']."'), ";
+	return $query;		
 }
 ?>
