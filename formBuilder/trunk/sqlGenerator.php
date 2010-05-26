@@ -45,14 +45,13 @@ if($row = $result->fetch_assoc()){
 }
 
 foreach($json->fields as $field){
-	echo("TREATING: ".$field->field.LS);
 	$sameSfi = getSameSfi($field);
 	$similarSfi = getSimilarSfi($field);
-	$sfo = getSfo($field);
+	$sfo = (strlen($structureId) > 0 ? getSfo($field) : NULL);
 	if(strlen($field->sfi_id) > 0){
 		if($sameSfi['data']['id'] == $field->sfi_id){
 			//no change to structure field
-			if(strlen($field->sfo_id) > 0){
+			if(strlen($field->sfo_id) > 0 && $sfo != NULL){
 				//generate update sfo if necessary
 				$str = getUpdateSfo($field, $sameSfi, $sfo);
 				if(strlen($str) > 0){
@@ -60,40 +59,55 @@ foreach($json->fields as $field){
 				}
 			}else{
 				//new sfo
-				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field);
+				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 			}
 		}else if(getFieldUsageCount($field->sfi_id) < 2){
 			//we're alone
 			$updateStructureFieldsArray[] = getUpdateSfi($field);
-			$str = getUpdateSfo($field, NULL, $sfo);//clear sfo overrides if needed
-			if(strlen($str) > 0){
-				$updateStructureFormatsArray[] = $str;
+			if($sfo != NULL){
+				$str = getUpdateSfo($field, NULL, $sfo);//clear sfo overrides if needed
+				if(strlen($str) > 0){
+					$updateStructureFormatsArray[] = $str;
+				}
+			}else{
+				//new sfo
+				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 			}
 		}else if($similarSfi['data']['id'] == $field->sfi_id){
 			//override is possible
-			$str = getUpdateSfo($field, $similarSfi, $sfo);
-			if(strlen($str) > 0){
-				$updateStructureFormatsArray[] = $str;
+			if($sfo != NULL){
+				$str = getUpdateSfo($field, $similarSfi, $sfo);
+				if(strlen($str) > 0){
+					$updateStructureFormatsArray[] = $str;
+				}
+			}else{
+				//new sfo
+				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 			}
 		}else{
 			//no way to override, recreate new sfi , update sfo, copy validations
-			$insertIntoStructureFields .= getInsertIntoSfi($field);
-			$str = getUpdateSfo($field, NULL, $sfo);
-			if(strlen($str) > 0){
-				$updateStructureFormatsArray[] = $str;
+			$insertIntoStructureFields .= getInsertIntoSfi($field).LS;
+			if($sfo != NULL){
+				$str = getUpdateSfo($field, NULL, $sfo);
+				if(strlen($str) > 0){
+					$updateStructureFormatsArray[] = $str;
+				}
+				$insertIntoStructureValidations .= getInsertStructureValidations($field);
+			}else{
+				//new sfo
+				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 			}
-			$insertIntoStructureValidations .= getInsertStructureValidations($field);
 		}
 	}else if($sameSfi['data']['id'] != NULL){
 			//create sfo without overrides
-			$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field);
+			$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 	}else if($similarSfi['data']['id'] != NULL){
 			//create sfo with proper overrides
-			$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $similarSfi, $field);
+			$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $similarSfi, $field).LS;
 	}else{
 		//create new sfi + sfo without overrides
-		$insertIntoStructureFields .= getInsertIntoSfi($field);
-		$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field);
+		$insertIntoStructureFields .= getInsertIntoSfi($field).LS;
+		$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 	}
 }
 
@@ -101,11 +115,7 @@ if(strlen($insertIntoStructures) > 0){
 	echo $insertIntoStructures.LS.LS;
 }
 if(strlen($insertIntoStructureFields) > 0){
-	echo substr($insertIntoStructureFieldsHead.$insertIntoStructureFields, 0, -2).";".LS.LS;
-}
-
-if(strlen($insertIntoStructureFormats) > 0){
-	echo($insertIntoStructureFormatsHead.LS.substr($insertIntoStructureFormats, 0, -2).";".LS);
+	echo substr($insertIntoStructureFieldsHead.$insertIntoStructureFields, 0, -3).";".LS.LS;
 }
 
 if(strlen($insertIntoStructureFormats) > 0){
@@ -276,7 +286,7 @@ function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 			$query .= "'1', '".$field->{$override_name}."', ";
 		}
 	}
-	$query .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."')";
+	$query .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."'), ";
 	return $query;
 }
 
@@ -308,7 +318,10 @@ function getUpdateSfo($field, $sfi, $sfo){
 		}
 	}
 	//TODO: compare structure id and update if necessary
-	//TODO: compare structure_field_id and update if necessary
+	//compare structure_field_id and update if necessary
+	if($sfi != NULL && $field->sfi_id != $sfi['data']['id']){
+		$query = "`structure_field_id`=(SELECT `id` FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."'), ";
+	}
 	if(strlen($query) > 0){
 		$query = "UPDATE structure_formats SET ".substr($query, 0, -2)." WHERE id=(".$sfo['query_id'].")"; 
 	}

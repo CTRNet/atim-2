@@ -240,6 +240,7 @@ require_once("myFunctions.php");
 						<th class="notEmpty">domain_name</th>
 						<th>override</th>
 						<th>category</th>
+						<th class="notEmpty">source</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -307,6 +308,8 @@ require_once("myFunctions.php");
 						<th class="checkbox">flag_datagrid_readonly</th>
 						<th class="checkbox">flag_index</th>
 						<th class="checkbox">flag_detail</th>
+						<th class="readonly clear">sfi_id</th>
+						<th class="readonly clear">sfo_id</th>
 					</tr>
 				</thead>
 				<tbody>

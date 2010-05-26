@@ -15,13 +15,13 @@ if($json->type == 'autoBuildData'){
 		}
 		echo(substr($fields, 0, strlen($fields) - 2)."\n");
 	}
-	$query = "SELECT sfi.plugin AS sfi_plugin, sfi.model AS sfi_model, sfi.tablename AS sfi_tablename, "
+	$query = "SELECT sfi.id AS sfi_id, sfi.plugin AS sfi_plugin, sfi.model AS sfi_model, sfi.tablename AS sfi_tablename, "
 			."sfi.field AS sfi_field, sfi.language_label AS sfi_language_label, sfi.language_tag AS sfi_language_tag, "
 			."sfi.type AS sfi_type, sfi.setting AS sfi_setting, sfi.default AS sfi_default, "
 			."sfi.structure_value_domain AS sfi_structure_value_domain, sfi.language_help AS sfi_language_help, "
 			."sfi.validation_control AS sfi_validation_control, sfi.value_domain_control AS sfi_value_domain_control, "
 			."sfi.field_control AS sfi_field_control, sfo.display_column AS sfo_display_column, "
-			."sfo.display_order AS sfo_display_order, sfo.language_heading AS sfo_language_heading, " 
+			."sfo.id AS sfo_id, sfo.display_order AS sfo_display_order, sfo.language_heading AS sfo_language_heading, " 
 			."sfo.flag_override_label AS sfo_flag_override_label, sfo.language_label AS sfo_language_label, "
 			."sfo.flag_override_tag AS sfo_flag_override_tag, sfo.language_tag AS sfo_language_tag, "
 			."sfo.flag_override_help AS sfo_override_help, sfo.language_help AS sfo_language_help, "
@@ -37,7 +37,7 @@ if($json->type == 'autoBuildData'){
 		."INNER JOIN structure_formats AS sfo ON s.id=sfo.structure_id "
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
 		."LEFT JOIN structure_value_domains AS svd ON sfi.structure_value_domain=svd.id "
-		."WHERE s.alias='".$json->val."'";//struct 208, 936-937
+		."WHERE s.alias='".$json->val."'";
 	$result = $mysqli->query($query) or die("<tr><td>Query failed ".$mysqli->error."</td></tr>");
 	while($row = $result->fetch_assoc()){
 		?>
@@ -54,7 +54,7 @@ if($json->type == 'autoBuildData'){
 			<td><?php echo($row['sfi_structure_value_domain'] == NULL ? "NULL" : $row['svd_domain_name'] ); ?></td>
 			<td><?php echo($row['sfo_override_help'] ? $row['sfo_language_help'] : $row['sfi_language_help']); ?></td>
 			<td><?php echo($row['sfi_validation_control']); ?></td>
-			<td><?php echo($row['sfi_valude_domain_control']); ?></td>
+			<td><?php echo($row['sfi_value_domain_control']); ?></td>
 			<td><?php echo($row['sfi_field_control']); ?></td>
 			<td><?php echo($row['sfo_display_column']); ?></td>
 			<td><?php echo($row['sfo_display_order']); ?></td>
@@ -69,6 +69,8 @@ if($json->type == 'autoBuildData'){
 			<td><?php echo($row['sfo_flag_datagrid_readonly']); ?></td>
 			<td><?php echo($row['sfo_flag_index']); ?></td>
 			<td><?php echo($row['sfo_flag_detail']); ?></td>
+			<td><?php echo($row['sfi_id']); ?></td>
+			<td><?php echo($row['sfo_id']); ?></td>
 		</tr>
 		<?php 
 	}
