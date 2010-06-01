@@ -4,6 +4,10 @@ var lineWithoutChanges = "";
 
 
 $(function(){
+	$("#piton5").scroll(function() { 
+		$("#debug").html($(this).scrollLeft());
+		$("td.scrollingButtons:last").css("padding-left", $(this).scrollLeft());
+	});
 	$("#dbSelect").change(function(){
 		document.location = "?db=" + $(this).children(":selected").html();
 	});
@@ -142,7 +146,7 @@ $(function(){
 			result += '<td><input id="' + prefix + "_" + $(this).html() + '" ' + inputTypeNValueNSize + ' class="' + css + '" ' + readonly + '/>' + autoincrement + '</td>';
 		});
 		result += "</tr>";
-		$(this).children("tfoot").html(result + '<tr><td colspan="3"><a href="#" class="add ui-state-default ui-corner-all button_link ' + $(this).children("thead").attr("class") + '" name="' + $(this).children("thead").attr("class") + '"><span class="button_icon ui-icon ui-icon-plus"></span><span>Add</span></a></td></tr>');
+		$(this).children("tfoot").html(result + '<tr><td colspan="30" class="scrollingButtons"><a href="#" class="add ui-state-default ui-corner-all button_link ' + $(this).children("thead").attr("class") + '" name="' + $(this).children("thead").attr("class") + '"><span class="button_icon ui-icon ui-icon-plus"></span><span>Add</span></a></td></tr>');
 	});
 
 	$(".add:not(.custom)").click(function(){
