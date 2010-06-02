@@ -115,11 +115,11 @@ if(strlen($insertIntoStructures) > 0){
 	echo $insertIntoStructures.LS.LS;
 }
 if(strlen($insertIntoStructureFields) > 0){
-	echo substr($insertIntoStructureFieldsHead.$insertIntoStructureFields, 0, -3).";".LS.LS;
+	echo substr($insertIntoStructureFieldsHead.LS.$insertIntoStructureFields, 0, -3).";".LS;
 }
 
 if(strlen($insertIntoStructureFormats) > 0){
-	echo($insertIntoStructureFormatsHead.LS.substr($insertIntoStructureFormats, 0, -2).";".LS);
+	echo($insertIntoStructureFormatsHead.LS.substr($insertIntoStructureFormats, 0, -3).";".LS);
 }
 
 if(strlen($insertIntoStructureValidations) > 0){
@@ -127,11 +127,11 @@ if(strlen($insertIntoStructureValidations) > 0){
 }
 
 foreach($updateStructureFieldsArray as $query){
-	echo $query.";".LS.LS;
+	echo $query."".LS;
 }
 
 foreach($updateStructureFormatsArray as $query){
-	echo $query.";".LS.LS;
+	echo $query.";".LS;
 }
 
 $query = "SELECT id FROM structure_formats WHERE structure_id='".$structureId."' AND structure_field_id NOT IN(";
@@ -256,8 +256,9 @@ function getSfo($field){
 	$structure_id_query = "SELECT id FROM structures WHERE alias='".$structureData['alias']."'";
 	$sfiData =  getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$sfoData['structure_field_id']."'");
 	$structure_field_id_query = "SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."'";
-	return array("query_id" => "SELECT id FROM structure_formats WHERE structure_id=(".$structure_id_query.") "
-		."AND structure_field_id=(".$structure_field_id_query.")", 'data' => $sfoData);
+	return array("query_id" => "SELECT id FROM structure_formats WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")", 
+		'where' => " structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.") ", 
+		'data' => $sfoData);
 }
 
 function getDataFromQuery($query){
@@ -301,13 +302,13 @@ function getUpdateSfo($field, $sfi, $sfo){
 				//same value, no need for override
 				if($sfo['data'][$OVERRIDES_NAMES[$sfo_field]] == "1"){
 					//cancel existing override
-					$query .= "`".$OVERRIDES_NAMES[$sfo_field]."`=0, `".$sfo_field."`='', ";
+					$query .= "`".$OVERRIDES_NAMES[$sfo_field]."`='0', `".$sfo_field."`='', ";
 				}
 			}else{
 				//different value, we need an override
 				if($sfo['data'][$OVERRIDES_NAMES[$sfo_field]] != "1" || $sfo['data'][$sfo_field] != $field->{$sfo_field}){
 					//override non existent, set it
-					$query .= "`".$OVERRIDES_NAMES[$sfo_field]."`=1, `".$sfo_field."`='".$field->{$sfo_field}."', ";
+					$query .= "`".$OVERRIDES_NAMES[$sfo_field]."`='1', `".$sfo_field."`='".$field->{$sfo_field}."', ";
 				}
 			}
 		}else{
@@ -323,7 +324,7 @@ function getUpdateSfo($field, $sfi, $sfo){
 		$query = "`structure_field_id`=(SELECT `id` FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."'), ";
 	}
 	if(strlen($query) > 0){
-		$query = "UPDATE structure_formats SET ".substr($query, 0, -2)." WHERE id=(".$sfo['query_id'].")"; 
+		$query = "UPDATE structure_formats SET ".substr($query, 0, -2)." WHERE ".trim($sfo['where']); 
 	}
 	return $query;
 }
@@ -341,9 +342,10 @@ function getFieldUsageCount($field_id){
 }
 
 function getUpdateSfi($field){
+	global $STRUCTURE_FIELDS_FIELDS;
 	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
 	return "UPDATE structure_fields SET ".getUpdateQuery($STRUCTURE_FIELDS_FIELDS, $sfiData, $field)
-		."WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['tablename']."';"; 
+		." WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."';"; 
 }
 
 function getInsertStructureValidations($field){

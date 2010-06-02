@@ -5,7 +5,6 @@ var lineWithoutChanges = "";
 
 $(function(){
 	$("#piton5").scroll(function() { 
-		$("#debug").html($(this).scrollLeft());
 		$("td.scrollingButtons:last").css("padding-left", $(this).scrollLeft());
 	});
 	$("#dbSelect").change(function(){
@@ -520,9 +519,9 @@ function setTableGetField(){
 				if(type.match(/^[a-z]*int\(\d+\)/)){
 					//integer
 					outType = type.match(/^[a-z]*int\(\d+\) unsigned$/) ? "integer_positive" : "integer";
-				}else if(type.match(/^(float|double|decimal)\(\d+,?\d*\)/)){
+				}else if(type.match(/^(float|double|decimal)(\(\d+,?\d*\))?/)){
 					//float
-					outType = type.match(/^(float|double|decimal)\(\d+,?\d*\) unsigned$/) ? "float_positive" : "float";
+					outType = type.match(/^(float|double|decimal)(\(\d+,?\d*\))? unsigned$/) ? "float_positive" : "float";
 				}else if(type == "date"){
 					outType = "date";
 				}else if(type == "datetime"){

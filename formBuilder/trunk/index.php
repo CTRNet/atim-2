@@ -266,7 +266,6 @@ require_once("myFunctions.php");
 			</table>
 		</div>
 		<div id="piton5" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
-			<div id="debug">AMALAMO</div>
 			<table class="insert ui-widget ui-widget-content">
 				<thead class="custom autoBuild1">
 					<tr class='ui-widget-header'>
