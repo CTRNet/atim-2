@@ -17,117 +17,6 @@ require_once("myFunctions.php");
 
 </head>
 <body>
-	<textarea style="width: 100%; height: 20%; margin: 0px;"></textarea>
-	<div class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="width: 100%; position: relative; left: -3px; margin: 0px; padding: 0px;">
-		Current database: 
-		<?php 
-		$query = "SHOW databases";
-		$result = $mysqli->query($query) or die("show databases failed");
-		?>
-		<select id="dbSelect">
-			<?php 
-			while($row = $result->fetch_row()){
-				if($row[0] != "information_schema" && $row[0] != "mysql"){
-					$selected = ($row[0] == $db_schema ? ' selected="selected"' : "");
-					echo("<option".$selected.">".$row[0]."</option>");
-				}
-			}
-			?>
-		</select>
-		<a href='#' id='clearSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-circle-close'></span>Clear</a>
-		<!-- 
-		<a href='#' id='runSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-play'></span>Run sql</a>
-		 -->
-		<div id="warningBox" class="ui-widget" style="display: none;">
-			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
-				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
-				<span id="warningMsg"></span></p>
-
-			</div>
-		</div>
-		<br>
-		<div id="errorBox" class="ui-widget" style="display: none;">
-			<div class="ui-state-error ui-corner-all" style="padding: 0pt 0.7em;"> 
-				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span> 
-				<span id="errMsg"></span></p>
-			</div>
-		</div>
-	
-	</div>
-	<div id="databaseExplorer" style="width: 100%; margin-right: 10px; position: relative; left: -3px; margin: 0px; padding: 0px;">
-		<ul>
-			<li><a href="#tab1">Structures</a></li>
-			<li><a href="#tab2">Fields</a></li>
-			<li><a href="#tab4">Value domain</a></li>
-			<li><a href="#tab5">Tables</a></li>
-		</ul>
-		<div id="tab1" style="white-space: nowrap;">
-			<div>
-				<input id="structure_search" type="search"/>[+]
-				<br/>
-				<?php 
-				//structures
-				$query = "SELECT id, alias FROM structures ORDER BY alias";
-				$result = $mysqli->query($query) or die("STI");
-				while($row = $result->fetch_assoc()){
-					echo("<a href='#".$row['id']."' class='structLink'>".$row['alias']."</a> - <a href='#".$row['id']."' class='structLinkAdd'>[+]</a><br/>");
-				}
-				?>
-			</div>
-			<div id="structureResult">
-			
-			</div>
-		</div>
-		<div id="tab2">
-			<div>
-			<?php 
-			//structures
-			$query = "SELECT model FROM structure_fields GROUP BY model";
-			$result = $mysqli->query($query) or die("STI");
-			while($row = $result->fetch_row()){
-				echo("<a href='#".$row[0]."' class='fieldLink'>".$row[0]."</a><br/>");
-			}
-			?>
-			</div>
-			<div id="fieldResult">
-			
-			</div>
-		</div>
-		<div id="tab4">
-			<div>
-			<input id="value_domains_search" type="search"/>[+]
-			<br/>
-			<?php 
-			//structures
-			$query = "SELECT domain_name FROM structure_value_domains ORDER BY domain_name";
-			$result = $mysqli->query($query) or die("STI");
-			while($row = $result->fetch_row()){
-				echo("<a href='#".$row[0]."' class='vDomainLink'>".$row[0]."</a> - <a href='#".$row[0]."' class='vDomainLinkAdd'>[+]</a><br/>");
-			}
-			?>
-			</div>
-			<div id="valueDomainResult">
-			
-			</div>
-		</div>
-		<div id="tab5">
-			<div>
-			<?php 
-			//structures
-			$query = "SHOW tables";
-			$result = $mysqli->query($query) or die("STI");
-			while($row = $result->fetch_row()){
-				if(strpos($row[0], "_revs") != strlen($row[0]) - 5){
-					echo("<a href='#".$row[0]."' class='tableLink'>".$row[0]."</a> - <a href='#".$row[0]."' class='tableLinkAdd'>[+]</a><br/>");
-				}
-			}
-			?>
-			</div>
-			<div id="tableResult">
-			
-			</div>
-		</div>
-	</div>
 	<div id="queryBuilder" style="width: 100%; margin-right: 10px; position: relative; left: -3px; margin: 0px; padding: 0px;">
 		<ul>
 			<li><a href="#piton1">Structures</a></li>
@@ -325,6 +214,124 @@ require_once("myFunctions.php");
 			<a href="#" id="generateSQL" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
 		</div>
 	</div>
+	
+	<div id="databaseExplorer" style="width: 100%; margin-right: 10px; position: relative; left: -3px; margin: 0px; padding: 0px;">
+		<ul>
+			<li><a href="#tab1">Structures</a></li>
+			<li><a href="#tab2">Fields</a></li>
+			<li><a href="#tab4">Value domain</a></li>
+			<li><a href="#tab5">Tables</a></li>
+		</ul>
+		<div id="tab1" style="white-space: nowrap;">
+			<div>
+				<input id="structure_search" type="search"/>[+]
+				<br/>
+				<?php 
+				//structures
+				$query = "SELECT id, alias FROM structures ORDER BY alias";
+				$result = $mysqli->query($query) or die("STI");
+				while($row = $result->fetch_assoc()){
+					echo("<a href='#".$row['id']."' class='structLink'>".$row['alias']."</a> - <a href='#".$row['id']."' class='structLinkAdd'>[+]</a><br/>");
+				}
+				?>
+			</div>
+			<div id="structureResult">
+			
+			</div>
+		</div>
+		<div id="tab2">
+			<div>
+			<?php 
+			//structures
+			$query = "SELECT model FROM structure_fields GROUP BY model";
+			$result = $mysqli->query($query) or die("STI");
+			while($row = $result->fetch_row()){
+				echo("<a href='#".$row[0]."' class='fieldLink'>".$row[0]."</a><br/>");
+			}
+			?>
+			</div>
+			<div id="fieldResult">
+			
+			</div>
+		</div>
+		<div id="tab4">
+			<div>
+			<input id="value_domains_search" type="search"/>[+]
+			<br/>
+			<?php 
+			//structures
+			$query = "SELECT domain_name FROM structure_value_domains ORDER BY domain_name";
+			$result = $mysqli->query($query) or die("STI");
+			while($row = $result->fetch_row()){
+				echo("<a href='#".$row[0]."' class='vDomainLink'>".$row[0]."</a> - <a href='#".$row[0]."' class='vDomainLinkAdd'>[+]</a><br/>");
+			}
+			?>
+			</div>
+			<div id="valueDomainResult">
+			
+			</div>
+		</div>
+		<div id="tab5">
+			<div>
+			<?php 
+			//structures
+			$query = "SHOW tables";
+			$result = $mysqli->query($query) or die("STI");
+			while($row = $result->fetch_row()){
+				if(strpos($row[0], "_revs") != strlen($row[0]) - 5){
+					echo("<a href='#".$row[0]."' class='tableLink'>".$row[0]."</a> - <a href='#".$row[0]."' class='tableLinkAdd'>[+]</a><br/>");
+				}
+			}
+			?>
+			</div>
+			<div id="tableResult">
+			
+			</div>
+		</div>
+	</div>
+	
+	
+	
+	<textarea style="width: 100%; height: 20%; margin: 0px;"></textarea>
+	<div class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="width: 100%; position: relative; left: -3px; margin: 0px; padding: 0px;">
+		Current database: 
+		<?php 
+		$query = "SHOW databases";
+		$result = $mysqli->query($query) or die("show databases failed");
+		?>
+		<select id="dbSelect">
+			<?php 
+			while($row = $result->fetch_row()){
+				if($row[0] != "information_schema" && $row[0] != "mysql"){
+					$selected = ($row[0] == $db_schema ? ' selected="selected"' : "");
+					echo("<option".$selected.">".$row[0]."</option>");
+				}
+			}
+			?>
+		</select>
+		<a href='#' id='clearSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-circle-close'></span>Clear</a>
+		<!-- 
+		<a href='#' id='runSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-play'></span>Run sql</a>
+		 -->
+		<div id="warningBox" class="ui-widget" style="display: none;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
+				<span id="warningMsg"></span></p>
+
+			</div>
+		</div>
+		<br>
+		<div id="errorBox" class="ui-widget" style="display: none;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0pt 0.7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span> 
+				<span id="errMsg"></span></p>
+			</div>
+		</div>
+	
+	</div>
+	
+	
+	
 	
 	<div id="confirmDialog">
 		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>

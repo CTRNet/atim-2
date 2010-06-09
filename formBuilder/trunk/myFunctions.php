@@ -6,7 +6,7 @@ if(isset($_GET['db'])){
 
 $db_schema = isset($_SESSION['db']) ? $_SESSION['db'] : 'atim_lady';
 global $mysqli;
-$mysqli = @new mysqli('localhost', 'root', 'roote', $db_schema);
+$mysqli = @new mysqli('localhost', 'root', 'root', $db_schema);
 
 if ($mysqli->connect_errno) {
     die('Connect Error: ' . $mysqli->connect_errno."<br/>You need to configure the database connection in myFunctions.php");
