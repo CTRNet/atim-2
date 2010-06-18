@@ -46,6 +46,7 @@ foreach($tables as $ref_name => &$table){
 			}
 		}
 		$table['app_data']['keys'] = lineToArray(fgets($table['app_data']['file_handler'], 4096));
+		$table['app_data']['line'] = 0;
 		readLine($table);
 	}
 }
@@ -92,7 +93,7 @@ $insert = true;
 foreach($tables as $ref_name => &$table){
 	if(strlen($table['app_data']['file']) > 0){
 		if(!feof($table['app_data']['file_handler'])){
-			echo("ERROR: Data was not all fetched from [".$ref_name."]\n");
+			echo("ERROR: Data was not all fetched from [".$ref_name."] - Stopped at line [".$table['app_data']['line']."]\n");
 			$insert = false;
 		}
 	}
@@ -115,7 +116,7 @@ if($insert){
 		."#* Integration completed *\n"
 		."#*************************\n");
 }else{
-	echo("#Insertions cancelled\n");
+	echo("#Insertions cancelled. Make sure the split occured correctly. \\n within a line can break the split procedure. Also, make sure all ids are in ascending order.\n");
 }
 
 
@@ -138,7 +139,7 @@ function buildInsertQuery($fields){
 
 /**
  * Takes the fields array and the values array in order to build the values part of the query.
- * The value fields starting with @Êwill be put directly into the query without beign replaced (minus the first @)
+ * The value fields starting with @ï¿½will be put directly into the query without beign replaced (minus the first @)
  * @param unknown_type $fields The array of the fields configuration
  * @param unknown_type $values The array of values read from the csv
  * @return string
@@ -171,8 +172,8 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 	$current_table = &$tables[$table_name];
 	$i = 0;
 	//debug info
-//	echo($table_name."\n");
-//	if($table_name == "ad_tubes_plasma"){
+//	echo($table_name." - [".$csv_parent_key."]\n");
+//	if($table_name == "sd_der_pbmcs"){
 //		echo("Size: ".sizeof($current_table['app_data']['values'])."\n");
 //		echo($current_table['app_data']['parent_key']." -> ".$current_table['master'][$current_table['app_data']['parent_key']]."\n");
 //		echo($current_table['app_data']['values'][$current_table['master'][$current_table['app_data']['parent_key']]]."  -  ".$csv_parent_key."\n");
@@ -182,7 +183,7 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 //	}
 	while(sizeof($current_table['app_data']['values']) > 0 && 
 		($csv_parent_key == null || $current_table['app_data']['values'][$current_table['master'][$current_table['app_data']['parent_key']]] == $csv_parent_key)){
-		//replace parent value.
+			//replace parent value.
 		if($mysql_parent_id != null){
 			$current_table['app_data']['key before replace'] = $current_table['app_data']['values'][$current_table['master'][$current_table['app_data']['parent_key']]];
 			$current_table['app_data']['values'][$current_table['master'][$current_table['app_data']['parent_key']]] = $mysql_parent_id;
@@ -316,6 +317,7 @@ function readLine(&$current_table){
 		do{
 			//read line, skip empty lines
 			$line = fgets($current_table['app_data']['file_handler'], 4096);
+			$current_table['app_data']['line'] ++;
 			//				echo($line."\n");
 			$current_table['app_data']['values'] = lineToArray($line);
 			associate($current_table['app_data']['keys'], $current_table['app_data']['values']);
@@ -324,6 +326,12 @@ function readLine(&$current_table){
 		
 		if(feof($current_table['app_data']['file_handler'])){
 			$current_table['app_data']['values'] = array();
+		}else if(isset($current_table['app_data']['parent_key'])){
+			if(isset($current_table['app_data']['parent_key_value']) && $current_table['app_data']['parent_key_value'] > $current_table['app_data']['values'][$current_table['app_data']['parent_key']]){
+				echo("WARNING: parent_key ".$current_table['app_data']['parent_key']." is not in ascending order at line ".$current_table['app_data']['line']." of file ".$current_table['app_data']['file']
+					.". Previous: ".$current_table['app_data']['parent_key_value']." Current: ".$current_table['app_data']['values'][$current_table['app_data']['parent_key']]."\n");
+			}
+			$current_table['app_data']['parent_key_value'] = $current_table['app_data']['values'][$current_table['app_data']['parent_key']];
 		}
 	}
 }
