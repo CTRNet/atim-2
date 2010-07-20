@@ -240,7 +240,8 @@ function getSameSfi($field){
 	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `language_label`='".$field->language_label."' AND `language_tag`='".$field->language_tag."' AND `type`='".$field->type."' AND `setting`='".$field->setting."' AND `default`='".$field->default."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." AND `language_help`='".$field->language_help."'";
 	$query_id = "SELECT id ".$query;
 	$query_all = "SELECT * ".$query;
-	return array("query_id" => $query_id, "data" => getDataFromQuery($query_all));
+	$query_id_light = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true);
+	return array("query_id" => $query_id, "query_id_light" => $query_id_light, "data" => getDataFromQuery($query_all));
 }
 
 function getSimilarSfi($field){
@@ -278,7 +279,7 @@ function getInsertIntoSfi($field){
 
 function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 	global $OVERRIDES_NAMES;
-	$query = "((".$structure_id_query."), (".$structure_field['query_id']."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
+	$query = "((".$structure_id_query."), (".$structure_field['query_id_light']."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
 	//look to override properly
 	foreach($OVERRIDES_NAMES as $override_name => $override_flag){
 		if(!isset($structure_field['data'][$override_name]) || $structure_field['data'][$override_name] == $field->{$override_name}){
