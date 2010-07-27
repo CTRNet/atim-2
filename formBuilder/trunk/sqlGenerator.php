@@ -28,8 +28,8 @@ $insertIntoStructureFields = "";
 $updateStructureField = "UPDATE structure_fields SET `public_identifier`=%s, `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s, `validation_control`=%s, `value_domain_control`=%s, `field_control`=%s WHERE id=%s";
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_datagrid`, `flag_datagrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
 $insertIntoStructureFormats = "";
-$insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_empty`, flag_required`, on_action`, `language_message`) VALUES ";
-$insertIntoStructureValidations = "";
+$insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_empty`, `flag_required`, `on_action`, `language_message`) ";
+$insertIntoStructureValidationsArray = array();
 $updateStructureFieldsArray = array();
 $updateStructureFormatsArray = array();
 $sfOldIds = array();
@@ -65,7 +65,7 @@ foreach($json->fields as $field){
 			//we're alone
 			$updateStructureFieldsArray[] = getUpdateSfi($field);
 			if($sfo != NULL){
-				$str = getUpdateSfo($field, NULL, $sfo);//clear sfo overrides if needed
+				$str = getUpdateSfo($field, NULL, $sfo, true);//clear sfo overrides if needed
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
 				}
@@ -85,14 +85,20 @@ foreach($json->fields as $field){
 				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 			}
 		}else{
-			//no way to override, recreate new sfi , update sfo, copy validations
-			$insertIntoStructureFields .= getInsertIntoSfi($field).LS;
+			//no way to override, 
+			if(!isset($sameSfi['data']['id'])){
+				//recreate new sfi , update sfo, copy validations
+				$insertIntoStructureFields .= getInsertIntoSfi($field).LS;
+			}
 			if($sfo != NULL){
 				$str = getUpdateSfo($field, NULL, $sfo);
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
 				}
-				$insertIntoStructureValidations .= getInsertStructureValidations($field);
+				$tmp = getInsertStructureValidationsIfAny($field);
+				if($tmp != null){
+					$insertIntoStructureValidationsArray[] = $tmp;
+				} 
 			}else{
 				//new sfo
 				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
@@ -122,8 +128,8 @@ if(strlen($insertIntoStructureFormats) > 0){
 	echo($insertIntoStructureFormatsHead.LS.substr($insertIntoStructureFormats, 0, -3).";".LS);
 }
 
-if(strlen($insertIntoStructureValidations) > 0){
-	echo($insertIntoStructureValidationsHead.LS.substr($insertIntoStructureValidations, 0, -2).";".LS);
+if(count($insertIntoStructureValidationsArray) > 0){
+	echo($insertIntoStructureValidationsHead.LS.implode(", ".LS, $insertIntoStructureValidationsArray).";".LS);
 }
 
 foreach($updateStructureFieldsArray as $query){
@@ -185,6 +191,9 @@ function castStructureValueDomain($value, $where){
 		}
 		$result->close();
 	}else{
+		if(strlen($value) == 0){
+			$value = "NULL";
+		}
 		$q_result = valueToQueryWherePart($value, $where);
 	}
 	return $q_result;
@@ -240,12 +249,12 @@ function getSameSfi($field){
 	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `language_label`='".$field->language_label."' AND `language_tag`='".$field->language_tag."' AND `type`='".$field->type."' AND `setting`='".$field->setting."' AND `default`='".$field->default."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." AND `language_help`='".$field->language_help."'";
 	$query_id = "SELECT id ".$query;
 	$query_all = "SELECT * ".$query;
-	$query_id_light = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true);
+	$query_id_light = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `type`='".$field->type."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true);
 	return array("query_id" => $query_id, "query_id_light" => $query_id_light, "data" => getDataFromQuery($query_all));
 }
 
 function getSimilarSfi($field){
-	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
+	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `type`='".$field->type."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
 	$query_id = "SELECT id ".$query;
 	$query_all = "SELECT * ".$query;
 	return array("query_id" => $query_id, "data" => getDataFromQuery($query_all));
@@ -256,7 +265,7 @@ function getSfo($field){
 	$structureData = getDataFromQuery("SELECT * FROM structures WHERE id='".$sfoData['structure_id']."'");
 	$structure_id_query = "SELECT id FROM structures WHERE alias='".$structureData['alias']."'";
 	$sfiData =  getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$sfoData['structure_field_id']."'");
-	$structure_field_id_query = "SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."'";
+	$structure_field_id_query = "SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."' AND type='".$sfiData['type']."' AND structure_value_domain ".castStructureValueDomain($sfiData['structure_value_domain'], true);
 	return array("query_id" => "SELECT id FROM structure_formats WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")", 
 		'where' => " structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.") ", 
 		'data' => $sfoData);
@@ -292,7 +301,7 @@ function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 	return $query;
 }
 
-function getUpdateSfo($field, $sfi, $sfo){
+function getUpdateSfo($field, $sfi, $sfo, $ignore_sfo_sfi_id_update = false){
 	global $STRUCTURE_FORMATS_FIELDS;
 	global $OVERRIDES_NAMES;
 	$query = "";
@@ -321,8 +330,8 @@ function getUpdateSfo($field, $sfi, $sfo){
 	}
 	//TODO: compare structure id and update if necessary
 	//compare structure_field_id and update if necessary
-	if($sfi != NULL && $field->sfi_id != $sfi['data']['id']){
-		$query = "`structure_field_id`=(SELECT `id` FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."'), ";
+	if(!$ignore_sfo_sfi_id_update && (($sfi != NULL && $field->sfi_id != $sfi['data']['id']) || $sfi == NULL && $field->sfi_id > 0)){
+		$query = "`structure_field_id`=(SELECT `id` FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `type`='".$field->type."' AND `structure_value_domain`".castStructureValueDomain($field->structure_value_domain, true)."), ";
 	}
 	if(strlen($query) > 0){
 		$query = "UPDATE structure_formats SET ".substr($query, 0, -2)." WHERE ".trim($sfo['where']); 
@@ -346,13 +355,18 @@ function getUpdateSfi($field){
 	global $STRUCTURE_FIELDS_FIELDS;
 	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
 	return "UPDATE structure_fields SET ".getUpdateQuery($STRUCTURE_FIELDS_FIELDS, $sfiData, $field)
-		." WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."';"; 
+		." WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."' AND `type`='".$sfiData['type']."' AND structure_value_domain ".castStructureValueDomain($sfiData['structure_value_domain'], true).";"; 
 }
 
-function getInsertStructureValidations($field){
+function getInsertStructureValidationsIfAny($field){
+	global $mysqli;
 	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
-	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."'), `rule`, `flag_empty`, flag_required`, on_action`, `language_message` FROM structure_validations "
-		."WHERE structure_field_id=(SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['tablename']."'), ";
-	return $query;		
+	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."' AND `type`='".$field->type."' AND structure_value_domain".castStructureValueDomain($field->structure_value_domain, true)."), `rule`, `flag_empty`, `flag_required`, `on_action`, `language_message` FROM structure_validations "
+		."WHERE structure_field_id=(SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."' AND `type`='".$sfiData['type']."' AND structure_value_domain ".castStructureValueDomain($sfiData['structure_value_domain'], true).")) ";
+	$result = $mysqli->query($query) or die("getInsertStructureValidationsIfAny query failed ");
+	if($result->num_rows == 0){
+		$query = null;
+	}	
+	return $query;
 }
 ?>
