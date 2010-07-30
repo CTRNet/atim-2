@@ -21,7 +21,7 @@ if(isset($_GET['json'])){
 	define(LS, "<br/>");
 }
 
-$json = json_decode(stripslashes($json)) or die("decode failed ".$json);
+$json = json_decode(stripslashes($json)) or die("decode failed [".$json."]");
 $insertIntoStructures = "INSERT INTO structures(`alias`, `language_title`, `language_help`, `flag_add_columns`, `flag_edit_columns`, `flag_search_columns`, `flag_detail_columns`) VALUES ('".$json->global->alias."', '".$json->global->language_title."', '', '1', '1', '1', '1');";
 $insertIntoStructureFieldsHead = "INSERT INTO structure_fields(`public_identifier`, `plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`, `validation_control`, `value_domain_control`, `field_control`) VALUES";
 $insertIntoStructureFields = "";
@@ -288,7 +288,7 @@ function getInsertIntoSfi($field){
 
 function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 	global $OVERRIDES_NAMES;
-	$query = "((".$structure_id_query."), (".$structure_field['query_id_light']."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
+	$query = "((".$structure_id_query."), (".$structure_field['query_id']."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
 	//look to override properly
 	foreach($OVERRIDES_NAMES as $override_name => $override_flag){
 		if(!isset($structure_field['data'][$override_name]) || $structure_field['data'][$override_name] == $field->{$override_name}){
