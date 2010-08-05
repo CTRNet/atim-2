@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>ATiM 2 Tools</title>
+<style>
+body{
+	font-family: arial;
+}
+div.main{
+	margin: auto;
+	text-align: center;
+}
+ul.menu{
+	list-style-type: none;
+	white-space: nowrap;
+	margin: auto;
+	padding: 0;
+	position: relative;
+	display: inline-block;
+}
+ul.menu li{
+	display: inline-block;
+	margin: -3px;
+	padding: 12px 0 12px 0;
+	background: -moz-linear-gradient(top,  #BBB,  #666);
+	background: -webkit-gradient(linear, left top, left bottom, from(#BBB), to(#666));
+	color: white;
+	text-shadow: #000000 2px 2px 1px;
+	cursor: pointer;
+	position: inherit;
+}
+ul.menu li:hover{
+	background: -moz-linear-gradient(top,  #EEE,  #3AF);
+	background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#3AF));
+}
+ul.menu li:first-child{
+	-moz-border-radius: 5px 0 0 5px;
+	-webkit-border-radius: 5px 0 0 5px;
+}
+ul.menu li:last-child{
+	-moz-border-radius: 0 5px 5px 0;
+	-webkit-border-radius: 0 5px 5px 0;
+}
+ul.menu li div{
+	float: left;
+	position: absolute;
+	top: 50px;
+	color: black;
+	text-shadow: none;
+	border: 2px solid black;
+	background: -moz-linear-gradient(top,  #EEE,  #7CF);
+	background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#7CF));
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	padding: 10px;
+	width: 710px;
+	text-align: left;
+	white-space: normal;
+	display: none;
+}
+ul.menu li:hover div{
+	display: block;
+}
+#box2{
+	left: -154px;
+}
+#box3{
+	left: -296px;
+}
+#box4{
+	left: -445px;
+}
+#box5{
+	left: -560px;
+}
+.red{
+	color: #F33;
+}
+a{
+	text-decoration: none;
+	color: #FFF;
+	padding: 12px 10px 12px 10px;
+}
+</style>
+</head>
+<body>
+<div class="main">
+	<h1>ATiM 2 Tools</h1>
+	<ul class="menu">
+		<li><a href="#">Database Validation</a>
+		<div id="box1"><p>Reads a database and compares base tables with revs tables. Gives the difference between those and gives the list
+ 			 of tables without revs.</p><p>Also gives a list of strings without tranlsation.</p></div>
+		</li>
+		<li><a href="#">Denominalisation</a>
+			<div id="box2">
+				<p>Clears nominal information found in standard ATiM fields. That is name, date of birth and identifiers.</p>
+				<p class="red">If nominal information exists in other fields (custom fields or in notes) it will not be cleared.</p>
+			</div>
+		</li>
+		<li><a href="#">Version comparer</a>
+			<div id="box3">
+				<p>Makes a 3 way compare between a version X, an upgraded version X + 1 and a custom version Xc and gives potential
+				problems that will be encoutered when upgrading Xc to Xc + 1.</p>
+			</div>
+		</li>
+		<li><a href="#">Form Builder</a>
+			<div id="box4">
+				<p>Allows to browse existing structures and tables to generate queries in order to build structures</p>
+			</div>
+		</li>
+		<li><a href="inventory_config/">Inventory configuration</a>
+			<div id="box5">
+				<p>Visual representation of inventory hierarchy in ATiM2. Clicking on the nodes disables/enables them. The
+				queries to alter the configuration are generated at the bottom of the page.</p>
+			</div>
+		</li>
+	</ul>
+</div>
+</body>
+</html>
