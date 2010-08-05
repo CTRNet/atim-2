@@ -1,12 +1,12 @@
 <?php
-require_once("myFunctions.php");
+require_once("../common/myFunctions.php");
 $json = json_decode(stripslashes($_GET['json'])) or die("decode failed");
 if($json->type == 'autoBuildData'){
 	$query = "SELECT count(*) AS c, sfi.field AS field FROM structure_formats AS sfo "
 		."INNER JOIN structures AS s ON s.id=sfo.structure_id "
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
 		."WHERE s.alias='".$json->val."' GROUP BY sfo.structure_field_id HAVING c > 1";
-	$result = $mysqli->query($query) or die("<tr><td>Query failed ".$mysqli->error."</td></tr>");
+	$result = $db->query($query) or die("<tr><td>Query failed ".$db->error."</td></tr>");
 	if($result->num_rows > 0){
 		echo ("Duplicate fields detected on: ");
 		$fields = "";
@@ -38,7 +38,7 @@ if($json->type == 'autoBuildData'){
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
 		."LEFT JOIN structure_value_domains AS svd ON sfi.structure_value_domain=svd.id "
 		."WHERE s.alias='".$json->val."'";
-	$result = $mysqli->query($query) or die("<tr><td>Query failed ".$mysqli->error."</td></tr>");
+	$result = $db->query($query) or die("<tr><td>Query failed ".$db->error."</td></tr>");
 	while($row = $result->fetch_assoc()){
 		?>
 		<tr>

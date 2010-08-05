@@ -1,5 +1,5 @@
 <?php
-require_once("myFunctions.php");
+require_once("../common/myFunctions.php");
 define("LS", "\n");
 global $OVERRIDES_NAMES; 
 $OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_tag" => "flag_override_tag", 
@@ -35,7 +35,7 @@ $updateStructureFormatsArray = array();
 $sfOldIds = array();
 
 $structure_id_query = "SELECT id FROM structures WHERE alias='".$json->global->alias."'";
-$result = $mysqli->query($structure_id_query) or die("Query failed A ".$mysqli->error);
+$result = $db->query($structure_id_query) or die("Query failed A ".$db->error);
 if($row = $result->fetch_assoc()){
 	//structure already exists. This is an update.
 	$insertIntoStructures = "";
@@ -145,7 +145,7 @@ foreach($json->fields as $field){
 	$query .= "'".$field->sfi_id."', ";
 }
 $query = substr($query, 0, strlen($query) - 2).");".LS;
-$result = $mysqli->query($query) or die("Query failed D ".$mysqli->error);
+$result = $db->query($query) or die("Query failed D ".$db->error);
 $sfIds = array();
 while($row = $result->fetch_assoc()){
 	$sfIds[] = $row['id'];	
@@ -154,7 +154,7 @@ if(sizeof($sfIds) > 0){
 	echo "-- delete structure_formats\n";
 	$delete_query = "DELETE FROM structure_formats WHERE ";
 	foreach($sfIds as $sfId){
-		$result = $mysqli->query("SELECT * FROM structure_formats WHERE id='".$sfId."'") or die("Query failed E");
+		$result = $db->query("SELECT * FROM structure_formats WHERE id='".$sfId."'") or die("Query failed E");
 		if($row = $result->fetch_assoc()){
 			$where_part = "";
 			foreach($row as $key => $val){
@@ -178,8 +178,8 @@ function formatField($field){
 function castStructureValueDomain($value, $where){
 	$q_result = "";
 	if(is_numeric($value)){
-		global $mysqli;
-		$result = $mysqli->query("SELECT domain_name FROM structure_value_domains WHERE id='".$value."'") or die("castStructureValueDomain query failed");
+		global $db;
+		$result = $db->query("SELECT domain_name FROM structure_value_domains WHERE id='".$value."'") or die("castStructureValueDomain query failed");
 		if($row = $result->fetch_assoc()){
 			if($where){
 				$q_result = "=";
@@ -272,8 +272,8 @@ function getSfo($field){
 }
 
 function getDataFromQuery($query){
-	global $mysqli;
-	$result = $mysqli->query($query) or die("Query failed getIdFromQuery  ".$mysqli->error.LS."Query: ".$query);
+	global $db;
+	$result = $db->query($query) or die("Query failed getIdFromQuery  ".$db->error.LS."Query: ".$query);
 	$data = NULL;
 	if($row = $result->fetch_assoc()){
 		$data = $row;
@@ -340,9 +340,9 @@ function getUpdateSfo($field, $sfi, $sfo, $ignore_sfo_sfi_id_update = false){
 }
 
 function getFieldUsageCount($field_id){
-	global $mysqli;
+	global $db;
 	$query = "SELECT count(*) AS c FROM structure_formats WHERE structure_field_id='".$field_id."'";
-	$result = $mysqli->query($query) or die("exec getFieldUsageCount failed");
+	$result = $db->query($query) or die("exec getFieldUsageCount failed");
 	$count = 0;
 	if($row = $result->fetch_assoc()){
 		$count = $row['c'];
@@ -359,11 +359,11 @@ function getUpdateSfi($field){
 }
 
 function getInsertStructureValidationsIfAny($field){
-	global $mysqli;
+	global $db;
 	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
 	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."' AND `type`='".$field->type."' AND structure_value_domain".castStructureValueDomain($field->structure_value_domain, true)."), `rule`, `flag_empty`, `flag_required`, `on_action`, `language_message` FROM structure_validations "
 		."WHERE structure_field_id=(SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."' AND `type`='".$sfiData['type']."' AND structure_value_domain ".castStructureValueDomain($sfiData['structure_value_domain'], true).")) ";
-	$result = $mysqli->query($query) or die("getInsertStructureValidationsIfAny query failed ");
+	$result = $db->query($query) or die("getInsertStructureValidationsIfAny query failed ");
 	if($result->num_rows == 0){
 		$query = null;
 	}	

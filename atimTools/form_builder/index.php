@@ -1,9 +1,9 @@
 <?php
-require_once("myFunctions.php");
+require_once("../common/myFunctions.php");
 ?>
 <html>
 <head>
-<script type="text/javascript" src="scripts/jquery-1.4.1.min.js"></script>
+<script type="text/javascript" src="../common/js/jquery-1.4.2.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.jsonSuggestME.js"></script>
 <script type="text/javascript" src="scripts/jquery.color.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
@@ -229,7 +229,7 @@ require_once("myFunctions.php");
 				<?php 
 				//structures
 				$query = "SELECT id, alias FROM structures ORDER BY alias";
-				$result = $mysqli->query($query) or die("STI");
+				$result = $db->query($query) or die("STI");
 				while($row = $result->fetch_assoc()){
 					echo("<a href='#".$row['id']."' class='structLink'>".$row['alias']."</a> - <a href='#".$row['id']."' class='structLinkAdd'>[+]</a><br/>");
 				}
@@ -244,7 +244,7 @@ require_once("myFunctions.php");
 			<?php 
 			//structures
 			$query = "SELECT model FROM structure_fields GROUP BY model";
-			$result = $mysqli->query($query) or die("STI");
+			$result = $db->query($query) or die("STI");
 			while($row = $result->fetch_row()){
 				echo("<a href='#".$row[0]."' class='fieldLink'>".$row[0]."</a><br/>");
 			}
@@ -261,7 +261,7 @@ require_once("myFunctions.php");
 			<?php 
 			//structures
 			$query = "SELECT domain_name FROM structure_value_domains ORDER BY domain_name";
-			$result = $mysqli->query($query) or die("STI");
+			$result = $db->query($query) or die("STI");
 			while($row = $result->fetch_row()){
 				echo("<a href='#".$row[0]."' class='vDomainLink'>".$row[0]."</a> - <a href='#".$row[0]."' class='vDomainLinkAdd'>[+]</a><br/>");
 			}
@@ -276,7 +276,7 @@ require_once("myFunctions.php");
 			<?php 
 			//structures
 			$query = "SHOW tables";
-			$result = $mysqli->query($query) or die("STI");
+			$result = $db->query($query) or die("STI");
 			while($row = $result->fetch_row()){
 				if(strpos($row[0], "_revs") != strlen($row[0]) - 5){
 					echo("<a href='#".$row[0]."' class='tableLink'>".$row[0]."</a> - <a href='#".$row[0]."' class='tableLinkAdd'>[+]</a><br/>");
@@ -297,7 +297,7 @@ require_once("myFunctions.php");
 		Current database: 
 		<?php 
 		$query = "SHOW databases";
-		$result = $mysqli->query($query) or die("show databases failed");
+		$result = $db->query($query) or die("show databases failed");
 		?>
 		<select id="dbSelect">
 			<?php 
