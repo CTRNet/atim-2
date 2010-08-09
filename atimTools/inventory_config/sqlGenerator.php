@@ -65,25 +65,25 @@ foreach($json->realiquots AS $realiquot){
 }
 if(count($samples_activate) > 0){
 	$samples_activate = array_unique($samples_activate, SORT_NUMERIC);
-	echo("UPDATE parent_to_derivative_sample_controls SET flag_active=true WHERE id IN(".implode(", ", $samples_activate).")<br/>");
+	echo("UPDATE parent_to_derivative_sample_controls SET flag_active=true WHERE id IN(".implode(", ", $samples_activate).");<br/>");
 }
 if(count($samples_deactivate) > 0){
 	$samples_deactivate = array_unique($samples_deactivate, SORT_NUMERIC);
-	echo("UPDATE parent_to_derivative_sample_controls SET flag_active=false WHERE id IN(".implode(", ", $samples_deactivate).")<br/>");
+	echo("UPDATE parent_to_derivative_sample_controls SET flag_active=false WHERE id IN(".implode(", ", $samples_deactivate).");<br/>");
 }
 if(count($aliquots_activate) > 0){
 	$aliquots_activate = array_unique($aliquots_activate, SORT_NUMERIC);
-	echo("UPDATE sample_to_aliquot_controls SET flag_active=true WHERE id IN(".implode(", ", $aliquots_activate).")<br/>");
+	echo("UPDATE sample_to_aliquot_controls SET flag_active=true WHERE id IN(".implode(", ", $aliquots_activate).");<br/>");
 }
 if(count($aliquots_deactivate) > 0){
 	$aliquots_deactivate = array_unique($aliquots_deactivate, SORT_NUMERIC);
-	echo("UPDATE sample_to_aliquot_controls SET flag_active=false WHERE id IN(".implode(", ", $aliquots_deactivate).")<br/>");
+	echo("UPDATE sample_to_aliquot_controls SET flag_active=false WHERE id IN(".implode(", ", $aliquots_deactivate).");<br/>");
 }
 if(count($realiquots_activate) > 0){
 	$realiquots_activate = array_unique($realiquots_activate, SORT_NUMERIC);
-	echo("UPDATE realiquoting_controls SET flag_active=true WHERE id IN(".implode(", ", $realiquots_activate).")<br/>");	
+	echo("UPDATE realiquoting_controls SET flag_active=true WHERE id IN(".implode(", ", $realiquots_activate).");<br/>");	
 }
 if(count($realiquots_deactivate) > 0){
 	$realiquots_deactivate = array_unique($realiquots_deactivate, SORT_NUMERIC);
-	echo("UPDATE realiquoting_controls SET flag_active=false WHERE id IN(".implode(", ", $realiquots_deactivate).")<br/>");	
+	echo("UPDATE realiquoting_controls SET flag_active=false WHERE id IN(".implode(", ", $realiquots_deactivate).");<br/>");	
 }

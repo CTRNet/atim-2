@@ -97,22 +97,6 @@ class InvConf{
 <script type="text/javascript" src="../common/js/wz_jsgraphics.js"></script>
 <script type="text/javascript" src="../common/js/common.js"></script>
 <script type="text/javascript" src="default.js"></script>
-<script type="text/javascript">
-<?php 
-//php realiquoting dump to js
-$query = "SELECT * FROM realiquoting_controls";
-$result = $db->query($query) or die("realiquoting qry failed");
-$tmp = array();
-while($row = $result->fetch_assoc()){
-	$tmp2 = array();
-	foreach($row as $k => $v){
-		$tmp2[] = ' "'.$k.'" : "'.$v.'" ';
-	}
-	$tmp[] = '{ '.implode(", ", $tmp2).' }';
-}
-?>
-var realiquotingData = '[<?php echo(implode(", ", $tmp)); ?>]';
-</script>
 </head>
 <body>
 <div id="top">
