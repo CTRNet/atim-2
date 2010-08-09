@@ -15,7 +15,7 @@ class InvConf{
 		INNER JOIN sample_controls AS s ON assoc.derivative_sample_control_id=s.id 
 		WHERE assoc.parent_sample_control_id=?
 		ORDER BY s.sample_type ";
-	static $queryRealiquoting = "SELECT *, rc.id AS mid FROM realiquoting_controls AS rc 
+	static $queryRealiquoting = "SELECT *, rc.id AS mid, rc.flag_active AS flag_active FROM realiquoting_controls AS rc 
 		INNER JOIN sample_to_aliquot_controls AS assoc ON rc.child_sample_to_aliquot_control_id=assoc.id
 		INNER JOIN aliquot_controls AS a ON assoc.aliquot_control_id=a.id
 		WHERE rc.parent_sample_to_aliquot_control_id=?";
@@ -42,7 +42,7 @@ class InvConf{
 				if($stmt2->fetch()){
 					echo("<ul class='realiquots'>\n");
 					do{
-						$disabled = $row['flag_active'] ? "" : " disabled ";
+						$disabled = $row2['flag_active'] ? "" : " disabled ";
 						$json = '{ "id" : "'.$row2['mid'].'" }';
 						echo("<li class='realiquot realiquot_".$row2['mid']." ".$disabled." ".$json."'>".$row2['aliquot_type']."</li>\n");
 					}while($stmt2->fetch());
