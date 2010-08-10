@@ -1,5 +1,5 @@
 <?php
-require_once("myFunctions.php");
+require_once("../common/myFunctions.php");
 $json = json_decode(stripslashes($_GET['json'])) or die("decode failed");
 $query = "";
 if($json->type == 'structures'){
@@ -7,7 +7,7 @@ if($json->type == 'structures'){
 	
 	if(is_numeric($json->val)){
 		$query = "SELECT alias FROM structures WHERE id='".$json->val."'";
-		$result = $mysqli->query($query) or die("Query failed ".$mysqli->error);
+		$result = $db->query($query) or die("Query failed ".$db->error);
 		if($row = $result->fetch_assoc()){
 			echo("<h3>Structure ".$row['alias']."</h3>\n");
 		}
@@ -17,7 +17,7 @@ if($json->type == 'structures'){
 				."WHERE sfo.structure_id = '".$json->val."'";
 	}else{
 		$query = "SELECT alias FROM structures WHERE alias='".$json->val."'";
-		$result = $mysqli->query($query) or die("Query failed ".$mysqli->error);
+		$result = $db->query($query) or die("Query failed ".$db->error);
 		if($row = $result->fetch_assoc()){
 			echo("<h3>Structure ".$row['alias']."</h3>\n");
 		}
@@ -42,7 +42,7 @@ if($json->type == 'structures'){
 }else{
 	$query = "SELECT 'error'";
 }
-$result = $mysqli->query($query) or die("Query failed ".$mysqli->error);
+$result = $db->query($query) or die("Query failed ".$db->error);
 echo('<table class="ui-widget ui-widget-content">');
 if($row = $result->fetch_assoc()){
 	echo("<thead><tr class='ui-widget-header'>");
