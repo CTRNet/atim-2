@@ -5,7 +5,7 @@ if(isset($_GET['json'])){
 	die("no data");
 }
 
-require_once("myFunctions.php");
+require_once("../common/myFunctions.php");
 
 if($json->fetching == "model"){
 	$query = "SELECT model FROM structure_fields WHERE plugin LIKE '".(strlen($json->plugin) == 0 ? '%' : $json->plugin)."' AND model LIKE '%".$json->val."%'
@@ -16,7 +16,7 @@ if($json->fetching == "model"){
 }else if($json->fetching == "tablename"){
 	$query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='".$db_schema."' AND TABLE_NAME LIKE '%".$json->val."%'  AND TABLE_NAME NOT LIKE '%_revs' LIMIT 15";
 }
-$result = $mysqli->query($query) or die('[{"id" : "error", "text":"querry failed"}]');
+$result = $db->query($query) or die('[{"id" : "error", "text":"querry failed"}]');
 echo("[");
 if($row = $result->fetch_row()){
 	echo('{"text" : "'.$row[0].'"}');
