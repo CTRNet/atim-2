@@ -17,6 +17,46 @@ require_once("../common/myFunctions.php");
 
 </head>
 <body>
+	<div id="db_select_div" class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="width: 100%; position: relative; left: -3px; margin: 0px; padding: 0px;">
+		Current database: 
+		<?php 
+		$query = "SHOW databases";
+		$result = $db->query($query) or die("show databases failed");
+		?>
+		<select id="dbSelect">
+			<?php 
+			while($row = $result->fetch_row()){
+				if($row[0] != "information_schema" && $row[0] != "mysql"){
+					$selected = ($row[0] == $db_schema ? ' selected="selected"' : "");
+					echo("<option".$selected.">".$row[0]."</option>");
+				}
+			}
+			?>
+		</select>
+		<a href='#' id='clearSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-circle-close'></span>Clear</a>
+		<!-- 
+		<a href='#' id='runSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-play'></span>Run sql</a>
+		 -->
+		<div id="warningBox" class="ui-widget" style="display: none;">
+			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
+				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
+				<span id="warningMsg"></span></p>
+
+			</div>
+		</div>
+		<br>
+		<div id="errorBox" class="ui-widget" style="display: none;">
+			<div class="ui-state-error ui-corner-all" style="padding: 0pt 0.7em;"> 
+				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span> 
+				<span id="errMsg"></span></p>
+			</div>
+		</div>
+	
+	</div>
+
+
+
+
 	<div id="queryBuilder" style="width: 100%; margin-right: 10px; position: relative; left: -3px; margin: 0px; padding: 0px;">
 		<ul>
 			<li><a href="#piton1">Structures</a></li>
@@ -293,44 +333,7 @@ require_once("../common/myFunctions.php");
 	
 	
 	<textarea style="width: 100%; height: 20%; margin: 0px;"></textarea>
-	<div class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="width: 100%; position: relative; left: -3px; margin: 0px; padding: 0px;">
-		Current database: 
-		<?php 
-		$query = "SHOW databases";
-		$result = $db->query($query) or die("show databases failed");
-		?>
-		<select id="dbSelect">
-			<?php 
-			while($row = $result->fetch_row()){
-				if($row[0] != "information_schema" && $row[0] != "mysql"){
-					$selected = ($row[0] == $db_schema ? ' selected="selected"' : "");
-					echo("<option".$selected.">".$row[0]."</option>");
-				}
-			}
-			?>
-		</select>
-		<a href='#' id='clearSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-circle-close'></span>Clear</a>
-		<!-- 
-		<a href='#' id='runSql' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-play'></span>Run sql</a>
-		 -->
-		<div id="warningBox" class="ui-widget" style="display: none;">
-			<div class="ui-state-highlight ui-corner-all" style="margin-top: 20px; padding: 0pt 0.7em;"> 
-				<p><span class="ui-icon ui-icon-info" style="float: left; margin-right: 0.3em;"></span>
-				<span id="warningMsg"></span></p>
-
-			</div>
-		</div>
-		<br>
-		<div id="errorBox" class="ui-widget" style="display: none;">
-			<div class="ui-state-error ui-corner-all" style="padding: 0pt 0.7em;"> 
-				<p><span class="ui-icon ui-icon-alert" style="float: left; margin-right: 0.3em;"></span> 
-				<span id="errMsg"></span></p>
-			</div>
-		</div>
-	
-	</div>
-	
-	
+	<div id="db_select_div_target"></div>
 	
 	
 	<div id="confirmDialog">

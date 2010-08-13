@@ -4,6 +4,8 @@ var lineWithoutChanges = "";
 
 
 $(function(){
+	$("#db_select_div_target").append($("#db_select_div"));
+	
 	$("#piton5").scroll(function() { 
 		$("td.scrollingButtons:last").css("padding-left", $(this).scrollLeft());
 	});
