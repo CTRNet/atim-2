@@ -73,3 +73,12 @@ th.headerSortDown {
     background-image: url(../img/desc.gif); 
 }
 
+#autoBuild2 thead th:nth-child(1), #autoBuild2 tbody td:nth-child(1), #autoBuild2 tfoot tr:nth-child(1) td:nth-child(1){
+	position: absolute;	
+	left: 10px;
+	background-color: #DDD;
+}
+
+#autoBuild2{
+	margin-bottom: 27px;
+}

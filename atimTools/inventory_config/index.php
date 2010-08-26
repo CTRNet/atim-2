@@ -107,6 +107,7 @@ class InvConf{
 	$result = $db->query($query) or die("show databases failed");
 	?>
 	<select id="dbSelect">
+		<option></option>
 		<?php 
 		while($row = $result->fetch_row()){
 			if($row[0] != "information_schema" && $row[0] != "mysql"){

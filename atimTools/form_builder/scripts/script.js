@@ -7,7 +7,8 @@ $(function(){
 	$("#db_select_div_target").append($("#db_select_div"));
 	
 	$("#piton5").scroll(function() { 
-		$("td.scrollingButtons:last").css("padding-left", $(this).scrollLeft());
+		$("td.scrollingButtons:last").css("padding-left", Math.max($(this).scrollLeft() - 110, 0));
+		$("#autoBuild2 th:nth-child(4), #autoBuild2 td:nth-child(4)").css("left", $(this).scrollLeft())
 	});
 	$("#dbSelect").change(function(){
 		document.location = "?db=" + $(this).children(":selected").html();
@@ -241,6 +242,7 @@ $(function(){
 								editLine(this);
 							});
 							$("#autoBuild2").trigger('update');
+							calculateAutoBuild2LeftMargin();
 						}else{
 							$("#noDataDialog").dialog('open');
 						}
@@ -451,6 +453,8 @@ $(function(){
 		}
 		return false;
 	});
+	
+	calculateAutoBuild2LeftMargin();
 });
 
 function flashColor(item, color){
@@ -616,6 +620,7 @@ function addLine(){
 		});
 		toggleEditMode(false);
 		$("#autoBuild2").trigger('update');
+		calculateAutoBuild2LeftMargin();
 	}
 }
 
@@ -639,6 +644,7 @@ function editLine(line){
 		$("#autoBuild2").trigger('update');
 		$("a.autoBuild2").children("span:nth-child(2)").html("Save");
 	}
+	calculateAutoBuild2LeftMargin();
 }
 
 function ignoreChanges(){
@@ -646,12 +652,15 @@ function ignoreChanges(){
 	$("#autoBuild2").children("tbody").append(lineWithoutChanges);
 	$(lineWithoutChanges).click(function(){
 		editLine(this);
+		calculateAutoBuild2LeftMargin();
 	});
 	$("#autoBuild2").trigger('update');
+	calculateAutoBuild2LeftMargin();
 }
 
 function deleteRow(){
 	toggleEditMode(false);
+	calculateAutoBuild2LeftMargin();
 }
 
 function toggleEditMode(editMode){
@@ -668,5 +677,13 @@ function toggleEditMode(editMode){
 		$(".deleteButton").hide();
 		$("a.autoBuild2").children("span:nth-child(2)").html("Add");
 	}		
+}
+
+function calculateAutoBuild2LeftMargin(){
+	var maxWidth = 0;
+	$("#autoBuild2 thead th:nth-child(1), #autoBuild2 tbody td:nth-child(1), #autoBuild2 tfoot tr:nth-child(1) td:nth-child(1)").each(function(){
+		maxWidth = Math.max($(this).width(), maxWidth);
+	});
+	$("#autoBuild2").css("margin-left", maxWidth + "px");
 }
 

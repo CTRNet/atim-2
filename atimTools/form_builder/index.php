@@ -24,6 +24,7 @@ require_once("../common/myFunctions.php");
 		$result = $db->query($query) or die("show databases failed");
 		?>
 		<select id="dbSelect">
+			<option></option>
 			<?php 
 			while($row = $result->fetch_row()){
 				if($row[0] != "information_schema" && $row[0] != "mysql"){
@@ -206,14 +207,13 @@ require_once("../common/myFunctions.php");
 				</tbody>
 				<tfoot></tfoot>
 			</table>
-			
 			<table id="autoBuild2" class="insert ui-widget ui-widget-content">
 				<thead class="custom autoBuild2">
 					<tr class='ui-widget-header'>
+						<th class="notEmpty clear">field</th>
 						<th>plugin</th>
 						<th class="notEmpty">model</th>
 						<th class="clear">tablename</th>
-						<th class="notEmpty clear">field</th>
 						<th class="clear">language_label</th>
 						<th class="clear">language_tag</th>
 						<th class="notEmpty">type</th>

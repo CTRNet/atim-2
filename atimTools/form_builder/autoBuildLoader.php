@@ -42,10 +42,10 @@ if($json->type == 'autoBuildData'){
 	while($row = $result->fetch_assoc()){
 		?>
 		<tr>
+			<td><?php echo($row['sfi_field']); ?></td>
 			<td><?php echo($row['sfi_plugin']); ?></td>
 			<td><?php echo($row['sfi_model']); ?></td>
 			<td><?php echo($row['sfi_tablename']); ?></td>
-			<td><?php echo($row['sfi_field']); ?></td>
 			<td><?php echo($row['sfo_flag_override_label'] ? $row['sfo_language_label'] : $row['sfi_language_label']); ?></td>
 			<td><?php echo($row['sfo_flag_override_tag'] ? $row['sfo_language_tag'] : $row['sfi_language_tag']); ?></td>
 			<td><?php echo($row['sfo_flag_override_type'] ? $row['sfo_type'] : $row['sfi_type']); ?></td>
