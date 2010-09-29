@@ -71,7 +71,7 @@ foreach($json->fields as $field){
 				//target exists, update our sfo and scrap the old sfi
 				$sfoDeleteIgnoreId[] = $field->sfi_id;
 				$old_sfi = getStructureFieldById($field->sfi_id);
-				$deleteFromStructureFieldArray[] = "DELETE FROM structure_fields WHERE WHERE model='".$old_sfi['model']."' AND tablename='".$old_sfi['tablename']."' AND field='".$old_sfi['field']."' AND `type`='".$old_sfi['type']."' AND structure_value_domain".castStructureValueDomain($old_sfi['structure_value_domain'], true).")";
+				$deleteFromStructureFieldArray[] = "DELETE FROM structure_fields WHERE model='".$old_sfi['model']."' AND tablename='".$old_sfi['tablename']."' AND field='".$old_sfi['field']."' AND `type`='".$old_sfi['type']."' AND structure_value_domain".castStructureValueDomain($old_sfi['structure_value_domain'], true).")";
 				$str = getUpdateSfo($field, $tmp_similar_sfi, $sfo, false);//clear sfo overrides if needed
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
