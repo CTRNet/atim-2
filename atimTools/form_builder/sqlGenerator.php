@@ -29,9 +29,11 @@ $updateStructureField = "UPDATE structure_fields SET `public_identifier`=%s, `pl
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_datagrid`, `flag_datagrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
 $insertIntoStructureFormats = "";
 $insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_empty`, `flag_required`, `on_action`, `language_message`) ";
+$deleteFromStructureFieldArray = array();
 $insertIntoStructureValidationsArray = array();
 $updateStructureFieldsArray = array();
 $updateStructureFormatsArray = array();
+$sfoDeleteIgnoreId = array();
 $sfOldIds = array();
 
 $structure_id_query = "SELECT id FROM structures WHERE alias='".$json->global->alias."'";
@@ -63,15 +65,29 @@ foreach($json->fields as $field){
 			}
 		}else if(getFieldUsageCount($field->sfi_id) < 2){
 			//we're alone
-			$updateStructureFieldsArray[] = getUpdateSfi($field);
-			if($sfo != NULL){
-				$str = getUpdateSfo($field, NULL, $sfo, true);//clear sfo overrides if needed
+			//check if a target exists
+			$tmp_similar_sfi = getSimilarSfi($field);
+			if(count($tmp_similar_sfi) > 0){
+				//target exists, update our sfo and scrap the old sfi
+				$sfoDeleteIgnoreId[] = $field->sfi_id;
+				$old_sfi = getStructureFieldById($field->sfi_id);
+				$deleteFromStructureFieldArray[] = "DELETE FROM structure_fields WHERE WHERE model='".$old_sfi['model']."' AND tablename='".$old_sfi['tablename']."' AND field='".$old_sfi['field']."' AND `type`='".$old_sfi['type']."' AND structure_value_domain".castStructureValueDomain($old_sfi['structure_value_domain'], true).")";
+				$str = getUpdateSfo($field, $tmp_similar_sfi, $sfo, false);//clear sfo overrides if needed
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
 				}
+				$field->sfi_id = $tmp_similar_sfi['data']['id'];
 			}else{
-				//new sfo
-				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
+				$updateStructureFieldsArray[] = getUpdateSfi($field);
+				if($sfo != NULL){
+					$str = getUpdateSfo($field, NULL, $sfo, true);//clear sfo overrides if needed
+					if(strlen($str) > 0){
+						$updateStructureFormatsArray[] = $str;
+					}
+				}else{
+					//new sfo
+					$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
+				}
 			}
 		}else if($similarSfi['data']['id'] == $field->sfi_id){
 			//override is possible
@@ -141,10 +157,11 @@ foreach($updateStructureFormatsArray as $query){
 }
 
 $query = "SELECT id FROM structure_formats WHERE structure_id='".$structureId."' AND structure_field_id NOT IN(";
+$ids = array();
 foreach($json->fields as $field){
-	$query .= "'".$field->sfi_id."', ";
+	$sfoDeleteIgnoreId[] = $field->sfi_id;
 }
-$query = substr($query, 0, strlen($query) - 2).");".LS;
+$query .= implode(", ", $sfoDeleteIgnoreId).");".LS;
 $result = $db->query($query) or die("Query failed D ".$db->error);
 $sfIds = array();
 while($row = $result->fetch_assoc()){
@@ -159,13 +176,18 @@ if(sizeof($sfIds) > 0){
 			$where_part = "";
 			foreach($row as $key => $val){
 				//NULL values are not possible in that table
-				if($key != 'id'){
+				if($key != 'id' && $key != 'structure_id' && $key != 'structure_field_id'){
 					$where_part .= "`".$key."`='".$val."' AND ";
 				}
 			}
 			echo($delete_query.substr($where_part, 0, -4).";\n");
 		}
 	}
+}
+
+if(count($deleteFromStructureFieldArray) > 0){
+	echo("-- Delete obsolete structure fields\n");
+	echo(implode("\n", $deleteFromStructureFieldArray)."\n");
 }
 
 function formatField($field){
@@ -368,5 +390,10 @@ function getInsertStructureValidationsIfAny($field){
 		$query = null;
 	}	
 	return $query;
+}
+
+function getStructureFieldById($id){
+	$query = "SELECT * FROM structure_fields WHERE id=".$id;
+	return getDataFromQuery($query);
 }
 ?>
