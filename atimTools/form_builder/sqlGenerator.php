@@ -159,7 +159,9 @@ foreach($updateStructureFormatsArray as $query){
 $query = "SELECT id FROM structure_formats WHERE structure_id='".$structureId."' AND structure_field_id NOT IN(";
 $ids = array();
 foreach($json->fields as $field){
-	$sfoDeleteIgnoreId[] = $field->sfi_id;
+	if(is_numeric($field->sfi_id)){
+		$sfoDeleteIgnoreId[] = $field->sfi_id;
+	}
 }
 $query .= implode(", ", $sfoDeleteIgnoreId).");".LS;
 $result = $db->query($query) or die("Query failed D ".$db->error);
