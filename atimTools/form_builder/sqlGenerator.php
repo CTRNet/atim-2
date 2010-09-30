@@ -67,7 +67,7 @@ foreach($json->fields as $field){
 			//we're alone
 			//check if a target exists
 			$tmp_similar_sfi = getSimilarSfi($field);
-			if(count($tmp_similar_sfi) > 0){
+			if(count($tmp_similar_sfi) > 0 && $tmp_similar_sfi['data']['id'] != $field->sfi_id){
 				//target exists, update our sfo and scrap the old sfi
 				$sfoDeleteIgnoreId[] = $field->sfi_id;
 				$old_sfi = getStructureFieldById($field->sfi_id);
