@@ -6,9 +6,9 @@ $OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_ta
 	"language_help" => "flag_override_help", "type" => "flag_override_type", "setting" => "flag_override_setting", 
 	"default" => "flag_override_default");
 global $STRUCTURE_FIELDS_FIELDS;
-$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help", "validation_control", "field_control");
+$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help");
 global $STRUCTURE_FORMATS_FIELDS;
-$STRUCTURE_FORMATS_FIELDS = array("display_column", "display_order", "language_heading", "language_label", "language_tag", "language_help", "type", "setting", "default", "flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_datagrid", "flag_datagrid_readonly", "flag_index", "flag_detail");
+$STRUCTURE_FORMATS_FIELDS = array("display_column", "display_order", "language_heading", "language_label", "language_tag", "language_help", "type", "setting", "default", "flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_index", "flag_detail");
 
 if(isset($_GET['json'])){
 	$json = $_GET['json'];
@@ -28,7 +28,7 @@ $insertIntoStructureFields = "";
 $updateStructureField = "UPDATE structure_fields SET `public_identifier`=%s, `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s, `validation_control`=%s, `value_domain_control`=%s, `field_control`=%s WHERE id=%s";
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_datagrid`, `flag_datagrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
 $insertIntoStructureFormats = "";
-$insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_empty`, `flag_required`, `on_action`, `language_message`) ";
+$insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_not_empty`, `flag_required`, `on_action`, `language_message`) ";
 $deleteFromStructureFieldArray = array();
 $insertIntoStructureValidationsArray = array();
 $updateStructureFieldsArray = array();
@@ -67,7 +67,7 @@ foreach($json->fields as $field){
 			//we're alone
 			//check if a target exists
 			$tmp_similar_sfi = getSimilarSfi($field);
-			if(count($tmp_similar_sfi) > 0 && $tmp_similar_sfi['data']['id'] != $field->sfi_id){
+			if(count($tmp_similar_sfi['data']) > 0 && $tmp_similar_sfi['data']['id'] != $field->sfi_id){
 				//target exists, update our sfo and scrap the old sfi
 				$sfoDeleteIgnoreId[] = $field->sfi_id;
 				$old_sfi = getStructureFieldById($field->sfi_id);
@@ -163,26 +163,42 @@ foreach($json->fields as $field){
 		$sfoDeleteIgnoreId[] = $field->sfi_id;
 	}
 }
-$query .= implode(", ", $sfoDeleteIgnoreId).");".LS;
-$result = $db->query($query) or die("Query failed D ".$db->error);
-$sfIds = array();
-while($row = $result->fetch_assoc()){
-	$sfIds[] = $row['id'];	
-}
-if(sizeof($sfIds) > 0){
-	echo "-- delete structure_formats\n";
-	$delete_query = "DELETE FROM structure_formats WHERE ";
-	foreach($sfIds as $sfId){
-		$result = $db->query("SELECT * FROM structure_formats WHERE id='".$sfId."'") or die("Query failed E");
-		if($row = $result->fetch_assoc()){
-			$where_part = "";
-			foreach($row as $key => $val){
-				//NULL values are not possible in that table
-				if($key != 'id' && $key != 'structure_id' && $key != 'structure_field_id'){
-					$where_part .= "`".$key."`='".$val."' AND ";
+if(count($sfoDeleteIgnoreId) > 0){
+	$query .= implode(", ", $sfoDeleteIgnoreId).");".LS;
+	$result = $db->query($query) or die("Query failed D ".$db->error. "[".$query."]");
+	$sfIds = array();
+	while($row = $result->fetch_assoc()){
+		$sfIds[] = $row['id'];	
+	}
+	if(sizeof($sfIds) > 0){
+		echo "-- delete structure_formats\n";
+		$delete_query = "DELETE FROM structure_formats WHERE ";
+		$ignore_keys = array("id", "structure_id", "structure_field_id", "created", "created_by", "modified", "modified_by");//TODO: use a global ignore list
+		foreach($sfIds as $sfId){
+			$result = $db->query("SELECT * FROM structure_formats WHERE id='".$sfId."'") or die("Query failed E");
+			if($row = $result->fetch_assoc()){
+				$where_part = array();
+				foreach($row as $key => $val){
+					//NULL values are not possible in that table
+					if(!in_array($key, $ignore_keys)){
+						$where_part[] = "`".$key."`='".$val."'";
+					}
+				}
+				$sfi_id = $row['structure_field_id'];
+				$result->close();
+				$delete_query .= implode(" AND ", $where_part);
+				$result = $db->query("SELECT * FROM structure_fields WHERE id='".$sfi_id."'") or die("Query failed E2");
+				if($row = $result->fetch_assoc()){
+					$where_part = array();
+					foreach($row as $key => $val){
+						//NULL values are not possible in that table
+						if(!in_array($key, $ignore_keys)){
+							$where_part[] = "`".$key."`='".$val."'";
+						}
+					}
+					echo $delete_query, " AND structure_field_id=(SELECT id FROM structure_fields WHERE ", implode(" AND ", $where_part), ");\n";
 				}
 			}
-			echo($delete_query.substr($where_part, 0, -4).";\n");
 		}
 	}
 }
@@ -385,7 +401,7 @@ function getUpdateSfi($field){
 function getInsertStructureValidationsIfAny($field){
 	global $db;
 	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
-	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."' AND `type`='".$field->type."' AND structure_value_domain".castStructureValueDomain($field->structure_value_domain, true)."), `rule`, `flag_empty`, `flag_required`, `on_action`, `language_message` FROM structure_validations "
+	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."' AND `type`='".$field->type."' AND structure_value_domain".castStructureValueDomain($field->structure_value_domain, true)."), `rule`, `flag_not_empty`, `flag_required`, `on_action`, `language_message` FROM structure_validations "
 		."WHERE structure_field_id=(SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."' AND `type`='".$sfiData['type']."' AND structure_value_domain ".castStructureValueDomain($sfiData['structure_value_domain'], true).")) ";
 	$result = $db->query($query) or die("getInsertStructureValidationsIfAny query failed ");
 	if($result->num_rows == 0){

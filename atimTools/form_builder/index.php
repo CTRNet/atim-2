@@ -221,9 +221,6 @@ require_once("../common/myFunctions.php");
 						<th>default</th>
 						<th class="notEmpty">structure_value_domain</th>
 						<th class="clear">language_help</th>
-						<th>validation_control</th>
-						<th>value_domain_controld</th>
-						<th>field_control</th>
 						<th class="notEmpty autoincrement">display_column</th>
 						<th class="notEmpty autoincrement autoBuildIncrement">display_order</th>
 						<th class="clear">language_heading</th>
@@ -233,8 +230,10 @@ require_once("../common/myFunctions.php");
 						<th class="checkbox">flag_edit_readonly</th>
 						<th class="checkbox">flag_search</th>
 						<th class="checkbox">flag_search_readonly</th>
-						<th class="checkbox">flag_datagrid</th>
-						<th class="checkbox">flag_datagrid_readonly</th>
+						<th class="checkbox">flag_addgrid</th>
+						<th class="checkbox">flag_addgrid_readonly</th>
+						<th class="checkbox">flag_editgrid</th>
+						<th class="checkbox">flag_editgrid_readonly</th>
 						<th class="checkbox">flag_index</th>
 						<th class="checkbox">flag_detail</th>
 						<th class="readonly clear">sfi_id</th>
@@ -242,11 +241,6 @@ require_once("../common/myFunctions.php");
 					</tr>
 				</thead>
 				<tbody>
-				<!-- 
-				<tr onclick="editLine(this);"><td>pluginne</td><td>32</td><td>ad_gel_matrices</td><td>cell_count</td><td>cell count</td><td></td><td>input</td><td></td><td></td><td>asd</td><td></td><td></td><td></td><td></td><td>0</td><td>0</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>0</td><td>1</td></tr>
-				<tr onclick="editLine(this);"><td>tre</td><td>234</td><td>ad_gel_matrices</td><td>cell_count</td><td>cell count</td><td></td><td>input</td><td></td><td></td><td>asd</td><td></td><td></td><td></td><td></td><td>0</td><td>0</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>0</td><td>1</td></tr>
-				<tr onclick="editLine(this);"><td>asd</td><td>001</td><td>ad_gel_matrices</td><td>cell_count</td><td>cell count</td><td></td><td>input</td><td></td><td></td><td>asd</td><td></td><td></td><td></td><td></td><td>0</td><td>0</td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>0</td><td>1</td></tr>
-				 -->
 				</tbody>
 				<tfoot>
 				</tfoot>

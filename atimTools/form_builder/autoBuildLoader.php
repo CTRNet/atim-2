@@ -19,8 +19,7 @@ if($json->type == 'autoBuildData'){
 			."sfi.field AS sfi_field, sfi.language_label AS sfi_language_label, sfi.language_tag AS sfi_language_tag, "
 			."sfi.type AS sfi_type, sfi.setting AS sfi_setting, sfi.default AS sfi_default, "
 			."sfi.structure_value_domain AS sfi_structure_value_domain, sfi.language_help AS sfi_language_help, "
-			."sfi.validation_control AS sfi_validation_control, sfi.value_domain_control AS sfi_value_domain_control, "
-			."sfi.field_control AS sfi_field_control, sfo.display_column AS sfo_display_column, "
+			."sfo.display_column AS sfo_display_column, "
 			."sfo.id AS sfo_id, sfo.display_order AS sfo_display_order, sfo.language_heading AS sfo_language_heading, " 
 			."sfo.flag_override_label AS sfo_flag_override_label, sfo.language_label AS sfo_language_label, "
 			."sfo.flag_override_tag AS sfo_flag_override_tag, sfo.language_tag AS sfo_language_tag, "
@@ -31,7 +30,8 @@ if($json->type == 'autoBuildData'){
 			."sfo.flag_add AS sfo_flag_add, sfo.flag_add_readonly AS sfo_flag_add_readonly, "
 			."sfo.flag_edit AS sfo_flag_edit, sfo.flag_edit_readonly AS sfo_flag_edit_readonly, "
 			."sfo.flag_search AS sfo_flag_search, sfo.flag_search_readonly AS sfo_flag_search_readonly, "
-			."sfo.flag_datagrid AS sfo_flag_datagrid, sfo.flag_datagrid_readonly AS sfo_flag_datagrid_readonly, "
+			."sfo.flag_addgrid AS sfo_flag_addgrid, sfo.flag_addgrid_readonly AS sfo_flag_addgrid_readonly, "
+			."sfo.flag_editgrid AS sfo_flag_editgrid, sfo.flag_editgrid_readonly AS sfo_flag_editgrid_readonly, "
 			."sfo.flag_index AS sfo_flag_index, sfo.flag_detail AS sfo_flag_detail, svd.domain_name AS svd_domain_name " 
 		."FROM structures AS s "
 		."INNER JOIN structure_formats AS sfo ON s.id=sfo.structure_id "
@@ -39,6 +39,7 @@ if($json->type == 'autoBuildData'){
 		."LEFT JOIN structure_value_domains AS svd ON sfi.structure_value_domain=svd.id "
 		."WHERE s.alias='".$json->val."'";
 	$result = $db->query($query) or die("<tr><td>Query failed ".$db->error."</td></tr>");
+	$checbox = '<input type="checkbox"%s/>';
 	while($row = $result->fetch_assoc()){
 		?>
 		<tr>
@@ -53,22 +54,21 @@ if($json->type == 'autoBuildData'){
 			<td><?php echo($row['sfo_flag_override_default'] ? $row['sfo_default'] : $row['sfi_default']); ?></td>
 			<td><?php echo($row['sfi_structure_value_domain'] == NULL ? "NULL" : $row['svd_domain_name'] ); ?></td>
 			<td><?php echo($row['sfo_override_help'] ? $row['sfo_language_help'] : $row['sfi_language_help']); ?></td>
-			<td><?php echo($row['sfi_validation_control']); ?></td>
-			<td><?php echo($row['sfi_value_domain_control']); ?></td>
-			<td><?php echo($row['sfi_field_control']); ?></td>
 			<td><?php echo($row['sfo_display_column']); ?></td>
 			<td><?php echo($row['sfo_display_order']); ?></td>
 			<td><?php echo($row['sfo_language_heading']); ?></td>
-			<td><?php echo($row['sfo_flag_add']); ?></td>
-			<td><?php echo($row['sfo_flag_add_readonly']); ?></td>
-			<td><?php echo($row['sfo_flag_edit']); ?></td>
-			<td><?php echo($row['sfo_flag_edit_readonly']); ?></td>
-			<td><?php echo($row['sfo_flag_search']); ?></td>
-			<td><?php echo($row['sfo_flag_search_readonly']); ?></td>
-			<td><?php echo($row['sfo_flag_datagrid']); ?></td>
-			<td><?php echo($row['sfo_flag_datagrid_readonly']); ?></td>
-			<td><?php echo($row['sfo_flag_index']); ?></td>
-			<td><?php echo($row['sfo_flag_detail']); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_add'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_add_readonly'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_edit'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_edit_readonly'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_search'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_search_readonly'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_addgrid'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_addgrid_readonly'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_editgrid'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_editgrid_readonly'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_index'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_detail'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php echo($row['sfi_id']); ?></td>
 			<td><?php echo($row['sfo_id']); ?></td>
 		</tr>
