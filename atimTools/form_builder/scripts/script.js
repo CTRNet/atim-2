@@ -654,7 +654,7 @@ function editLine(line){
 	}else{
 		lineWithoutChanges = line;
 		var cells = $(line).children("td");
-		$(cells).html($(cells).html().substr(41));
+		$(cells[0]).html($(cells[0]).html().substr(41));
 		var inputs = $(line).parent().parent().children("tfoot").children("tr:first").children("td");
 		for(var i = 0; i < cells.length; ++ i){
 			if($(inputs[i]).children("input").attr("type") == "checkbox"){
