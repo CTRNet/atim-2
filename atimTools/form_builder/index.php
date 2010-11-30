@@ -246,6 +246,7 @@ require_once("../common/myFunctions.php");
 				</tfoot>
 			</table>
 			<a href="#" id="generateSQL" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
+			<a href="#" id="clearAutoBuildTable" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
 		</div>
 	</div>
 	
