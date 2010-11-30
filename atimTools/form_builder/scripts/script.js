@@ -476,6 +476,12 @@ $(function(){
 		}
 	});
 	
+	$("#clearAutoBuildTable").click(function(){
+		if(confirm("Are you sure you want to clear the table?")){
+			$("#autoBuild2 tbody").html("");
+		}
+	});
+	
 	calculateAutoBuild2LeftMargin();
 });
 

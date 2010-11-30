@@ -3,7 +3,7 @@ require_once("../common/myFunctions.php");
 ?>
 <html>
 <head>
-<script type="text/javascript" src="../common/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="../common/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="scripts/jquery.jsonSuggestME.js"></script>
 <script type="text/javascript" src="scripts/jquery.color.js"></script>
 <script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
