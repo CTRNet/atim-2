@@ -93,7 +93,7 @@ class InvConf{
 <link rel="stylesheet" type="text/css" href="style.css"/>
 <link rel="stylesheet" type="text/css" href="print.css" media="print"/>
 <title>Inventory Configuration</title>
-<script type="text/javascript" src="../common/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="../common/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript" src="../common/js/wz_jsgraphics.js"></script>
 <script type="text/javascript" src="../common/js/common.js"></script>
 <script type="text/javascript" src="default.js"></script>

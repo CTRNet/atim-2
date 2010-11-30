@@ -9,12 +9,13 @@ require_once("../common/myFunctions.php");
 
 $tables_wo_revs = array("acos", "aliquot_controls", "aros", "aros_acos", "atim_information", "coding_icd10", "coding_icdo_3", "configs", 
 	"consent_controls", "diagnosis_controls", "event_controls", "groups", "i18n", "key_increments", "langs", "menus", "missing_translations",
-	"pages", "parent_to_derivative_sample_controls", "review_controls", "sample_to_aliquot_controls", "datamart_browsin_controls", 
+	"pages", "parent_to_derivative_sample_controls", "sample_to_aliquot_controls", 
 	"misc_identifier_controls", "protocol_controls", "realiquoting_controls", "sample_controls", "sop_controls" ,"storage_controls", 
 	"structures", "structure_fields", "structure_formats", "structure_permissible_values", "structure_permissible_values_custom_controls", 
 	"structure_validations", "structure_value_domains", "structure_value_domains_permissible_values", "tx_controls", "users", "user_logs",
-	"versions", "view_aliquots", "view_collections", "view_samples", "datamart_browsing_controls", "datamart_permissible_values",
-	"datamart_browsing_structures");
+	"versions", "view_aliquots", "view_collections", "view_samples", "datamart_browsing_controls", 
+	"aliquot_review_controls", "coding_icd_o_3_topography", "datamart_adhoc", "specimen_review_controls",
+	"user_login_attempts", "view_structures");
 $tables_wo_revs = array_flip($tables_wo_revs);
 ?>
 <!DOCTYPE html>
@@ -22,7 +23,7 @@ $tables_wo_revs = array_flip($tables_wo_revs);
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Database validation</title>
-<script type="text/javascript" src="../common/js/jquery-1.4.2.min.js"></script>
+<script type="text/javascript" src="../common/js/jquery-1.4.4.min.js"></script>
 <script type="text/javascript">
 $(function(){
 	$("select").change(function(){
@@ -148,6 +149,8 @@ if(count($tables) > 0){
 	foreach($tables as $tname => $foo){
 		if(!isset($tables_wo_revs[$tname])){
 			echo("<li>".$tname."</li>\n");
+		}else{
+			unset($tables_wo_revs[$tname]);
 		}
 	}
 	echo("</ol>\n");
@@ -158,8 +161,9 @@ if(count($tables) > 0){
 ?>
 <h1>Strings requiring translation</h1>
 <div id="tr_target"></div>
-<table id="mt">
+<table id="mt"><tr>
 <th>Missing translation</th><th>Where</th>
+</tr>
 <?php 
 $query = "SELECT lang, place FROM(
 		SELECT language_heading AS lang, 'sfo_language_heading' AS place FROM structure_formats
