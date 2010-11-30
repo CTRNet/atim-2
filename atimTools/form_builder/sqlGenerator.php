@@ -14,7 +14,6 @@ $STRUCTURE_FORMATS_FIELDS = array("display_column", "display_order", "language_h
 if(isset($_GET['json'])){
 	$json = $_GET['json'];
 }else if(isset($_POST['json'])){
-	echo($_POST['json']);
 	$json = $_POST['json'];
 }else{
 	error_reporting(E_ALL);
