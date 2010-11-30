@@ -154,7 +154,7 @@ $(function(){
 	$(".add:not(.custom)").click(function(){
 		var str = "INSERT INTO " + $(this).attr("name") + "(";
 		$(this).parent().parent().parent().parent().children("thead").children("tr").children("th").each(function(){
-			str += "`" + $(this).html() + "`, ";
+			str += "`" + $(this).html().replace(/<br\>/g, "_") + "`, ";
 		});
 		str = str.substring(0, str.length - 2) + ") VALUES (";
 		var valid = true;

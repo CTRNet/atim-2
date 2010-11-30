@@ -17,16 +17,16 @@ if(isset($_GET['json'])){
 }else{
 	error_reporting(E_ALL);
 	ini_set('display_errors', '1');
-	$json = '{"global" : { "alias" : "bob",  "language_title" : ""}, "fields" : [ {  "plugin" : "Clinicalannotation",  "model" : "EventDetail",  "tablename" : "groups",  "field" : "bank_id",  "language_label" : "toto &gt; tata",  "language_tag" : "",  "type" : "number",  "setting" : "",  "default" : "",  "structure_value_domain" : "NULL",  "language_help" : "",  "validation_control" : "",  "value_domain_controld" : "",  "field_control" : "",  "display_column" : "1",  "display_order" : "1",  "language_heading" : "",  "flag_add" : "0",  "flag_add_readonly" : "0",  "flag_edit" : "0",  "flag_edit_readonly" : "0",  "flag_search" : "0",  "flag_search_readonly" : "0",  "flag_datagrid" : "0",  "flag_datagrid_readonly" : "0",  "flag_index" : "0",  "flag_detail" : "0" } ] }';
+	$json = '{"global" : { "alias" : "bob",  "language_title" : ""}, "fields" : [ {  "plugin" : "Clinicalannotation",  "model" : "EventDetail",  "tablename" : "groups",  "field" : "bank_id",  "language_label" : "toto &gt; tata",  "language_tag" : "",  "type" : "number",  "setting" : "",  "default" : "",  "structure_value_domain" : "NULL",  "language_help" : "",  "validation_control" : "",  "value_domain_controld" : "",  "field_control" : "",  "display_column" : "1",  "display_order" : "1",  "language_heading" : "",  "flag_add" : "0",  "flag_add_readonly" : "0",  "flag_edit" : "0",  "flag_edit_readonly" : "0",  "flag_search" : "0",  "flag_search_readonly" : "0", "flag_addgrid" : "0",  "flag_addgrid_readonly" : "0", "flag_editgrid" : "0",  "flag_editgrid_readonly" : "0",  "flag_index" : "0",  "flag_detail" : "0" } ] }';
 	define(LS, "<br/>");
 }
 
 $json = json_decode(stripslashes($json)) or die("decode failed [".$json."]");
-$insertIntoStructures = "INSERT INTO structures(`alias`, `language_title`, `language_help`, `flag_add_columns`, `flag_edit_columns`, `flag_search_columns`, `flag_detail_columns`) VALUES ('".$json->global->alias."', '".$json->global->language_title."', '', '1', '1', '1', '1');";
-$insertIntoStructureFieldsHead = "INSERT INTO structure_fields(`public_identifier`, `plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`, `validation_control`, `value_domain_control`, `field_control`) VALUES";
+$insertIntoStructures = "INSERT INTO structures(`alias`) VALUES ('".$json->global->alias."');";
+$insertIntoStructureFieldsHead = "INSERT INTO structure_fields(`plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`) VALUES";
 $insertIntoStructureFields = "";
-$updateStructureField = "UPDATE structure_fields SET `public_identifier`=%s, `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s, `validation_control`=%s, `value_domain_control`=%s, `field_control`=%s WHERE id=%s";
-$insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_datagrid`, `flag_datagrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
+$updateStructureField = "UPDATE structure_fields SET `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s WHERE id=%s";
+$insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_addgrid`, `flag_addgrid_readonly`, `flag_editgrid`, `flag_editgrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
 $insertIntoStructureFormats = "";
 $insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_not_empty`, `flag_required`, `on_action`, `language_message`) ";
 $deleteFromStructureFieldArray = array();
@@ -50,6 +50,9 @@ foreach($json->fields as $field){
 	$sameSfi = getSameSfi($field);
 	$similarSfi = getSimilarSfi($field);
 	$sfo = (strlen($structureId) > 0 ? getSfo($field) : NULL);
+	if($sfo != NULL && $sfo['data']['structure_id'] != $structureId){
+		$sfo = NULL;
+	}
 	if(strlen($field->sfi_id) > 0){
 		if($sameSfi['data']['id'] == $field->sfi_id){
 			//no change to structure field
@@ -63,7 +66,7 @@ foreach($json->fields as $field){
 				//new sfo
 				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
 			}
-		}else if(getFieldUsageCount($field->sfi_id) < 2){
+		}else if($sfo != NULL && getFieldUsageCount($field->sfi_id) < 2){
 			//we're alone
 			//check if a target exists
 			$tmp_similar_sfi = getSimilarSfi($field);
@@ -98,7 +101,7 @@ foreach($json->fields as $field){
 				}
 			}else{
 				//new sfo
-				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $sameSfi, $field).LS;
+				$insertIntoStructureFormats .= getInsertIntoSfo($field, $structure_id_query, $similarSfi, $field).LS;
 			}
 		}else{
 			//no way to override, 
@@ -294,7 +297,7 @@ function getSameSfi($field){
 }
 
 function getSimilarSfi($field){
-	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `type`='".$field->type."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
+	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
 	$query_id = "SELECT id ".$query;
 	$query_all = "SELECT * ".$query;
 	return array("query_id" => $query_id, "data" => getDataFromQuery($query_all));
@@ -323,7 +326,7 @@ function getDataFromQuery($query){
 }
 
 function getInsertIntoSfi($field){
-	return "('', '".$field->plugin."', '".$field->model."', '".$field->tablename."', '".$field->field."', '".$field->language_label."', '".$field->language_tag."', '".$field->type."', '".$field->setting."', '".$field->default."', ".castStructureValueDomain($field->structure_value_domain, false).", '".$field->language_help."', 'open', 'open', 'open'), ";
+	return "('".$field->plugin."', '".$field->model."', '".$field->tablename."', '".$field->field."', '".$field->language_label."', '".$field->language_tag."', '".$field->type."', '".$field->setting."', '".$field->default."', ".castStructureValueDomain($field->structure_value_domain, false).", '".$field->language_help."'), ";
 }
 
 function getInsertIntoSfo($field, $structure_id_query, $structure_field){
@@ -337,7 +340,7 @@ function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 			$query .= "'1', '".$field->{$override_name}."', ";
 		}
 	}
-	$query .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_datagrid."', '".$field->flag_datagrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."'), ";
+	$query .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_addgrid."', '".$field->flag_addgrid_readonly."', '".$field->flag_editgrid."', '".$field->flag_editgrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."'), ";
 	return $query;
 }
 
