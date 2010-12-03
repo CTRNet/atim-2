@@ -234,8 +234,11 @@ require_once("../common/myFunctions.php");
 						<th class="checkbox">flag_addgrid_readonly</th>
 						<th class="checkbox">flag_editgrid</th>
 						<th class="checkbox">flag_editgrid_readonly</th>
+						<th class="checkbox">flag_batchedit</th>
+						<th class="checkbox">flag_batchedit_readonly</th>
 						<th class="checkbox">flag_index</th>
 						<th class="checkbox">flag_detail</th>
+						<th class="checkbox">flag_summary</th>
 						<th class="readonly clear">sfi_id</th>
 						<th class="readonly clear">sfo_id</th>
 					</tr>

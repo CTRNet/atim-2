@@ -32,7 +32,9 @@ if($json->type == 'autoBuildData'){
 			."sfo.flag_search AS sfo_flag_search, sfo.flag_search_readonly AS sfo_flag_search_readonly, "
 			."sfo.flag_addgrid AS sfo_flag_addgrid, sfo.flag_addgrid_readonly AS sfo_flag_addgrid_readonly, "
 			."sfo.flag_editgrid AS sfo_flag_editgrid, sfo.flag_editgrid_readonly AS sfo_flag_editgrid_readonly, "
-			."sfo.flag_index AS sfo_flag_index, sfo.flag_detail AS sfo_flag_detail, svd.domain_name AS svd_domain_name " 
+			."sfo.flag_batchedit AS sfo_flag_batchedit, sfo.flag_batchedit_readonly AS sfo_flag_batchedit_readonly, "
+			."sfo.flag_index AS sfo_flag_index, sfo.flag_detail AS sfo_flag_detail, sfo.flag_summary AS sfo_flag_summary, "
+			."svd.domain_name AS svd_domain_name " 
 		."FROM structures AS s "
 		."INNER JOIN structure_formats AS sfo ON s.id=sfo.structure_id "
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
@@ -67,8 +69,11 @@ if($json->type == 'autoBuildData'){
 			<td><?php printf($checbox, $row['sfo_flag_addgrid_readonly'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php printf($checbox, $row['sfo_flag_editgrid'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php printf($checbox, $row['sfo_flag_editgrid_readonly'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_batchedit'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_batchedit_readonly'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php printf($checbox, $row['sfo_flag_index'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php printf($checbox, $row['sfo_flag_detail'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php printf($checbox, $row['sfo_flag_summary'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php echo($row['sfi_id']); ?></td>
 			<td><?php echo($row['sfo_id']); ?></td>
 		</tr>

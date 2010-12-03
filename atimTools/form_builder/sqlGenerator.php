@@ -9,7 +9,7 @@ $OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_ta
 global $STRUCTURE_FIELDS_FIELDS;
 $STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help");
 global $STRUCTURE_FORMATS_FIELDS;
-$STRUCTURE_FORMATS_FIELDS = array("display_column", "display_order", "language_heading", "language_label", "language_tag", "language_help", "type", "setting", "default", "flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_index", "flag_detail");
+$STRUCTURE_FORMATS_FIELDS = array("display_column", "display_order", "language_heading", "language_label", "language_tag", "language_help", "type", "setting", "default", "flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_batchedit", "flag_batchedit_readonly", "flag_index", "flag_detail", "flag_summary");
 
 if(isset($_GET['json'])){
 	$json = $_GET['json'];
