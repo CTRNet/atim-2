@@ -121,6 +121,7 @@ function getInsertIntoSfi($field){
 
 function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 	global $OVERRIDES_NAMES;
+	global $STRUCTURE_FORMATS_FLAGS;
 	$query = "((".$structure_id_query."), (".$structure_field['query_id']."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
 	//look to override properly
 	foreach($OVERRIDES_NAMES as $override_name => $override_flag){
@@ -130,7 +131,11 @@ function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 			$query .= "'1', '".$field->{$override_name}."', ";
 		}
 	}
-	$query .= "'".$field->flag_add."', '".$field->flag_add_readonly."', '".$field->flag_edit."', '".$field->flag_edit_readonly."', '".$field->flag_search."', '".$field->flag_search_readonly."', '".$field->flag_addgrid."', '".$field->flag_addgrid_readonly."', '".$field->flag_editgrid."', '".$field->flag_editgrid_readonly."', '".$field->flag_index."', '".$field->flag_detail."'), ";
+	$pieces = array();
+	foreach($STRUCTURE_FORMATS_FLAGS as $sfo_flag){
+		$pieces[] = "'".$field->{$sfo_flag}."'";
+	}
+	$query .= implode(", ", $pieces)."), ";
 	return $query;
 }
 
@@ -154,7 +159,7 @@ function getUpdateSfo($field, $sfi, $sfo, $ignore_sfo_sfi_id_update = false){
 					$query .= "`".$OVERRIDES_NAMES[$sfo_field]."`='1', `".$sfo_field."`='".$field->{$sfo_field}."', ";
 				}
 			}
-		}else{
+		}else if(!in_array($sfo_field, $OVERRIDES_NAMES)){
 			//standard fields
 			if($field->{$sfo_field} != $sfo['data'][$sfo_field]){
 				$query .= "`".$sfo_field."`='".$field->{$sfo_field}."', ";

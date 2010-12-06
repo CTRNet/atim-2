@@ -8,8 +8,17 @@ $OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_ta
 	"default" => "flag_override_default");
 global $STRUCTURE_FIELDS_FIELDS;
 $STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help");
+
+global $STRUCTURE_FORMATS_FLAGS;
+$STRUCTURE_FORMATS_FLAGS = array("flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_batchedit", "flag_batchedit_readonly", "flag_index", "flag_detail", "flag_summary");
+
+$tmp = array();
+foreach($OVERRIDES_NAMES as $k => $v){
+	$tmp[] = $v;
+	$tmp[] = $k;
+}
 global $STRUCTURE_FORMATS_FIELDS;
-$STRUCTURE_FORMATS_FIELDS = array("display_column", "display_order", "language_heading", "language_label", "language_tag", "language_help", "type", "setting", "default", "flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_batchedit", "flag_batchedit_readonly", "flag_index", "flag_detail", "flag_summary");
+$STRUCTURE_FORMATS_FIELDS = array_merge(array("display_column", "display_order", "language_heading"), $tmp, $STRUCTURE_FORMATS_FLAGS);
 
 if(isset($_GET['json'])){
 	$json = $_GET['json'];
@@ -27,7 +36,7 @@ $insertIntoStructures = "INSERT INTO structures(`alias`) VALUES ('".$json->globa
 $insertIntoStructureFieldsHead = "INSERT INTO structure_fields(`plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`) VALUES";
 $insertIntoStructureFields = "";
 $updateStructureField = "UPDATE structure_fields SET `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s WHERE id=%s";
-$insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `display_column`, `display_order`, `language_heading`, `flag_override_label`, `language_label`, `flag_override_tag`, `language_tag`, `flag_override_help`, `language_help`, `flag_override_type`, `type`, `flag_override_setting`, `setting`, `flag_override_default`, `default`, `flag_add`, `flag_add_readonly`, `flag_edit`, `flag_edit_readonly`, `flag_search`, `flag_search_readonly`, `flag_addgrid`, `flag_addgrid_readonly`, `flag_editgrid`, `flag_editgrid_readonly`, `flag_index`, `flag_detail`) VALUES ";
+$insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `".implode($STRUCTURE_FORMATS_FIELDS, "`, `")."`) VALUES ";
 $insertIntoStructureFormats = "";
 $insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_not_empty`, `flag_required`, `on_action`, `language_message`) ";
 $deleteFromStructureFieldArray = array();
