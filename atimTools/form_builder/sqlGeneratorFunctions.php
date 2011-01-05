@@ -199,7 +199,7 @@ function getUpdateSfi($field){
 function getInsertStructureValidationsIfAny($field){
 	global $db;
 	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$field->sfi_id."'");
-	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."' AND `type`='".$field->type."' AND structure_value_domain".castStructureValueDomain($field->structure_value_domain, true)."), `rule`, `flag_not_empty`, `flag_required`, `on_action`, `language_message` FROM structure_validations "
+	$query = "(SELECT (SELECT id FROM structure_fields WHERE model='".$field->model."' AND tablename='".$field->tablename."' AND field='".$field->field."' AND `type`='".$field->type."' AND structure_value_domain".castStructureValueDomain($field->structure_value_domain, true)."), `rule`, `on_action`, `language_message` FROM structure_validations "
 		."WHERE structure_field_id=(SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."' AND `type`='".$sfiData['type']."' AND structure_value_domain ".castStructureValueDomain($sfiData['structure_value_domain'], true).")) ";
 	$result = $db->query($query) or die("getInsertStructureValidationsIfAny query failed ");
 	if($result->num_rows == 0){

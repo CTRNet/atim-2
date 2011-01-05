@@ -38,7 +38,7 @@ $insertIntoStructureFields = "";
 $updateStructureField = "UPDATE structure_fields SET `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s WHERE id=%s";
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `".implode($STRUCTURE_FORMATS_FIELDS, "`, `")."`) VALUES ";
 $insertIntoStructureFormats = "";
-$insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `flag_not_empty`, `flag_required`, `on_action`, `language_message`) ";
+$insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `on_action`, `language_message`) ";
 $deleteFromStructureFieldArray = array();
 $insertIntoStructureValidationsArray = array();
 $updateStructureFieldsArray = array();
