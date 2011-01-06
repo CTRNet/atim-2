@@ -685,6 +685,7 @@ function ignoreChanges(){
 		calculateAutoBuild2LeftMargin();
 	});
 	initDeleteLine($("#autoBuild2 tbody tr").last());
+	$("#autoBuild2 tbody tr input[type=checkbox]").click(function(e){ e.stopPropagation();});
 	$("#autoBuild2").trigger('update');
 	calculateAutoBuild2LeftMargin();
 }
