@@ -684,6 +684,7 @@ function ignoreChanges(){
 		editLine(this);
 		calculateAutoBuild2LeftMargin();
 	});
+	initDeleteLine($("#autoBuild2 tbody tr").last());
 	$("#autoBuild2").trigger('update');
 	calculateAutoBuild2LeftMargin();
 }
