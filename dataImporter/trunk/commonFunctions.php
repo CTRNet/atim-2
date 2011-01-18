@@ -17,7 +17,7 @@ function clean($element){
  */
 function associate($keys, &$values){
 	foreach($keys as $i => $v){
-		$values[$v] = $values[$i];
+		$values[$v] = isset($values[$i]) ? $values[$i] : "";
 //		echo($keys[$i]." -> ".$values[$i]."\n");
 	}
 }
