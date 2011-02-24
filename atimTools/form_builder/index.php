@@ -224,6 +224,7 @@ require_once("../common/myFunctions.php");
 						<th class="notEmpty autoincrement">display_column</th>
 						<th class="notEmpty autoincrement autoBuildIncrement">display_order</th>
 						<th class="clear">language_heading</th>
+						<th class="checkbox">flag_anonymous</th>
 						<th class="checkbox">flag_add</th>
 						<th class="checkbox">flag_add_readonly</th>
 						<th class="checkbox">flag_edit</th>

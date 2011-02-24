@@ -79,15 +79,47 @@ function getUpdateQuery($fields, $row, $data){
 }
 
 function getSameSfi($field){
-	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `language_label`='".$field->language_label."' AND `language_tag`='".$field->language_tag."' AND `type`='".$field->type."' AND `setting`='".$field->setting."' AND `default`='".$field->default."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." AND `language_help`='".$field->language_help."'";
+	global $STRUCTURE_FIELDS_FIELDS_SIMILAR;
+	global $STRUCTURE_FIELDS_FIELDS_LIGHT;
+	$tmp = array();
+	foreach($STRUCTURE_FIELDS_FIELDS_SIMILAR AS $sf){
+		if($sf == "structure_value_domain"){
+			$tmp[] = "`structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true); 
+		}else{
+			$tmp[] = sprintf("`%s`='%s'", $sf, $field->{$sf});
+		}
+	}
+	$query = "FROM structure_fields WHERE ".implode(" AND ", $tmp);
+	
 	$query_id = "SELECT id ".$query;
 	$query_all = "SELECT * ".$query;
-	$query_id_light = "SELECT id FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `type`='".$field->type."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true);
+	
+	$tmp = array();
+	foreach($STRUCTURE_FIELDS_FIELDS_LIGHT as $sf){
+		if($sf == "structure_value_domain"){
+			$tmp[] = "`structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true); 
+		}else{
+			$tmp[] = sprintf("`%s`='%s'", $sf, $field->{$sf});
+		}
+	}
+	$query_id_light = "SELECT id FROM structure_fields WHERE ".implode(" AND ", $tmp);
 	return array("query_id" => $query_id, "query_id_light" => $query_id_light, "data" => getDataFromQuery($query_all));
 }
 
 function getSimilarSfi($field){
-	$query = "FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true)." ";
+	global $STRUCTURE_FIELDS_FIELDS_LIGHT;
+	$tmp = array();
+	foreach($STRUCTURE_FIELDS_FIELDS_LIGHT as $sf){
+		if($sf == "type"){
+			continue;
+		}
+		if($sf == "structure_value_domain"){
+			$tmp[] = "`structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true); 
+		}else{
+			$tmp[] = sprintf("`%s`='%s'", $sf, $field->{$sf});
+		}
+	}
+	$query = "FROM structure_fields WHERE ".implode(" AND ", $tmp);
 	$query_id = "SELECT id ".$query;
 	$query_all = "SELECT * ".$query;
 	return array("query_id" => $query_id, "data" => getDataFromQuery($query_all));
@@ -116,7 +148,16 @@ function getDataFromQuery($query){
 }
 
 function getInsertIntoSfi($field){
-	return "('".$field->plugin."', '".$field->model."', '".$field->tablename."', '".$field->field."', '".$field->language_label."', '".$field->language_tag."', '".$field->type."', '".$field->setting."', '".$field->default."', ".castStructureValueDomain($field->structure_value_domain, false).", '".$field->language_help."'), ";
+	global $STRUCTURE_FIELDS_FIELDS;
+	$tmp = array();
+	foreach($STRUCTURE_FIELDS_FIELDS as $sf){
+		if($sf == "structure_value_domain"){
+			$tmp[] = castStructureValueDomain($field->structure_value_domain, false); 
+		}else{
+			$tmp[] = "'".$field->{$sf}."'";
+		}
+	}
+	return "(".implode(", ", $tmp)."), ";
 }
 
 function getInsertIntoSfo($field, $structure_id_query, $structure_field){

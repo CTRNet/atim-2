@@ -7,7 +7,12 @@ $OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_ta
 	"language_help" => "flag_override_help", "type" => "flag_override_type", "setting" => "flag_override_setting", 
 	"default" => "flag_override_default");
 global $STRUCTURE_FIELDS_FIELDS;
-$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "language_label", "language_tag", "type", "setting", "default", "structure_value_domain", "language_help");
+$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "type", "structure_value_domain", "setting", "default", "language_help", "flag_anonymous", "language_label", "language_tag");
+global $STRUCTURE_FIELDS_FIELDS_SIMILAR;
+$STRUCTURE_FIELDS_FIELDS_SIMILAR = $STRUCTURE_FIELDS_FIELDS;//all but plugin
+array_shift($STRUCTURE_FIELDS_FIELDS_SIMILAR);
+global $STRUCTURE_FIELDS_FIELDS_LIGHT;
+$STRUCTURE_FIELDS_FIELDS_LIGHT = array_slice($STRUCTURE_FIELDS_FIELDS, 1, 5, false);
 
 global $STRUCTURE_FORMATS_FLAGS;
 $STRUCTURE_FORMATS_FLAGS = array("flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_batchedit", "flag_batchedit_readonly", "flag_index", "flag_detail", "flag_summary");
@@ -33,9 +38,9 @@ if(isset($_GET['json'])){
 
 $json = json_decode(stripslashes($json)) or die("decode failed [".$json."]");
 $insertIntoStructures = "INSERT INTO structures(`alias`) VALUES ('".$json->global->alias."');";
-$insertIntoStructureFieldsHead = "INSERT INTO structure_fields(`plugin`, `model`, `tablename`, `field`, `language_label`, `language_tag`, `type`, `setting`, `default`, `structure_value_domain`, `language_help`) VALUES";
+$insertIntoStructureFieldsHead = "INSERT INTO structure_fields(`".implode("`, `", $STRUCTURE_FIELDS_FIELDS)."`) VALUES";
 $insertIntoStructureFields = "";
-$updateStructureField = "UPDATE structure_fields SET `plugin`=%s, `model`=%s, `tablename`=%s, `field`=%s, `language_label`=%s, `language_tag`=%s, `type`=%s, `setting`=%s, `default`=%s, `structure_value_domain`=%s, `language_help`=%s WHERE id=%s";
+$updateStructureField = "UPDATE structure_fields SET `".implode("`=%s, `" , $STRUCTURE_FIELDS_FIELDS)."` WHERE id=%s";
 $insertIntoStructureFormatsHead = "INSERT INTO structure_formats(`structure_id`, `structure_field_id`, `".implode($STRUCTURE_FORMATS_FIELDS, "`, `")."`) VALUES ";
 $insertIntoStructureFormats = "";
 $insertIntoStructureValidationsHead = "INSERT INTO structure_validations (`structure_field_id`, `rule`, `on_action`, `language_message`) ";
