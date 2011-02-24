@@ -79,10 +79,10 @@ function getUpdateQuery($fields, $row, $data){
 }
 
 function getSameSfi($field){
-	global $STRUCTURE_FIELDS_FIELDS_SIMILAR;
+	global $STRUCTURE_FIELDS_FIELDS_WO_PLUGIN;
 	global $STRUCTURE_FIELDS_FIELDS_LIGHT;
 	$tmp = array();
-	foreach($STRUCTURE_FIELDS_FIELDS_SIMILAR AS $sf){
+	foreach($STRUCTURE_FIELDS_FIELDS_WO_PLUGIN AS $sf){
 		if($sf == "structure_value_domain"){
 			$tmp[] = "`structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true); 
 		}else{
@@ -106,31 +106,35 @@ function getSameSfi($field){
 	return array("query_id" => $query_id, "query_id_light" => $query_id_light, "data" => getDataFromQuery($query_all));
 }
 
-function getSimilarSfi($field){
+function getSelectSfiQuery($field){
 	global $STRUCTURE_FIELDS_FIELDS_LIGHT;
 	$tmp = array();
 	foreach($STRUCTURE_FIELDS_FIELDS_LIGHT as $sf){
+		$val = is_array($field) ? $field[$sf] : $field->{$sf};
 		if($sf == "type"){
 			continue;
 		}
 		if($sf == "structure_value_domain"){
-			$tmp[] = "`structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true); 
+			$tmp[] = "`structure_value_domain` ".castStructureValueDomain($val, true); 
 		}else{
-			$tmp[] = sprintf("`%s`='%s'", $sf, $field->{$sf});
+			$tmp[] = sprintf("`%s`='%s'", $sf, $val);
 		}
 	}
-	$query = "FROM structure_fields WHERE ".implode(" AND ", $tmp);
-	$query_id = "SELECT id ".$query;
-	$query_all = "SELECT * ".$query;
-	return array("query_id" => $query_id, "data" => getDataFromQuery($query_all));
+	return "SELECT %s FROM structure_fields WHERE ".implode(" AND ", $tmp);
+}
+
+function getSimilarSfi($field){
+	$query = getSelectSfiQuery($field);
+	return array("query_id" => sprintf($query, "id"), "data" => getDataFromQuery(sprintf($query, "*")));
 }
 
 function getSfo($field){
+	global $STRUCTURE_FIELDS_FIELDS_LIGHT;
 	$sfoData = getDataFromQuery("SELECT * FROM structure_formats WHERE id='".$field->sfo_id."'");
 	$structureData = getDataFromQuery("SELECT * FROM structures WHERE id='".$sfoData['structure_id']."'");
 	$structure_id_query = "SELECT id FROM structures WHERE alias='".$structureData['alias']."'";
-	$sfiData =  getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$sfoData['structure_field_id']."'");
-	$structure_field_id_query = "SELECT id FROM structure_fields WHERE model='".$sfiData['model']."' AND tablename='".$sfiData['tablename']."' AND field='".$sfiData['field']."' AND type='".$sfiData['type']."' AND structure_value_domain ".castStructureValueDomain($sfiData['structure_value_domain'], true);
+	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$sfoData['structure_field_id']."'");
+	$structure_field_id_query = sprintf(getSelectSfiQuery($sfiData), "id");
 	return array("query_id" => "SELECT id FROM structure_formats WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")", 
 		'where' => " structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.") ", 
 		'data' => $sfoData);

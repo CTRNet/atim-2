@@ -7,12 +7,12 @@ $OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_ta
 	"language_help" => "flag_override_help", "type" => "flag_override_type", "setting" => "flag_override_setting", 
 	"default" => "flag_override_default");
 global $STRUCTURE_FIELDS_FIELDS;
-$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "type", "structure_value_domain", "setting", "default", "language_help", "flag_anonymous", "language_label", "language_tag");
-global $STRUCTURE_FIELDS_FIELDS_SIMILAR;
-$STRUCTURE_FIELDS_FIELDS_SIMILAR = $STRUCTURE_FIELDS_FIELDS;//all but plugin
-array_shift($STRUCTURE_FIELDS_FIELDS_SIMILAR);
+$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "type", "structure_value_domain", "flag_anonymous", "setting", "default", "language_help", "language_label", "language_tag");
+global $STRUCTURE_FIELDS_FIELDS_WO_PLUGIN;
+$STRUCTURE_FIELDS_FIELDS_WO_PLUGIN = $STRUCTURE_FIELDS_FIELDS;//all but plugin
+array_shift($STRUCTURE_FIELDS_FIELDS_WO_PLUGIN);
 global $STRUCTURE_FIELDS_FIELDS_LIGHT;
-$STRUCTURE_FIELDS_FIELDS_LIGHT = array_slice($STRUCTURE_FIELDS_FIELDS, 1, 5, false);
+$STRUCTURE_FIELDS_FIELDS_LIGHT = array_slice($STRUCTURE_FIELDS_FIELDS, 1, 6, false);
 
 global $STRUCTURE_FORMATS_FLAGS;
 $STRUCTURE_FORMATS_FLAGS = array("flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_batchedit", "flag_batchedit_readonly", "flag_index", "flag_detail", "flag_summary");
