@@ -7,7 +7,7 @@ $OVERRIDES_NAMES = array("language_label" => "flag_override_label", "language_ta
 	"language_help" => "flag_override_help", "type" => "flag_override_type", "setting" => "flag_override_setting", 
 	"default" => "flag_override_default");
 global $STRUCTURE_FIELDS_FIELDS;
-$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "type", "structure_value_domain", "flag_anonymous", "setting", "default", "language_help", "language_label", "language_tag");
+$STRUCTURE_FIELDS_FIELDS = array("plugin", "model", "tablename", "field", "type", "structure_value_domain", "flag_confidential", "setting", "default", "language_help", "language_label", "language_tag");
 global $STRUCTURE_FIELDS_FIELDS_WO_PLUGIN;
 $STRUCTURE_FIELDS_FIELDS_WO_PLUGIN = $STRUCTURE_FIELDS_FIELDS;//all but plugin
 array_shift($STRUCTURE_FIELDS_FIELDS_WO_PLUGIN);
