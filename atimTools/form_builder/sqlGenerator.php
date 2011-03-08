@@ -201,7 +201,7 @@ if(count($sfoDeleteIgnoreId) > 0){
 				
 				$result = $db->query("SELECT alias FROM structures WHERE id='".$s_id."'") or die("Query failed E2");
 				assert($row = $result->fetch_assoc());
-				$delete_query .= "structure_id=(SELECT id FROM structures WHERE alias='".$row['alias']."')";
+				$delete_query_structure_id = "structure_id=(SELECT id FROM structures WHERE alias='".$row['alias']."')";
 				$result->close();
 				$result = $db->query("SELECT * FROM structure_fields WHERE id='".$sfi_id."'") or die("Query failed E3");
 				if($row = $result->fetch_assoc()){
@@ -214,7 +214,7 @@ if(count($sfoDeleteIgnoreId) > 0){
 							$where_part[] = "`".$key."`".castStructureValueDomain($val, true);
 						}
 					}
-					echo $delete_query, " AND structure_field_id=(SELECT id FROM structure_fields WHERE ", implode(" AND ", $where_part), ");\n";
+					echo $delete_query, $delete_query_structure_id, " AND structure_field_id=(SELECT id FROM structure_fields WHERE ", implode(" AND ", $where_part), ");\n";
 					if(getFieldUsageCount($sfId) == 1){
 						//delete from sfi
 						$deleteFromStructureFieldArray[] = "". implode(" AND ", $where_part);
