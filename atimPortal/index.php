@@ -58,7 +58,15 @@ if(!empty($matches)){
 					<?php 
 					$template = '<li><a href="%s">%s</a></li>';
 					foreach($usefull_links as $name => $url){
-						printf($template, $url, $name);
+						if(is_array($url)){
+							echo "<li><h3>",$name,"</h3><ul>";
+							foreach($url as $inner_name => $inner_url){
+								printf($template, $inner_url, $inner_name);
+							}
+							echo "</ul></li>";
+						}else{
+							printf($template, $url, $name);
+						}
 					}	
 					?>
 					</ul>
