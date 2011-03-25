@@ -1,0 +1,78 @@
+@CHARSET "UTF-8";
+body{
+	font-family: arial;	
+}
+
+div.outer{
+	text-align: center;
+}
+
+div.inner{
+	display: inline-block; 
+	margin: auto;	
+}
+
+ul.installLinks{
+	list-style: none;
+	padding: 0px;
+	margin: 40px 0 0 0;
+	white-space: nowrap;
+}
+
+ul.installLinks li{
+	display: inline-block;
+	border-right: solid 1px grey;
+	background: -webkit-gradient(linear, left top, left bottom, from(#ddd), to(#555));
+	background: -moz-linear-gradient(top,  #ddd,  #555);
+	-ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr=#dddddd, endColorstr=#555555)";
+}
+
+ul.installLinks li:first-child{
+	border-radius: 10px 0 0 10px;
+}
+
+ul.installLinks li:last-child{
+	border-radius: 0 10px 10px 0;
+	border-right: 0px;
+}
+
+ul.installLinks li:hover{
+	background: -webkit-gradient(linear, left top, left bottom, from(#eef), to(#3af));
+	background: -moz-linear-gradient(top,  #eef,  #3af);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#eeeeff', endColorstr='#33aaff');
+}
+
+ul.installLinks li a{
+	border: 0px;
+	color: #fff;
+	text-decoration: none;
+	padding: 10px 20px;
+	text-shadow: 2px 2px 1px #000;
+	display: inline-block;
+}
+
+img.ctrnetLogo{
+	margin-top: 50px;	
+}
+
+div.usefullLinks{
+	margin-top: 30px;
+	padding-right: 30px;
+	border: solid black 2px;
+	border-radius: 40px;	
+	background: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#ddd));
+	background: -moz-linear-gradient(top,  #fff,  #ddd);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffff', endColorstr='#dddddd');
+}
+
+div.usefullLinks ul{
+	text-align: left;	
+}
+
+div.oldIe{
+	margin-top: 20px;
+	border: solid 3px red;
+	background-color: #FFCCCC;
+	color: red;
+	line-height: 30px;
+}
