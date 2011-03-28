@@ -35,12 +35,10 @@ ul.menu li:hover{
 	background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#3AF));
 }
 ul.menu li:first-child{
-	-moz-border-radius: 5px 0 0 5px;
-	-webkit-border-radius: 5px 0 0 5px;
+	border-radius: 5px 0 0 5px;
 }
 ul.menu li:last-child{
-	-moz-border-radius: 0 5px 5px 0;
-	-webkit-border-radius: 0 5px 5px 0;
+	border-radius: 0 5px 5px 0;
 }
 ul.menu li div{
 	float: left;
@@ -62,6 +60,7 @@ ul.menu li div{
 ul.menu li:hover div{
 	display: block;
 }
+
 #box2{
 	left: -160px;
 }
@@ -92,8 +91,12 @@ a{
 	<h1>ATiM 2 Tools</h1>
 	<ul class="menu">
 		<li><a href="db_validation/">Database Validation</a>
-		<div id="box1"><p>Reads a database and compares base tables with revs tables. Gives the difference between those and gives the list
- 			 of tables without revs.</p><p>Also gives a list of strings without tranlsation.</p></div>
+		<div id="box1">
+			<p>Reads a database, compares base tables with revs tables and gives the difference between those.</p>
+			<p>Gives the list of tables without revs.</p>
+ 			<p>Gives the list of non existing tables pointed by *_controls tables.</p>
+ 			<p>Gives a list of strings without tranlsation.</p>
+ 		</div>
 		</li>
 		<li><a href="#">Denominalisation</a>
 			<div id="box2">

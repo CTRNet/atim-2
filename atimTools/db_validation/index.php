@@ -16,6 +16,7 @@ $tables_wo_revs = array("acos", "aliquot_controls", "aros", "aros_acos", "atim_i
 	"versions", "view_aliquots", "view_collections", "view_samples", "datamart_browsing_controls", 
 	"aliquot_review_controls", "coding_icd_o_3_topography", "datamart_adhoc", "specimen_review_controls",
 	"user_login_attempts", "view_structures");
+
 $tables_wo_revs = array_flip($tables_wo_revs);
 ?>
 <!DOCTYPE html>
@@ -159,6 +160,54 @@ if(count($tables) > 0){
 }
 
 ?>
+<h1>Controls tables pointing to invalid tables</h1>
+<?php 
+$query = "SHOW TABLES";
+$result = $db->query($query) or die($db->error);
+$non_control_tables = array();
+$control_tables = array();
+$ignore_list = array("datamart_browsing_controls", "misc_identifier_controls", "parent_to_derivative_sample_controls", "realiquoting_controls", 
+	"sample_to_aliquot_controls", "structure_permissible_values_custom_controls");
+while ($row = $result->fetch_row()){
+	if(substr_compare($row[0], "_controls", -9) === 0){
+		$control_tables[] = $row[0];
+	}else{
+		$non_control_tables[] = $row[0];
+	}
+}
+$result->free();
+$non_control_tables = array_flip($non_control_tables);
+$control_tables = array_diff($control_tables, $ignore_list);
+$missing_details = array();
+$keys = array("detail_tablename", "extend_tablename");
+foreach($control_tables as $control_table){
+	$query = "SELECT * FROM ".$control_table;
+	$result = $db->query($query) or die($db->error);
+	$keys_to_look_for = array();
+	if(($row = $result->fetch_assoc())){
+		foreach($keys as $key){
+			if(array_key_exists($key, $row)){
+				$keys_to_look_for[] = $key;
+			}
+		}
+		do{
+			foreach($keys_to_look_for as $key){
+				if($row[$key] != null && strlen($row[$key]) > 0 && !array_key_exists($row[$key], $non_control_tables)){
+					$missing_details[] = $control_table." &rarr; ".$key." &rarr; ".$row[$key];
+				}
+			}
+		}while ($row = $result->fetch_assoc());
+	}
+	$result->free();
+}
+
+if(empty($missing_details)){
+	echo "All detail and extend tables were found";
+}else{
+	echo "<ul><li>",implode("</li><li>", $missing_details),"</li></ul>";
+}
+?>
+
 <h1>Strings requiring translation</h1>
 <div id="tr_target"></div>
 <table id="mt"><tr>
