@@ -550,9 +550,7 @@ function setTableGetField(){
 			if($("#table_autotype").attr("checked")){
 				var type = $(this).find(".Type").html();
 				var outType = "";
-				if(type.match(/^tinyint\(1\)/) && $(this).find(".Null").html() == "YES"){
-					outType = "yes_no";
-				}else if(type.match(/^[a-z]*int\(\d+\)/)){
+				if(type.match(/^[a-z]*int\(\d+\)/)){
 					//integer
 					outType = type.match(/^[a-z]*int\(\d+\) unsigned$/) ? "integer_positive" : "integer";
 				}else if(type.match(/^(float|double|decimal)(\(\d+,?\d*\))?/)){
