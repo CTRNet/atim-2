@@ -8,25 +8,41 @@ require_once("commonFunctions.php");
  * copy = columns to copy by the split operation
  */
 
-$split_on[] = array('use_key' => 'blood_id',
+//bloods
+//$file_name = "/Users/francois-michellheureux/Documents/jewish/newData/bloods.csv";
+//$file_out = "/Users/francois-michellheureux/Documents/jewish/newData/bloodsOut.csv";
+//$split_on[] = array('use_key' => 'blood_id',
+//					'group_key' => 'plasma_group_id',
+//					'split_key' => 'plasma_parent_id',
+//					'split' => array("plasma_barcodes" => ""),
+//					'copy' => array("plasma_status" => "", "plasma_status_reason" => "", "plasma_notes" => "", "plasma_creation_date" => ""));
+//$split_on[] = array('use_key' => 'blood_id',
+//					'group_key' => 'serum_group_id',
+//					'split_key' => 'serum_parent_id',
+//					'split' => array("serum_barcodes" => ""),
+//					'copy' => array("serum_creation_date" => "", "serum_notes" => "", "serum_status" => "", "serum_status_reason" => ""));
+//$split_on[] = array('use_key' => 'blood_id',
+//					'group_key' => 'buffy_group_id',
+//					'split_key' => 'buffy_parent_id',
+//					'split' => array("buffy coat_barcodes" => ""),
+//					'copy' => array("buffy coat_creation_date" => "", "buffy coat_notes" => "", "buffy coat_status" => "", "buffy coat_status_reason" => ""));
+
+//$file_name = "/Users/francois-michellheureux/Documents/jewish/newData/tissues.csv";
+//$file_out = "/Users/francois-michellheureux/Documents/jewish/newData/tissuesOut.csv";
+//$split_on[] = array('use_key' => 'tissue_id',
+//					'group_key' => 'tube_group_id',
+//					'split_key' => 'tube_parent_id',
+//					'split' => array("tissue_tube_barcodes" => ""),
+//					'copy' => array("tissue_tube_status" => "",	"tissue_tube_status_reason" => "",	"tissue_tube_notes" => ""));
+$file_name = "/Users/francois-michellheureux/Documents/Jen/import.csv";
+$file_out = "/Users/francois-michellheureux/Documents/Jen/bloods.csv";
+$split_on[] = array('use_key' => 'sample_id',
 					'group_key' => 'plasma_group_id',
 					'split_key' => 'plasma_parent_id',
-					'split' => array("plasma_barcodes" => ""),
-					'copy' => array("plasma_status" => "", "plasma_status_reason" => "", "plasma_notes" => "", "plasma_creation_date" => ""));
-$split_on[] = array('use_key' => 'blood_id',
-					'group_key' => 'serum_group_id',
-					'split_key' => 'serum_parent_id',
-					'split' => array("serum_barcodes" => ""),
-					'copy' => array("serum_creation_date" => "", "serum_notes" => "", "serum_status" => "", "serum_status_reason" => ""));
-$split_on[] = array('use_key' => 'blood_id',
-					'group_key' => 'buffy_group_id',
-					'split_key' => 'buffy_parent_id',
-					'split' => array("buffy coat_barcodes" => ""),
-					'copy' => array("buffy coat_creation_date" => "", "buffy coat_notes" => "", "buffy coat_status" => "", "buffy coat_status_reason" => ""));
+					'split' => array("Position plasma" => ""),
+					'copy' => array("Volume de chaque aliquot" => "",	"Unit" => "",	"Entreposage plasma" => "", "study_id" => "", "acquisition_label" => ""));
 
 
-$file_name = "/Users/francois-michellheureux/Documents/jewish/newData/bloods.csv";
-$file_out = "/Users/francois-michellheureux/Documents/jewish/newData/bloodsOut.csv";
 $fh = fopen($file_name, 'r');
 global $fh_out;
 $fh_out = fopen($file_out, 'w');
@@ -129,9 +145,18 @@ function printLine($values, $split_on){
 
 function getSplit($value_to_split){
 	$result = array();
-	while(($index = strpos($value_to_split, "[")) !== false){
-		$result[] = substr($value_to_split, $index + 1, strpos($value_to_split, "]") - $index - 1);
-		$value_to_split = substr($value_to_split, strpos($value_to_split, "]") + 1);
-	}	
+	if(strpos($value_to_split, "[") !== false){
+		//separate every [value1][value2]
+		while(($index = strpos($value_to_split, "[")) !== false){
+			$result[] = substr($value_to_split, $index + 1, strpos($value_to_split, "]") - $index - 1);
+			$value_to_split = substr($value_to_split, strpos($value_to_split, "]") + 1);
+		}	
+	}else if(strpos($value_to_split, "-") !== false){
+		//it's a range, will work with numerical values
+		list($min, $max) = explode("-", $value_to_split);
+		$result = range($min, $max);
+	}else if(strpos($value_to_split, ",")){
+		$result = explode(",", $value_to_split);
+	}
 	return $result;
 }

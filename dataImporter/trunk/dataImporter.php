@@ -3,7 +3,7 @@ error_reporting(E_ALL | E_STRICT);
 
 require_once("master_detail_model.php");
 require_once("commonFunctions.php");
-require_once("../atim_terry_fox/dataImporterConfig/config.php");
+require_once("../atim_tf_prostate/dataImporterConfig/config.php");
 define("IS_XLS", $config['input type'] == "xls");
 if(IS_XLS){
 	require_once 'Excel/reader.php';
@@ -11,6 +11,16 @@ if(IS_XLS){
 	$xls_reader->read($config['xls input file']);
 	
 }
+
+//init database connection
+global $connection;
+$connection = @mysqli_connect($database['ip'].":".$database['port'], $database['user'], $database['pwd']) or die("Could not connect to MySQL");
+if(!mysqli_set_charset($connection, $database['charset'])){
+	die("Invalid charset");
+}
+@mysqli_select_db($connection, $database['schema']) or die("db selection failed");
+mysqli_autocommit($connection, false);
+
 
 //validate each file exists and prep them
 foreach($tables as $ref_name => &$table){
@@ -90,8 +100,13 @@ foreach($tables as $ref_name => &$table){
 		if(is_a($table, "MasterDetailModel")){
 			$tmp_fields = array_merge($tmp_fields, $table->detail_fields);
 		}
+
 		foreach($tmp_fields as $key => $val){
-			if(strlen($val) > 0 && !in_array($val, $table->keys) && strpos($val, "@") !== 0){
+			if(is_array($val)){
+				if(!in_array(key($val), $table->keys)){
+					$missing[] = key($val);
+				}
+			}else if(strlen($val) > 0 && !in_array($val, $table->keys) && strpos($val, "@") !== 0){
 				$missing[] = $val;
 			}
 		}
@@ -108,26 +123,29 @@ foreach($tables as $ref_name => &$table){
 			print_r($table->values);
 			die("Missing pkey [".$table->pkey."] in file [".$table->file."]\n");
 		}
+		
+		$result = mysqli_query($connection, "DESC ".$table->table) or die("table desc failed for [".$table->table."]\n");
+		while($row = mysqli_fetch_row($result)){
+			$table->schema[$row[0]] = array("type" => $row[1], "null" => $row[2] == "YES");
+		}
+		if(is_a($table, "MasterDetailModel")){
+			$result = mysqli_query($connection, "DESC ".$table->detail_table) or die("table desc failed for [".$table->detail_table."]\n");
+			while($row = mysqli_fetch_row($result)){
+				$table->detail_schema[$row[0]] = array("type" => $row[1], "null" => $row[2]);
+			}
+		}
 	}
 }
 unset($table);//weird bug otherwise
 
-//init database connection
-global $connection;
-$connection = @mysqli_connect($database['ip'].":".$database['port'], $database['user'], $database['pwd']) or die("Could not connect to MySQL");
-if(!mysqli_set_charset($connection, $database['charset'])){
-	die("Invalid charset");
-}
-@mysqli_select_db($connection, $database['schema']) or die("db selection failed");
-mysqli_autocommit($connection, false);
 
 //create the temporary id linking table
 mysqli_query($connection, "DROP TABLE IF EXISTS id_linking ") or die("DROP tmp failed");
 $query = "CREATE TABLE id_linking(
-	csv_id varchar(10) not null,
-	csv_reference varchar(10) DEFAULT NULL,
+	csv_id varchar(50) not null,
+	csv_reference varchar(50) DEFAULT NULL,
 	mysql_id int unsigned not null, 
-	model varchar(15) not null
+	model varchar(50) not null
 	)Engine=InnoDB";
 mysqli_query($connection, $query) or die("temporary table query failed[".mysqli_errno($connection) . ": " . mysqli_error($connection)."]\n");
 
@@ -204,7 +222,7 @@ if($insert){
 function buildInsertQuery(array $fields){
 	$result = "";
 	foreach($fields as $field => $value){
-		if(strlen($value) > 0){
+		if(is_array($value) || strlen($value) > 0){
 			$result .= $field.", ";
 		}
 	}
@@ -215,21 +233,46 @@ function buildInsertQuery(array $fields){
 /**
  * Takes the fields array and the values array in order to build the values part of the query.
  * The value fields starting with @ will be put directly into the query without beign replaced (minus the first @)
- * @param unknown_type $fields The array of the fields configuration
- * @param unknown_type $values The array of values read from the csv
+ * @param array $fields The array of the fields configuration
+ * @param array $values The array of values read from the csv
+ * @param array $schema The db schema going with the current insert
  * @return string
  */
-function buildValuesQuery($fields, $values){
+function buildValuesQuery(array $fields, array $values, array $schema){
 	global $created_id;
 	$result = "";
 	foreach($fields as $field => $value){
-		if(strpos($value, "@") === 0){
+		if(is_array($value)){
+			$tmp = $values[key($value)];
+			$val_array = current($value);
+			if(isset($val_array[$tmp])){
+				$result .= "'".$val_array[$tmp]."', ";
+			}else{
+				$result .= "'', ";
+				echo "WARNING: value[",$tmp,"] is unmatched for field [",$field,"]\n";
+			}
+		}else if(strpos($value, "@") === 0){
 			$result .= "'".substr($value, 1)."', ";
 		}else if(strlen($value) > 0){
-			$result .= "'".str_replace("'", "\\'", $values[$value])."', ";
+			if(strlen($values[$value]) > 0){
+				$result .= "'".str_replace("'", "\\'", $values[$value])."', ";
+			}else if(isDbNumericType($schema[$field]['type']) && $schema[$field]){
+				$result .= "NULL, ";
+			}else{
+				$result .= "'', ";
+			}
 		}
 	}
 	return $result."NOW(), ".$created_id.", NOW(), ".$created_id;	
+}
+
+function isDbNumericType($field_type){
+	return strpos($field_type, "int(") === 0
+		|| strpos($field_type, "float") === 0
+		|| strpos($field_type, "tinyint(") === 0
+		|| strpos($field_type, "smallint(") === 0
+		|| strpos($field_type, "mediumint(") === 0
+		|| strpos($field_type, "double") === 0;
 }
 
 
@@ -251,7 +294,7 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 	$i = 0;
 	//debug info
 //	echo($table_name."\n");
-//	if($table_name == "qc_tf_ed_eocs"){
+//	if($table_name == "collections"){
 //		echo("Size: ".sizeof($current_table->values)."\n");
 //		print_r($current_table->values);
 //		echo($current_table->parent_key." -> ".$current_table->fields[$current_table->parent_key]."\n");
@@ -260,7 +303,8 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 //		exit;
 //	}
 	while(sizeof($current_table->values) > 0 && 
-		($csv_parent_key == null || $current_table->values[$current_table->fields[$current_table->parent_key]] == $csv_parent_key)){
+	($csv_parent_key == null || $current_table->values[$current_table->fields[$current_table->parent_key]] == $csv_parent_key)
+	){
 			//replace parent value.
 		if($mysql_parent_id != null){
 			$current_table->values[$current_table->fields[$current_table->parent_key]] = $mysql_parent_id;
@@ -273,7 +317,7 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 		}
 		
 		//master main
-		$queryValues = buildValuesQuery($current_table->fields, $current_table->values);
+		$queryValues = buildValuesQuery($current_table->fields, $current_table->values, $current_table->schema);
 		$query = $current_table->query_insert.$queryValues.")";
 		mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
 		$last_id = mysqli_insert_id($connection);
@@ -298,7 +342,7 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 					$current_table->detail_fields[$key][$current_table->detail_master_fkey] = "@".$last_id;
 					echo $current_table->detail_master_fkey,"\n";
 					
-					$queryValues = buildValuesQuery($current_table->detail_fields[$key], $current_table->values);
+					$queryValues = buildValuesQuery($current_table->detail_fields[$key], $current_table->values, $current_table->detail_schema);
 					$query = $current_table->query_detail_insert[$key].$queryValues.")";
 					mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
 					$last_detail_id = mysqli_insert_id($connection);
@@ -320,7 +364,7 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 				//insert insto single detail table
 				//detail main
 				$current_table->detail_fields[$current_table->detail_master_fkey] = "@".$last_id;
-				$queryValues = buildValuesQuery($current_table->detail_fields, $current_table->values);
+				$queryValues = buildValuesQuery($current_table->detail_fields, $current_table->values, $current_table->detail_schema);
 				$query = $current_table->query_detail_insert.$queryValues.")";
 				mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
 				$last_detail_id = mysqli_insert_id($connection);
@@ -339,32 +383,19 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 				
 			}
 		}
-		
-		
-		//treat additional querries
-		if($current_table->additional_queries != null){
-			foreach($current_table->additional_queries as $ad_query){
-				$ad_query = str_replace("%%last_master_insert_id%%", $last_id, $ad_query);
-				while(($index = strpos($ad_query, "{{")) !== false){
-					$word = substr($ad_query, $index + 2);
-					$word = substr($word, 0, strpos($word, "}}"));
-					$ad_query = str_replace("{{".$word."}}", $current_table->values[$word], $ad_query);
-				}
-				mysqli_query($connection, $ad_query) or die("ad query failed[".$table_name."][".$ad_query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
-				if($config['printQueries']){
-					echo $ad_query.";\n";
-				}
-					
-			}
+
+		if($current_table->post_write_function != NULL){
+			$func = $current_table->post_write_function;
+			$func($current_table, $last_id);
 		}
+		
 		//saving id if required
 		if($current_table->save_id){
 			$query = "INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('"
 					.$current_table->values[$current_table->pkey]."', "
-					.($current_table->csv_reference != null && strlen($current_table->csv_reference) > 0 
-						? "'".$current_table->values[$current_table->csv_reference]."'" 
-						: "NULL").", " 
-					.$last_id.", '".$table_name."')";
+					."'".$table_name."', " 
+					.$last_id.", '"
+					.$current_table->table."')";
 			if($config['printQueries']){
 				echo $query.";\n";
 			}
@@ -394,10 +425,6 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 		}
 		flush();
 		readLine($current_table);
-//		++ $i;
-//		if($i == 3){
-//			exit;
-//		}
 	}
 }
 
