@@ -1,25 +1,916 @@
-INSERT INTO collections (collection_site, collection_datetime, created, created_by, modified, modified_by) VALUES('', '', NOW(), 1, NOW(), 1);
-INSERT INTO sample_masters (sample_code, collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('', '1439', '', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
-INSERT INTO sd_spe_bloods (blood_type, sample_master_id, created, created_by, modified, modified_by) VALUES('', '3088', NOW(), 1, NOW(), 1);
-UPDATE sample_masters SET sample_code='sc-3088' WHERE id=3088;
-UPDATE sample_masters SET initial_specimen_sample_id=3088 WHERE id=3088;
-INSERT INTO sample_masters (sample_code, notes, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '', '3088', 'plasma', '9', 'derivative', 'blood', '1439', '3088', NOW(), 1, NOW(), 1);
-INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('3089', NOW(), 1, NOW(), 1);
-UPDATE sample_masters SET sample_code='P - 3089' WHERE id=3089;
-INSERT INTO aliquot_masters (barcode, collection_id, sample_master_id, in_stock, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('', '1439', '3089', 'available', 'tube', '8', NOW(), 1, NOW(), 1);
-INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('35', NOW(), 1, NOW(), 1);
-UPDATE aliquot_masters SET barcode='autogen 35' WHERE id=35 AND (barcode IS NULL OR barcode='');
-INSERT INTO aliquot_masters (barcode, collection_id, sample_master_id, in_stock, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('', '1439', '3089', 'available', 'tube', '8', NOW(), 1, NOW(), 1);
-INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('36', NOW(), 1, NOW(), 1);
-UPDATE aliquot_masters SET barcode='autogen 36' WHERE id=36 AND (barcode IS NULL OR barcode='');
-INSERT INTO aliquot_masters (barcode, collection_id, sample_master_id, in_stock, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('', '1439', '3089', 'available', 'tube', '8', NOW(), 1, NOW(), 1);
-INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('37', NOW(), 1, NOW(), 1);
-UPDATE aliquot_masters SET barcode='autogen 37' WHERE id=37 AND (barcode IS NULL OR barcode='');
-INSERT INTO aliquot_masters (barcode, collection_id, sample_master_id, in_stock, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('', '1439', '3089', 'available', 'tube', '8', NOW(), 1, NOW(), 1);
-INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('38', NOW(), 1, NOW(), 1);
-UPDATE aliquot_masters SET barcode='autogen 38' WHERE id=38 AND (barcode IS NULL OR barcode='');
-INSERT INTO aliquot_masters (barcode, collection_id, sample_master_id, in_stock, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('', '1439', '3089', 'available', 'tube', '8', NOW(), 1, NOW(), 1);
-INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('39', NOW(), 1, NOW(), 1);
-UPDATE aliquot_masters SET barcode='autogen 39' WHERE id=39 AND (barcode IS NULL OR barcode='');
-ERROR: Data was not all fetched from [ad_tubes_plasma]
-Insertions cancelled
+
+
+Warning: Invalid argument supplied for foreach() in /Users/francois-michellheureux/Documents/workspace/dataImporter/dataImporter.php on line 91
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q103', '1960-09-10', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('1', NULL, 7128, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q103', 'other center patient number', '7128', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5133', 'ovary bank no lab', '7128', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('49', '7128', 'C56.9', '', '', 'cystadénome mucineux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7128', NULL, 3900, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7128', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('38', '30593', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q104', '1947-12-24', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('2', NULL, 7129, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q104', 'other center patient number', '7129', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5134', 'ovary bank no lab', '7129', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('62', '7129', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7129', NULL, 3901, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7129', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('13', '30594', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q105', '1948-04-19', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('3', NULL, 7130, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q105', 'other center patient number', '7130', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5135', 'ovary bank no lab', '7130', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('61', '7130', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7130', NULL, 3902, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7130', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('205', '30595', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q107', '1941-03-28', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('4', NULL, 7131, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q107', 'other center patient number', '7131', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5136', 'ovary bank no lab', '7131', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('68', '7131', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7131', NULL, 3903, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7131', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('37', '30596', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q108', '1962-07-05', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('5', NULL, 7132, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q108', 'other center patient number', '7132', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5137', 'ovary bank no lab', '7132', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('47', '7132', 'C56.9', '', '', 'endométriose / endométriome', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7132', NULL, 3904, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7132', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('205', '30597', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q109', '1955-02-27', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7', NULL, 7133, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q109', 'other center patient number', '7133', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5138', 'ovary bank no lab', '7133', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('54', '7133', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7133', NULL, 3905, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7133', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('22', '30598', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q110', '1949-11-09', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('8', NULL, 7134, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q110', 'other center patient number', '7134', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5139', 'ovary bank no lab', '7134', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('60', '7134', 'C56.9', '', '', 'sarcome ovarien', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7134', NULL, 3906, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7134', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('23', '30599', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q111', '1964-06-01', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('9', NULL, 7135, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q111', 'other center patient number', '7135', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5140', 'ovary bank no lab', '7135', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('45', '7135', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7135', NULL, 3907, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7135', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('473', '30600', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q112', '1952-07-15', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('10', NULL, 7136, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q112', 'other center patient number', '7136', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5141', 'ovary bank no lab', '7136', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('57', '7136', 'C56.9', '', '', 'carcinome à cellules claires', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7136', NULL, 3908, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7136', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('22', '30601', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q113', '1946-06-21', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('11', NULL, 7137, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q113', 'other center patient number', '7137', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5142', 'ovary bank no lab', '7137', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('63', '7137', 'C56.9', '', '', 'struma ovarii', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7137', NULL, 3909, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7137', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('191', '30602', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q114', '1939-02-05', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('12', NULL, 7138, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q114', 'other center patient number', '7138', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5143', 'ovary bank no lab', '7138', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('70', '7138', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7138', NULL, 3910, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7138', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('65', '30603', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q115', '1937-01-06', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('13', NULL, 7139, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q115', 'other center patient number', '7139', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q116', 'other center patient number', '7139', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5144', 'ovary bank no lab', '7139', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5145', 'ovary bank no lab', '7139', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('73', '7139', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7139', NULL, 3911, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7139', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('11', '30604', NOW(), 1, NOW(), 1);
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7139', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('', '30605', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q117', '1929-06-12', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('15', NULL, 7140, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q117', 'other center patient number', '7140', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5146', 'ovary bank no lab', '7140', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('80', '7140', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7140', NULL, 3912, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7140', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('102', '30606', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q118', '1946-06-05', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('16', NULL, 7141, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q118', 'other center patient number', '7141', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5147', 'ovary bank no lab', '7141', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('63', '7141', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7141', NULL, 3913, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7141', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('743', '30607', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q119', '1969-06-08', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('17', NULL, 7142, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q119', 'other center patient number', '7142', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5148', 'ovary bank no lab', '7142', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('40', '7142', 'C56.9', '', '', 'endométriose / endométriome', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7142', NULL, 3914, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7142', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('100', '30608', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q120', '1964-04-04', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('18', NULL, 7143, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q120', 'other center patient number', '7143', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5149', 'ovary bank no lab', '7143', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('45', '7143', 'C54.1', '', '', 'fibrome bénin', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7143', NULL, 3915, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7143', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('48', '30609', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q121', '1941-12-02', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('19', NULL, 7144, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q121', 'other center patient number', '7144', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5150', 'ovary bank no lab', '7144', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('68', '7144', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7144', NULL, 3916, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7144', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('4', '30610', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q122', '1943-07-08', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('20', NULL, 7145, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q122', 'other center patient number', '7145', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5151', 'ovary bank no lab', '7145', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('66', '7145', 'C54.1', '', '', 'carcinome séropapillaire', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7145', NULL, 3917, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7145', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('12', '30611', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q123', '1951-07-06', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('21', NULL, 7146, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q123', 'other center patient number', '7146', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5152', 'ovary bank no lab', '7146', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('58', '7146', 'C56.9', '', '', 'carcinome endométrioide', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7146', NULL, 3918, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7146', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('45', '30612', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q124', '1938-09-23', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('22', NULL, 7147, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q124', 'other center patient number', '7147', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5153', 'ovary bank no lab', '7147', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('71', '7147', 'C56.9', '', '', 'tératome bénin', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7147', NULL, 3919, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7147', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('22', '30613', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q126', '1961-07-17', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('23', NULL, 7148, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q126', 'other center patient number', '7148', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5154', 'ovary bank no lab', '7148', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('48', '7148', 'C54.1', '', '', 'carcinome endométrioide', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7148', NULL, 3920, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7148', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('25', '30614', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q127', '1957-04-10', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('24', NULL, 7149, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q127', 'other center patient number', '7149', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5155', 'ovary bank no lab', '7149', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('52', '7149', 'C56.9', '', '', 'tumeur borderline séreuse', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7149', NULL, 3921, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7149', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('231', '30615', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q128', '1963-09-29', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('25', NULL, 7150, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q128', 'other center patient number', '7150', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5156', 'ovary bank no lab', '7150', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('46', '7150', 'C56.9', '', '', 'carcinome endométrioide', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7150', NULL, 3922, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7150', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('646', '30616', NOW(), 1, NOW(), 1);
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7150', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('', '30617', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q129', '1959-09-21', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('27', NULL, 7151, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q129', 'other center patient number', '7151', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5157', 'ovary bank no lab', '7151', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('50', '7151', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7151', NULL, 3923, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7151', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('7', '30618', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q130', '1959-08-15', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('28', NULL, 7152, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q130', 'other center patient number', '7152', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5158', 'ovary bank no lab', '7152', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('50', '7152', 'C48.2', '', '', 'pseudopkyste péritonéal', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7152', NULL, 3924, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7152', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('8', '30619', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q131', '1953-06-09', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('29', NULL, 7153, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q131', 'other center patient number', '7153', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5159', 'ovary bank no lab', '7153', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('56', '7153', '', '', '', 'hydrosalpinx / hématosalpinx', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7153', NULL, 3925, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7153', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('12', '30620', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q132', '1953-09-09', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('30', NULL, 7154, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q132', 'other center patient number', '7154', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5160', 'ovary bank no lab', '7154', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('56', '7154', 'C56.9', '', '', 'fibrome / adénofibrome / thécome', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7154', NULL, 3926, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7154', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('12', '30621', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q134', '1962-07-29', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('31', NULL, 7155, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q134', 'other center patient number', '7155', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5161', 'ovary bank no lab', '7155', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('47', '7155', 'C56.9', '', '', 'carcinome mucineux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7155', NULL, 3927, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7155', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('144', '30622', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q135', '1956-04-12', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('32', NULL, 7156, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q135', 'other center patient number', '7156', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5162', 'ovary bank no lab', '7156', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('53', '7156', 'C56.9', '', '', 'tératome bénin', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7156', NULL, 3928, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7156', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('29', '30623', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q136', '1952-01-07', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('33', NULL, 7157, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q136', 'other center patient number', '7157', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5163', 'ovary bank no lab', '7157', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('58', '7157', 'C56.9', '', '', 'sarcome ovarien', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7157', NULL, 3929, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7157', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('506', '30624', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q137', '1961-07-07', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('34', NULL, 7158, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q137', 'other center patient number', '7158', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5164', 'ovary bank no lab', '7158', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('48', '7158', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7158', NULL, 3930, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7158', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('871', '30625', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q138', '1962-10-30', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('36', NULL, 7159, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q138', 'other center patient number', '7159', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5165', 'ovary bank no lab', '7159', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('47', '7159', 'C56.9', '', '', 'fibrome / adénofibrome / thécome', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7159', NULL, 3931, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7159', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('49', '30626', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q139', '1938-02-03', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('37', NULL, 7160, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q139', 'other center patient number', '7160', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5166', 'ovary bank no lab', '7160', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('72', '7160', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7160', NULL, 3932, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7160', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('127', '30627', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q140', '1953-01-10', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('38', NULL, 7161, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q140', 'other center patient number', '7161', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5167', 'ovary bank no lab', '7161', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('57', '7161', 'C56.9', '', '', 'endométriose / endométriome', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7161', NULL, 3933, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7161', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('286', '30628', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q141', '1946-07-12', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('39', NULL, 7162, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q141', 'other center patient number', '7162', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5168', 'ovary bank no lab', '7162', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('63', '7162', 'C56.9', '', '', 'carcinome endométrioide', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7162', NULL, 3934, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7162', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('73', '30629', NOW(), 1, NOW(), 1);
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7162', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('', '30630', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q142', '1964-03-31', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('41', NULL, 7163, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q142', 'other center patient number', '7163', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q143', 'other center patient number', '7163', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5169', 'ovary bank no lab', '7163', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5170', 'ovary bank no lab', '7163', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('45', '7163', 'C56.9', '', '', 'tératome bénin', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7163', NULL, 3935, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7163', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('27', '30631', NOW(), 1, NOW(), 1);
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7163', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('', '30632', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q147', '1936-10-10', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('43', NULL, 7164, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q147', 'other center patient number', '7164', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5171', 'ovary bank no lab', '7164', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('73', '7164', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7164', NULL, 3936, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7164', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('198', '30633', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q148', '1950-04-27', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('44', NULL, 7165, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q148', 'other center patient number', '7165', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q149', 'other center patient number', '7165', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5172', 'ovary bank no lab', '7165', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5173', 'ovary bank no lab', '7165', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('59', '7165', 'C56.9', '', '', 'cystadénome mucineux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7165', NULL, 3937, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7165', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('31', '30634', NOW(), 1, NOW(), 1);
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7165', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('', '30635', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q150', '1937-01-18', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('46', NULL, 7166, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q150', 'other center patient number', '7166', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5174', 'ovary bank no lab', '7166', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('73', '7166', 'C56.9', '', '', 'carcinome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7166', NULL, 3938, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7166', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('148', '30636', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q151', '1936-01-01', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('47', NULL, 7167, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q151', 'other center patient number', '7167', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5175', 'ovary bank no lab', '7167', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('74', '7167', '', '', '', 'cancer du sein primaire métastatique', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7167', NULL, 3939, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7167', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('36', '30637', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q152', '1923-12-18', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('48', NULL, 7168, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q152', 'other center patient number', '7168', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5176', 'ovary bank no lab', '7168', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('86', '7168', 'C56.9', '', '', 'cystadénome séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7168', NULL, 3940, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7168', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('75', '30638', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q154', '1950-06-23', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('49', NULL, 7169, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q154', 'other center patient number', '7169', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5177', 'ovary bank no lab', '7169', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('59', '7169', 'C56.9', '', '', 'tumeur borderline mucineuse', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7169', NULL, 3941, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7169', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('13', '30639', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q155', '1940-08-09', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('50', NULL, 7170, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q155', 'other center patient number', '7170', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5178', 'ovary bank no lab', '7170', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('69', '7170', 'C56.9', '', '', 'tératome bénin', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7170', NULL, 3942, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7170', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('37', '30640', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'Q157', '1954-11-20', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('51', NULL, 7171, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('Q157', 'other center patient number', '7171', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5179', 'ovary bank no lab', '7171', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('55', '7171', 'C56.9', '', '', 'tératome bénin', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7171', NULL, 3943, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7171', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('12', '30641', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV675', '1945-09-27', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('53', NULL, 7172, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV675', 'other center patient number', '7172', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5180', 'ovary bank no lab', '7172', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7172', 'C56.9', '', 'bilateral', 'Séreux papillaire', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7172', NULL, 3944, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7172', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('9,0', '30642', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV687', '1944-02-14', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('54', NULL, 7173, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV687', 'other center patient number', '7173', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5181', 'ovary bank no lab', '7173', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7173', 'C56.9', '', 'right', 'Séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7173', NULL, 3945, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7173', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('ND', '30643', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV690', '1969-03-27', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('55', NULL, 7174, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV690', 'other center patient number', '7174', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5182', 'ovary bank no lab', '7174', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7174', 'C56.9', '', 'right', 'Séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7174', NULL, 3946, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7174', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('242,2', '30644', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV697', '1938-03-17', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('56', NULL, 7175, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV697', 'other center patient number', '7175', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5183', 'ovary bank no lab', '7175', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7175', 'C56.9', '', 'left', 'Mucineux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7175', NULL, 3947, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7175', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('62,1', '30645', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV701', '1965-07-02', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('57', NULL, 7176, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV701', 'other center patient number', '7176', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5184', 'ovary bank no lab', '7176', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7176', 'C56.9', '', 'right', 'Mixte', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7176', NULL, 3948, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7176', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('101,4', '30646', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV712', '1920-09-01', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('58', NULL, 7177, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV712', 'other center patient number', '7177', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5185', 'ovary bank no lab', '7177', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7177', 'C56.9', '', 'left', 'Séreux papillaire', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7177', NULL, 3949, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7177', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('639,2', '30647', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV717', '1942-12-18', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('59', NULL, 7178, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV717', 'other center patient number', '7178', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5186', 'ovary bank no lab', '7178', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7178', 'C56.9', '', 'right', 'Mucineux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7178', NULL, 3950, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7178', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('23,5', '30648', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV737', '1952-09-15', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('60', NULL, 7179, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV737', 'other center patient number', '7179', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5187', 'ovary bank no lab', '7179', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7179', 'C56.9', '', 'bilateral', 'Séreux papillaire', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7179', NULL, 3951, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7179', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('150,8', '30649', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV740', '1942-04-26', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('61', NULL, 7180, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV740', 'other center patient number', '7180', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5188', 'ovary bank no lab', '7180', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7180', 'C56.9', '', 'right', 'Séreux papillaire', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7180', NULL, 3952, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7180', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('2173,0', '30650', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV747', '1961-12-20', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('62', NULL, 7181, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV747', 'other center patient number', '7181', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5189', 'ovary bank no lab', '7181', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7181', 'C56.9', '', 'right', 'Séreux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7181', NULL, 3953, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7181', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('16,9', '30651', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV760', '1937-12-14', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('63', NULL, 7182, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV760', 'other center patient number', '7182', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5190', 'ovary bank no lab', '7182', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7182', 'C56.9', '', 'right', 'Mucineux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7182', NULL, 3954, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7182', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('147,0', '30652', NOW(), 1, NOW(), 1);
+INSERT INTO participants (first_name, last_name, date_of_birth, created, created_by, modified, modified_by) VALUES('MDEIE', 'OV779', '1933-06-17', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('64', NULL, 7183, 'participants');
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('OV779', 'other center patient number', '7183', NOW(), 1, NOW(), 1);
+INSERT INTO misc_identifiers (identifier_value, name, participant_id, created, created_by, modified, modified_by) VALUES('5191', 'ovary bank no lab', '7183', NOW(), 1, NOW(), 1);
+INSERT INTO diagnoses (age_at_dx, participant_id, icd10_id, grade, laterality, sardo_morpho_desc, stade_figo, created, created_by, modified, modified_by) VALUES('', '7183', 'C56.9', '', 'bilateral', 'Mucineux', '', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7183', NULL, 3955, 'diagnoses');
+INSERT INTO event_masters (participant_id, event_group, event_type, form_alias, detail_tablename, created, created_by, modified, modified_by) VALUES('7183', 'lab', 'lab blood report', 'ed_lab_blood_report', 'ed_lab_blood_report', NOW(), 1, NOW(), 1);
+INSERT INTO ed_lab_blood_report (ca_125, event_master_id, created, created_by, modified, modified_by) VALUES('213,3', '30653', NOW(), 1, NOW(), 1);
+INSERT INTO collections (acquisition_label, bank, collection_site, collection_datetime, collection_property, reception_by, reception_datetime, created, created_by, modified, modified_by) VALUES('5133 2009-12-01 Q103', 'Ovary', 'CHUQ', '2009-12-01 07:20', 'participant collection', 'Lilliane Meunier', '2009-12-01 07:40', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('1', '1', 9088, 'collections');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9088', '', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49596', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=49596;
+INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49596, 49596, 1, NOW(), 1, NOW());
+UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=49596;
+UPDATE sample_masters SET initial_specimen_sample_id=49596 WHERE id=49596;
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('blood_cells_tmp', '49596', 'Blood Cells', '7', 'derivative', 'blood', '9088', '49596', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_blood_cells (sample_master_id, created, created_by, modified, modified_by) VALUES('49597', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49597', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('BLD-C S - bankid EDTA'), sample_code=CONCAT('BLC-C - ', id) WHERE id=49597;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9088', '49597', '1,8', '1,8', 'ml', '21', '1', '', '', 'Q103 2009-12-01', 'tube', '7', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77926', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77926', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCBUFFC-2') WHERE id=77926 AND (barcode IS NULL OR barcode='');
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '49596', 'plasma', '9', 'derivative', 'blood', '9088', '49596', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('49598', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49598', NOW(), 1, NOW(), 1);
+UPDATE sd_der_plasmas SET id=sample_master_id WHERE sample_master_id=49598;
+REPLACE INTO derivative_details (`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49598, 49598, 1, NOW(), 1, NOW());
+UPDATE sample_masters SET sample_label=CONCAT('PLS S - bankid EDTA'), sample_code=CONCAT('PLS - ', id) WHERE id=49598;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9088', '49598', '1,8', '1,8', 'ml', '21', '55', 'available', 'reserved for study', '5133 2009-12-01 Q103', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77927', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77927', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77927 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9088', '49598', '1,8', '1,8', 'ml', '21', '56', 'available', 'reserved for study', '5133 2009-12-01 Q103', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77928', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77928', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77928 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9088', '49598', '1,8', '1,8', 'ml', '21', '57', 'available', 'reserved for study', '5133 2009-12-01 Q103', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77929', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77929', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77929 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9088', '49598', '1,8', '1,8', 'ml', '21', '58', 'available', 'reserved for study', '5133 2009-12-01 Q103', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77930', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77930', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77930 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9088', '49598', '1,8', '1,8', 'ml', '21', '59', 'available', 'reserved for study', '5133 2009-12-01 Q103', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77931', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77931', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77931 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9088', '49598', '1,8', '1,8', 'ml', '21', '60', 'available', 'reserved for study', '5133 2009-12-01 Q103', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77932', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77932', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77932 AND (barcode IS NULL OR barcode='');
+INSERT INTO collections (acquisition_label, bank, collection_site, collection_datetime, collection_property, reception_by, reception_datetime, created, created_by, modified, modified_by) VALUES('5134 2010-01-14 Q104', 'Ovary', 'CHUQ', '2010-01-14 11:15', 'participant collection', 'Lilliane Meunier', '2010-01-14 11:34', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('2', '2', 9089, 'collections');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9089', '', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49599', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=49599;
+INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49599, 49599, 1, NOW(), 1, NOW());
+UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=49599;
+UPDATE sample_masters SET initial_specimen_sample_id=49599 WHERE id=49599;
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('blood_cells_tmp', '49599', 'Blood Cells', '7', 'derivative', 'blood', '9089', '49599', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_blood_cells (sample_master_id, created, created_by, modified, modified_by) VALUES('49600', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49600', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('BLD-C S - bankid EDTA'), sample_code=CONCAT('BLC-C - ', id) WHERE id=49600;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9089', '49600', '1,8', '1,8', 'ml', '21', '2', '', '', 'Q104 2010-01-14', 'tube', '7', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77933', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77933', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCBUFFC-2') WHERE id=77933 AND (barcode IS NULL OR barcode='');
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '49599', 'plasma', '9', 'derivative', 'blood', '9089', '49599', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('49601', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49601', NOW(), 1, NOW(), 1);
+UPDATE sd_der_plasmas SET id=sample_master_id WHERE sample_master_id=49601;
+REPLACE INTO derivative_details (`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49601, 49601, 1, NOW(), 1, NOW());
+UPDATE sample_masters SET sample_label=CONCAT('PLS S - bankid EDTA'), sample_code=CONCAT('PLS - ', id) WHERE id=49601;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9089', '49601', '1,8', '1,8', 'ml', '21', '61', 'available', 'reserved for study', '5134 2010-01-14 Q104', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77934', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77934', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77934 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9089', '49601', '1,8', '1,8', 'ml', '21', '62', 'available', 'reserved for study', '5134 2010-01-14 Q104', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77935', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77935', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77935 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9089', '49601', '1,8', '1,8', 'ml', '21', '63', 'available', 'reserved for study', '5134 2010-01-14 Q104', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77936', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77936', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77936 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9089', '49601', '1,8', '1,8', 'ml', '21', '64', 'available', 'reserved for study', '5134 2010-01-14 Q104', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77937', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77937', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77937 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9089', '49601', '1,8', '1,8', 'ml', '21', '65', 'available', 'reserved for study', '5134 2010-01-14 Q104', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77938', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77938', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77938 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9089', '49601', '1,8', '1,8', 'ml', '21', '66', 'available', 'reserved for study', '5134 2010-01-14 Q104', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77939', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77939', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77939 AND (barcode IS NULL OR barcode='');
+INSERT INTO collections (acquisition_label, bank, collection_site, collection_datetime, collection_property, reception_by, reception_datetime, created, created_by, modified, modified_by) VALUES('5135 2009-12-08 Q105', 'Ovary', 'CHUQ', '2009-12-08 08:00', 'participant collection', 'Lilliane Meunier', '2009-12-08 08:03', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('3', '3', 9090, 'collections');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9090', 'Chimiothérapie néoadjuvante reçue', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49602', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=49602;
+INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49602, 49602, 1, NOW(), 1, NOW());
+UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=49602;
+UPDATE sample_masters SET initial_specimen_sample_id=49602 WHERE id=49602;
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('blood_cells_tmp', '49602', 'Blood Cells', '7', 'derivative', 'blood', '9090', '49602', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_blood_cells (sample_master_id, created, created_by, modified, modified_by) VALUES('49603', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49603', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('BLD-C S - bankid EDTA'), sample_code=CONCAT('BLC-C - ', id) WHERE id=49603;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9090', '49603', '1,8', '1,8', 'ml', '21', '3', '', '', 'Q105 2009-12-08', 'tube', '7', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77940', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77940', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCBUFFC-2') WHERE id=77940 AND (barcode IS NULL OR barcode='');
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '49602', 'plasma', '9', 'derivative', 'blood', '9090', '49602', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('49604', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49604', NOW(), 1, NOW(), 1);
+UPDATE sd_der_plasmas SET id=sample_master_id WHERE sample_master_id=49604;
+REPLACE INTO derivative_details (`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49604, 49604, 1, NOW(), 1, NOW());
+UPDATE sample_masters SET sample_label=CONCAT('PLS S - bankid EDTA'), sample_code=CONCAT('PLS - ', id) WHERE id=49604;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9090', '49604', '1,8', '1,8', 'ml', '21', '67', 'available', 'reserved for study', '5135 2009-12-08 Q105', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77941', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77941', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77941 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9090', '49604', '1,8', '1,8', 'ml', '21', '68', 'available', 'reserved for study', '5135 2009-12-08 Q105', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77942', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77942', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77942 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9090', '49604', '1,8', '1,8', 'ml', '21', '69', 'available', 'reserved for study', '5135 2009-12-08 Q105', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77943', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77943', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77943 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9090', '49604', '1,8', '1,8', 'ml', '21', '70', 'available', 'reserved for study', '5135 2009-12-08 Q105', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77944', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77944', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77944 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9090', '49604', '1,8', '1,8', 'ml', '21', '71', 'available', 'reserved for study', '5135 2009-12-08 Q105', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77945', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77945', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77945 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9090', '49604', '1,8', '1,8', 'ml', '21', '72', 'available', 'reserved for study', '5135 2009-12-08 Q105', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77946', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77946', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77946 AND (barcode IS NULL OR barcode='');
+INSERT INTO collections (acquisition_label, bank, collection_site, collection_datetime, collection_property, reception_by, reception_datetime, created, created_by, modified, modified_by) VALUES('5136 2009-12-11 Q107', 'Ovary', 'CHUQ', '09-12-11', 'participant collection', 'Lilliane Meunier', '2009-12-11 09:00', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('4', '4', 9091, 'collections');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9091', '', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49605', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=49605;
+INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49605, 49605, 1, NOW(), 1, NOW());
+UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=49605;
+UPDATE sample_masters SET initial_specimen_sample_id=49605 WHERE id=49605;
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('blood_cells_tmp', '49605', 'Blood Cells', '7', 'derivative', 'blood', '9091', '49605', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_blood_cells (sample_master_id, created, created_by, modified, modified_by) VALUES('49606', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49606', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('BLD-C S - bankid EDTA'), sample_code=CONCAT('BLC-C - ', id) WHERE id=49606;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9091', '49606', '1,8', '1,8', 'ml', '21', '4', '', '', 'Q107 2009-12-11', 'tube', '7', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77947', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77947', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCBUFFC-2') WHERE id=77947 AND (barcode IS NULL OR barcode='');
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '49605', 'plasma', '9', 'derivative', 'blood', '9091', '49605', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('49607', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49607', NOW(), 1, NOW(), 1);
+UPDATE sd_der_plasmas SET id=sample_master_id WHERE sample_master_id=49607;
+REPLACE INTO derivative_details (`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49607, 49607, 1, NOW(), 1, NOW());
+UPDATE sample_masters SET sample_label=CONCAT('PLS S - bankid EDTA'), sample_code=CONCAT('PLS - ', id) WHERE id=49607;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9091', '49607', '1,8', '1,8', 'ml', '21', '73', 'available', 'reserved for study', '5136 2009-12-11 Q107', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77948', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77948', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77948 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9091', '49607', '1,8', '1,8', 'ml', '21', '74', 'available', 'reserved for study', '5136 2009-12-11 Q107', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77949', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77949', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77949 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9091', '49607', '1,8', '1,8', 'ml', '21', '75', 'available', 'reserved for study', '5136 2009-12-11 Q107', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77950', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77950', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77950 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9091', '49607', '1,8', '1,8', 'ml', '21', '76', 'available', 'reserved for study', '5136 2009-12-11 Q107', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77951', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77951', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77951 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9091', '49607', '1,8', '1,8', 'ml', '21', '77', 'available', 'reserved for study', '5136 2009-12-11 Q107', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77952', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77952', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77952 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9091', '49607', '1,8', '1,8', 'ml', '21', '78', 'available', 'reserved for study', '5136 2009-12-11 Q107', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77953', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77953', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77953 AND (barcode IS NULL OR barcode='');
+INSERT INTO collections (acquisition_label, bank, collection_site, collection_datetime, collection_property, reception_by, reception_datetime, created, created_by, modified, modified_by) VALUES('5137 2009-12-18 Q108', 'Ovary', 'CHUQ', '2009-12-18 08:15', 'participant collection', 'Lilliane Meunier', '2009-12-18 08:26', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('5', '5', 9092, 'collections');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9092', '', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49608', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=49608;
+INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49608, 49608, 1, NOW(), 1, NOW());
+UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=49608;
+UPDATE sample_masters SET initial_specimen_sample_id=49608 WHERE id=49608;
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('blood_cells_tmp', '49608', 'Blood Cells', '7', 'derivative', 'blood', '9092', '49608', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_blood_cells (sample_master_id, created, created_by, modified, modified_by) VALUES('49609', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49609', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('BLD-C S - bankid EDTA'), sample_code=CONCAT('BLC-C - ', id) WHERE id=49609;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9092', '49609', '1,8', '1,8', 'ml', '21', '5', '', '', 'Q108 2009-12-18', 'tube', '7', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77954', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77954', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCBUFFC-2') WHERE id=77954 AND (barcode IS NULL OR barcode='');
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '49608', 'plasma', '9', 'derivative', 'blood', '9092', '49608', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('49610', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49610', NOW(), 1, NOW(), 1);
+UPDATE sd_der_plasmas SET id=sample_master_id WHERE sample_master_id=49610;
+REPLACE INTO derivative_details (`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49610, 49610, 1, NOW(), 1, NOW());
+UPDATE sample_masters SET sample_label=CONCAT('PLS S - bankid EDTA'), sample_code=CONCAT('PLS - ', id) WHERE id=49610;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9092', '49610', '1,8', '1,8', 'ml', '21', '79', 'available', 'reserved for study', '5137 2009-12-18 Q108', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77955', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77955', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77955 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9092', '49610', '1,8', '1,8', 'ml', '21', '80', 'available', 'reserved for study', '5137 2009-12-18 Q108', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77956', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77956', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77956 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9092', '49610', '1,8', '1,8', 'ml', '21', '81', 'available', 'reserved for study', '5137 2009-12-18 Q108', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77957', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77957', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-SHBKPLSM-5') WHERE id=77957 AND (barcode IS NULL OR barcode='');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9092', '', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49611', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=49611;
+INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49611, 49611, 1, NOW(), 1, NOW());
+UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=49611;
+UPDATE sample_masters SET initial_specimen_sample_id=49611 WHERE id=49611;
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '49611', 'plasma', '9', 'derivative', 'blood', '9092', '49611', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('49612', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49612', NOW(), 1, NOW(), 1);
+UPDATE sd_der_plasmas SET id=sample_master_id WHERE sample_master_id=49612;
+REPLACE INTO derivative_details (`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49612, 49612, 1, NOW(), 1, NOW());
+UPDATE sample_masters SET sample_label=CONCAT('PLS S - bankid EDTA'), sample_code=CONCAT('PLS - ', id) WHERE id=49612;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9092', '49612', '1,8', '1,8', 'ml', '21', '1', 'available', 'reserved for study', '  ', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77958', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77958', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77958 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9092', '49612', '1,8', '1,8', 'ml', '21', '2', 'available', 'reserved for study', '  ', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77959', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77959', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77959 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9092', '49612', '1,8', '1,8', 'ml', '21', '3', 'available', 'reserved for study', '  ', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77960', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77960', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77960 AND (barcode IS NULL OR barcode='');
+INSERT INTO collections (acquisition_label, bank, collection_site, collection_datetime, collection_property, reception_by, reception_datetime, created, created_by, modified, modified_by) VALUES('5138 2010-01-05 Q109', 'Ovary', 'CHUQ', '2010-01-05 09:00', 'participant collection', 'Lilliane Meunier', '2010-01-05 09:00', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('7', '7', 9093, 'collections');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9093', 'Chimiothérapie néoadjuvante reçue', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49613', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=49613;
+INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49613, 49613, 1, NOW(), 1, NOW());
+UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=49613;
+UPDATE sample_masters SET initial_specimen_sample_id=49613 WHERE id=49613;
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('blood_cells_tmp', '49613', 'Blood Cells', '7', 'derivative', 'blood', '9093', '49613', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_blood_cells (sample_master_id, created, created_by, modified, modified_by) VALUES('49614', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49614', NOW(), 1, NOW(), 1);
+UPDATE sample_masters SET sample_label=CONCAT('BLD-C S - bankid EDTA'), sample_code=CONCAT('BLC-C - ', id) WHERE id=49614;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9093', '49614', '1,8', '1,8', 'ml', '21', '6', '', '', 'Q109 2010-01-05', 'tube', '7', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77961', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77961', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCBUFFC-2') WHERE id=77961 AND (barcode IS NULL OR barcode='');
+INSERT INTO sample_masters (sample_code, parent_id, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, collection_id, initial_specimen_sample_id, created, created_by, modified, modified_by) VALUES('plasma_tmp', '49613', 'plasma', '9', 'derivative', 'blood', '9093', '49613', NOW(), 1, NOW(), 1);
+INSERT INTO sd_der_plasmas (sample_master_id, created, created_by, modified, modified_by) VALUES('49615', NOW(), 1, NOW(), 1);
+INSERT INTO derivative_details (sample_master_id, created, created_by, modified, modified_by) VALUES('49615', NOW(), 1, NOW(), 1);
+UPDATE sd_der_plasmas SET id=sample_master_id WHERE sample_master_id=49615;
+REPLACE INTO derivative_details (`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(49615, 49615, 1, NOW(), 1, NOW());
+UPDATE sample_masters SET sample_label=CONCAT('PLS S - bankid EDTA'), sample_code=CONCAT('PLS - ', id) WHERE id=49615;
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9093', '49615', '1,8', '1,8', 'ml', '21', '4', 'available', 'reserved for study', '5138 2010-01-05 Q109', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77962', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77962', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77962 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9093', '49615', '1,8', '1,8', 'ml', '21', '5', 'available', 'reserved for study', '5138 2010-01-05 Q109', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77963', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77963', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77963 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9093', '49615', '1,8', '1,8', 'ml', '21', '6', 'available', 'reserved for study', '5138 2010-01-05 Q109', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77964', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77964', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77964 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9093', '49615', '1,8', '1,8', 'ml', '21', '7', 'available', 'reserved for study', '5138 2010-01-05 Q109', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77965', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77965', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77965 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9093', '49615', '1,8', '1,8', 'ml', '21', '8', 'available', 'reserved for study', '5138 2010-01-05 Q109', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77966', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77966', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77966 AND (barcode IS NULL OR barcode='');
+INSERT INTO aliquot_masters (collection_id, sample_master_id, initial_volume, current_volume, aliquot_volume_unit, study_summary_id, storage_coord_x, status, status_reason, aliquot_label, aliquot_type, aliquot_control_id, created, created_by, modified, modified_by) VALUES('9093', '49615', '1,8', '1,8', 'ml', '21', '9', 'available', 'reserved for study', '5138 2010-01-05 Q109', 'tube', '8', NOW(), 1, NOW(), 1);
+INSERT INTO ad_tubes (aliquot_master_id, created, created_by, modified, modified_by) VALUES('77967', NOW(), 1, NOW(), 1);
+UPDATE aliquot_masters SET barcode='autogen 77967', storage_master_id=(SELECT id FROM storage_masters WHERE selection_label='84-3-3-QCPLSM-8') WHERE id=77967 AND (barcode IS NULL OR barcode='');
+INSERT INTO collections (acquisition_label, bank, collection_site, collection_datetime, collection_property, reception_by, reception_datetime, created, created_by, modified, modified_by) VALUES('5139 2009-12-21 Q110', 'Ovary', 'CHUQ', '2009-12-21 09:30', 'participant collection', 'Lilliane Meunier', '2009-12-21 10:24', NOW(), 1, NOW(), 1);
+INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('8', '8', 9094, 'collections');
+INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES('9094', '', 'blood', '2', 'specimen', 'blood', NOW(), 1, NOW(), 1);
+Array
+(
+    [app_data] => Array
+        (
+            [pkey] => sample_id
+            [file] => /Users/francois-michellheureux/Documents/Jen/import.csv
+            [additional_queries] => Array
+                (
+                    [0] => UPDATE sample_masters SET sample_label=CONCAT('S - bankid EDTA'),  sample_code=CONCAT('B - ', id) WHERE id=%%last_master_insert_id%%
+                    [1] => INSERT INTO specimen_details(`id`, `sample_master_id`, `created_by`, `created`, `modified`, `modified_by`) VALUES(%%last_master_insert_id%%, %%last_master_insert_id%%, 1, NOW(), 1, NOW())
+                    [2] => UPDATE sd_spe_bloods SET id=sample_master_id WHERE sample_master_id=%%last_master_insert_id%%
+                    [3] => UPDATE sample_masters SET initial_specimen_sample_id=%%last_master_insert_id%% WHERE id=%%last_master_insert_id%%
+                )
+
+            [child] => Array
+                (
+                    [0] => sd_der_blood_cells
+                    [1] => sd_der_plasmas
+                    [2] => sd_der_pbmcs
+                    [3] => sd_der_serums
+                )
+
+            [master_table_name] => sample_masters
+            [detail_table_name] => sd_spe_bloods
+            [detail_parent_key] => sample_master_id
+            [parent_key] => collection_id
+            [file_handler] => Resource id #26
+            [query_master_insert] => INSERT INTO sample_masters (collection_id, notes, sample_type, sample_control_id, sample_category, initial_specimen_sample_type, created, created_by, modified, modified_by) VALUES(
+            [query_detail_insert] => INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES(
+            [keys] => Array
+                (
+                    [0] => participant_id
+                    [1] => report_parent_id
+                    [2] => report_id
+                    [3] => sample_parent_id
+                    [4] => sample_id
+                    [5] => birthdate
+                    [6] => Date collection
+                    [7] => collection datetime
+                    [8] => reception datetime
+                    [9] => aliquot label
+                    [10] => MDEIE
+                    [11] => Received by Mtl
+                    [12] => Sender name
+                    [13] => Collection site
+                    [14] => collection site code
+                    [15] => study_id
+                    [16] => reception mtl
+                    [17] => Heure prel. Qc
+                    [18] => Heure reception Ã  Qc
+                    [19] => collected_blood_tubes
+                    [20] => Plasma # of aliquots
+                    [21] => Volume de chaque aliquot
+                    [22] => Unit
+                    [23] => Entreposage plasma
+                    [24] => Position plasma
+                    [25] => Blood cells # of tubes
+                    [26] => Entreposage blood
+                    [27] => Entreposage buffy coat
+                    [28] => Age au DX
+                    [29] => CA-125 au DX
+                    [30] => topo_desc
+                    [31] => icd10_id
+                    [32] => morpho_desc
+                    [33] => Grade
+                    [34] => Stade
+                    [35] => Lateralite
+                    [36] => Notes
+                    [37] => bank id
+                    [38] => acquisition_label
+                    [39] => pbmc_group_id
+                    [40] => pbmc_parent_id
+                    [41] => 
+                    [42] => Q103
+                    [43] => 2009-12-01
+                )
+
+            [line] => 8
+            [values] => Array
+                (
+                    [0] => 8
+                    [1] => 8
+                    [2] => 8
+                    [3] => 8
+                    [4] => 8
+                    [5] => 1949-11-09
+                    [6] => 2009-12-21
+                    [7] => 2009-12-21 09:30
+                    [8] => 2009-12-21 10:24
+                    [9] => Q110 2009-12-21
+                    [10] => Q110
+                    [11] => Lilliane Meunier
+                    [12] => Dimcho Bachvarov
+                    [13] => Québec
+                    [14] => CHUQ
+                    [15] => 21
+                    [16] => 28-juil-10
+                    [17] => 09:30
+                    [18] => 10:24
+                    [19] => 7
+                    [20] => 6
+                    [21] => 1,8
+                    [22] => mL
+                    [23] => 84-3-3-QCPLSM-8
+                    [24] => 10-15
+                    [25] => 1
+                    [26] => 84-3-3-QCBUFFC-2
+                    [27] => 7
+                    [28] => 60
+                    [29] => 23
+                    [30] => ovaire
+                    [31] => C56.9
+                    [32] => sarcome ovarien
+                    [33] => G3
+                    [34] => 2C
+                    [35] => 
+                    [36] => 
+                    [37] => 5139
+                    [38] => 5139 2009-12-21 Q110
+                    [39] => 7
+                    [40] => 8
+                    [41] => 
+                    [42] => Q111
+                    [43] => 2009-12-22
+                    [participant_id] => 8
+                    [report_parent_id] => 8
+                    [report_id] => 8
+                    [sample_parent_id] => 9094
+                    [sample_id] => 8
+                    [birthdate] => 1949-11-09
+                    [Date collection] => 2009-12-21
+                    [collection datetime] => 2009-12-21 09:30
+                    [reception datetime] => 2009-12-21 10:24
+                    [aliquot label] => Q110 2009-12-21
+                    [MDEIE] => Q110
+                    [Received by Mtl] => Lilliane Meunier
+                    [Sender name] => Dimcho Bachvarov
+                    [Collection site] => Québec
+                    [collection site code] => CHUQ
+                    [study_id] => 21
+                    [reception mtl] => 28-juil-10
+                    [Heure prel. Qc] => 09:30
+                    [Heure reception Ã  Qc] => 10:24
+                    [collected_blood_tubes] => 7
+                    [Plasma # of aliquots] => 6
+                    [Volume de chaque aliquot] => 1,8
+                    [Unit] => mL
+                    [Entreposage plasma] => 84-3-3-QCPLSM-8
+                    [Position plasma] => 10-15
+                    [Blood cells # of tubes] => 1
+                    [Entreposage blood] => 84-3-3-QCBUFFC-2
+                    [Entreposage buffy coat] => 7
+                    [Age au DX] => 60
+                    [CA-125 au DX] => 23
+                    [topo_desc] => ovaire
+                    [icd10_id] => C56.9
+                    [morpho_desc] => sarcome ovarien
+                    [Grade] => G3
+                    [Stade] => 2C
+                    [Lateralite] => 
+                    [Notes] => 
+                    [bank id] => 5139
+                    [acquisition_label] => 5139 2009-12-21 Q110
+                    [pbmc_group_id] => 7
+                    [pbmc_parent_id] => 8
+                    [] => 
+                    [Q103] => Q111
+                    [2009-12-01] => 2009-12-22
+                )
+
+            [parent_key_value] => 
+            [key before replace] => 8
+        )
+
+    [detail] => Array
+        (
+            [type] => @EDTA
+            [collected_tube_nbr] => 
+            [collected_volume] => 
+            [collected_volume_unit] => 
+            [sample_master_id] => @49616
+        )
+
+    [master] => Array
+        (
+            [sample_code] => 
+            [collection_id] => sample_parent_id
+            [sop_master_id] => 
+            [product_code] => 
+            [is_problematic] => 
+            [notes] => Notes
+            [sample_type] => @blood
+            [sample_control_id] => @2
+            [sample_category] => @specimen
+            [initial_specimen_sample_type] => @blood
+            [parent_id] => 
+        )
+
+)
+query failed[sd_spe_bloods][INSERT INTO sd_spe_bloods (type, sample_master_id, created, created_by, modified, modified_by) VALUES('EDTA', '49616', NOW(), 1, NOW(), 1)][1062: Duplicate entry '49596' for key 1]1

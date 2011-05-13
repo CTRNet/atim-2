@@ -1,112 +1,128 @@
 <?php
 error_reporting(E_ALL | E_STRICT);
-
 require_once("master_detail_model.php");
 require_once("commonFunctions.php");
-require_once("../atim_tf_prostate/dataImporterConfig/config.php");
-define("IS_XLS", $config['input type'] == "xls");
+
+
+//UPDATE THIS TO POINT TO YOUR CONFIG
+require_once("config.php");
+//-----------------------------------
+
+
+date_default_timezone_set(Config::$timezone);
+
+define("IS_XLS", Config::$input_type == Config::INPUT_TYPE_XLS);
 if(IS_XLS){
 	require_once 'Excel/reader.php';
 	$xls_reader = new Spreadsheet_Excel_Reader();
-	$xls_reader->read($config['xls input file']);
+	$xls_reader->read(Config::$xls_file_path);
 	
 }
 
 //init database connection
-global $connection;
-$connection = @mysqli_connect($database['ip'].":".$database['port'], $database['user'], $database['pwd']) or die("Could not connect to MySQL");
-if(!mysqli_set_charset($connection, $database['charset'])){
+$connection = @mysqli_connect(
+	Config::$db_ip.":".Config::$db_port, 
+	Config::$db_user, 
+	Config::$db_pwd
+) or die("Could not connect to MySQL");
+Config::$db_connection = $connection;
+
+if(!mysqli_set_charset($connection, Config::$db_charset)){
 	die("Invalid charset");
 }
-@mysqli_select_db($connection, $database['schema']) or die("db selection failed");
+@mysqli_select_db($connection, Config::$db_schema) or die("db selection failed");
 mysqli_autocommit($connection, false);
 
+//import configs
+foreach(Config::$config_files as $config_file){
+	require_once $config_file;
+}
 
 //validate each file exists and prep them
-foreach($tables as $ref_name => &$table){
-	if(strlen($table->file) > 0){
+foreach(Config::$models as $ref_name => &$model){
+	if(strlen($model->file) > 0){
 		if(IS_XLS){
-			if(!is_numeric($xls_reader->sheets[$table->file]['numRows'])){
-				die("Sheet for [".$ref_name."] does not exist. [".$table->file."]\n");
+			if(!is_numeric($xls_reader->sheets[$model->file]['numRows'])){
+				die("Sheet for [".$ref_name."] does not exist. [".$model->file."]\n");
 			}
-			$table->file_handler = $xls_reader->sheets[$table->file];
+			$model->file_handler = $xls_reader->sheets[$model->file];
 		}else{
-			if(!is_file($table->file)){
-				die("File for [".$ref_name."] does not exist. [".$table->file."]\n");
+			if(!is_file($model->file)){
+				die("File for [".$ref_name."] does not exist. [".$model->file."]\n");
 			}
-			$table->file_handler = fopen($table->file, 'r');
-			if(!$table->file_handler){
+			$model->file_handler = fopen($model->file, 'r');
+			if(!$model->file_handler){
 				die("fopen failed on ".$ref_name);
 			}
 		}
 		
-		$table->query_insert = " (".buildInsertQuery($table->fields);
- 	 	if($config['insertRevs']){
-			$table->query_insert_revs = "INSERT INTO ".$table->table."_revs".$table->query_insert.", `id`) VALUES(";
+		$model->query_insert = " (".buildInsertQuery($model->fields);
+ 	 	if(Config::$insert_revs){
+			$model->query_insert_revs = "INSERT INTO ".$model->table."_revs".$model->query_insert.", `id`) VALUES(";
  	 	}
- 	 	$table->query_insert = "INSERT INTO ".$table->table.$table->query_insert.") VALUES(";
-		if(is_a($table, "MasterDetailModel")){
-			if(is_array($table->detail_table)){
+ 	 	$model->query_insert = "INSERT INTO ".$model->table.$model->query_insert.") VALUES(";
+		if(is_a($model, "MasterDetailModel")){
+			if(is_array($model->detail_table)){
 				//prep for multi detail tables
-				foreach($table->detail_table as $key => $value){
-					$table->query_detail_insert[$key] = " (".buildInsertQuery($tables[$ref_name]['detail'][$key]);
-					if($config['insertRevs']){
-						$table->query_detail_insert_revs[$key] = "INSERT INTO ".$table->detail_table[$key]."_revs".$table->query_detail_insert[$key].", `id`) VALUES(";
+				foreach($model->detail_table as $key => $value){
+					$model->query_detail_insert[$key] = " (".buildInsertQuery($models[$ref_name]['detail'][$key]);
+					if(Config::$insert_revs){
+						$model->query_detail_insert_revs[$key] = "INSERT INTO ".$model->detail_table[$key]."_revs".$model->query_detail_insert[$key].", `id`) VALUES(";
 					}
-					$table->query_detail_insert[$key] = "INSERT INTO ".$table->detail_table[$key].$table->query_detail_insert[$key].") VALUES(";
+					$model->query_detail_insert[$key] = "INSERT INTO ".$model->detail_table[$key].$model->query_detail_insert[$key].") VALUES(";
 				}
 			}else{
 				//prep for single detail table
-				$table->query_detail_insert = " (".buildInsertQuery(array_merge($table->detail_fields, array($table->detail_master_fkey => "@")));
-				if($config['insertRevs']){
-					$table->query_detail_insert_revs = "INSERT INTO ".$table->detail_table."_revs".$table->query_detail_insert.", `id`) VALUES(";
+				$model->query_detail_insert = " (".buildInsertQuery(array_merge($model->detail_fields, array($model->detail_master_fkey => "@")));
+				if(Config::$insert_revs){
+					$model->query_detail_insert_revs = "INSERT INTO ".$model->detail_table."_revs".$model->query_detail_insert.", `id`) VALUES(";
 				}
-				$table->query_detail_insert = "INSERT INTO ".$table->detail_table.$table->query_detail_insert.") VALUES(";
+				$model->query_detail_insert = "INSERT INTO ".$model->detail_table.$model->query_detail_insert.") VALUES(";
 			}
 		}
 		if(IS_XLS){
-			if($config['xls header rows'] == 1){
-				$table->keys = $table->file_handler['cells'][1];
-				$table->line = 1;
-			}else if($config['xls header rows'] == 2){
-				$table->line = 2;
-				$table->keys = $table->file_handler['cells'][2];
-				foreach($table->file_handler['cells'][1] as $key => $title){
-					if(isset($table->keys[$key])){
-						$colspan = isset($table->file_handler['cellsInfo'][1][$key]) && is_numeric($table->file_handler['cellsInfo'][1][$key]['colspan']) ? $table->file_handler['cellsInfo'][1][$key]['colspan'] : 1; 
+			if(Config::$xls_header_rows == 1){
+				$model->keys = $model->file_handler['cells'][1];
+				$model->line = 1;
+			}else if(Config::$xls_header_rows == 2){
+				$model->line = 2;
+				$model->keys = $model->file_handler['cells'][2];
+				foreach($model->file_handler['cells'][1] as $key => $title){
+					if(isset($model->keys[$key])){
+						$colspan = isset($model->file_handler['cellsInfo'][1][$key]) && is_numeric($model->file_handler['cellsInfo'][1][$key]['colspan']) ? $model->file_handler['cellsInfo'][1][$key]['colspan'] : 1; 
 						for($i = $colspan - 1; $i >= 0; -- $i){
-							$table->keys[$key + $i] = $title." ".$table->keys[$key + $i]; 
+							$model->keys[$key + $i] = $title." ".$model->keys[$key + $i]; 
 						}
 					}else{
-						$table->keys[$key] = $title;
+						$model->keys[$key] = $title;
 					}
 				}
 			}else{
 				die("xls header rows config not supported");
 			}
 		}else{
-			$table->keys = lineToArray(fgets($table->file_handler, 4096));
-			$table->line = 0;
+			$model->keys = lineToArray(fgets($model->file_handler, 4096));
+			$model->line = 0;
 		}
 		
 		//check dupes
-		if(count(array_unique($table->keys)) != count($table->keys)){
+		if(count(array_unique($model->keys)) != count($model->keys)){
 			die("[".$ref_name."] contains duplicate row names\n");
 		}
 		
 		//check all non empty configured keys are found
 		$missing = array();
-		$tmp_fields = $table->fields;
-		if(is_a($table, "MasterDetailModel")){
-			$tmp_fields = array_merge($tmp_fields, $table->detail_fields);
+		$tmp_fields = $model->fields;
+		if(is_a($model, "MasterDetailModel")){
+			$tmp_fields = array_merge($tmp_fields, $model->detail_fields);
 		}
 
 		foreach($tmp_fields as $key => $val){
 			if(is_array($val)){
-				if(!in_array(key($val), $table->keys)){
+				if(!in_array(key($val), $model->keys)){
 					$missing[] = key($val);
 				}
-			}else if(strlen($val) > 0 && !in_array($val, $table->keys) && strpos($val, "@") !== 0){
+			}else if(strlen($val) > 0 && !in_array($val, $model->keys) && strpos($val, "@") !== 0 && strpos($val, "#") !== 0){
 				$missing[] = $val;
 			}
 		}
@@ -114,30 +130,36 @@ foreach($tables as $ref_name => &$table){
 			die("The following key(s) for [$ref_name] were not found: ".implode(", ", $missing)."\n");
 		}
 		
-		if($table->parent_key != null && !isset($table->fields[$table->parent_key])){
-			die("The parent key must be binded to a field for [".$table->file."]\n");
+		if($model->parent_key != null && !isset($model->fields[$model->parent_key])){
+			die("The parent key must be binded to a field for [".$model->file."]\n");
 		}
 		
-		readLine($table);
-		if(!empty($table->values) && !isset($table->values[$table->pkey])){
-			print_r($table->values);
-			die("Missing pkey [".$table->pkey."] in file [".$table->file."]\n");
+		readLine($model);
+		if(!empty($model->values) && !isset($model->values[$model->pkey])){
+			print_r($model->values);
+			die("Missing pkey [".$model->pkey."] in file [".$model->file."]\n");
 		}
 		
-		$result = mysqli_query($connection, "DESC ".$table->table) or die("table desc failed for [".$table->table."]\n");
+		$result = mysqli_query($connection, "DESC ".$model->table) or die("table desc failed for [".$model->table."]\n");
 		while($row = mysqli_fetch_row($result)){
-			$table->schema[$row[0]] = array("type" => $row[1], "null" => $row[2] == "YES");
+			$model->schema[$row[0]] = array("type" => $row[1], "null" => $row[2] == "YES");
 		}
-		if(is_a($table, "MasterDetailModel")){
-			$result = mysqli_query($connection, "DESC ".$table->detail_table) or die("table desc failed for [".$table->detail_table."]\n");
+		if(is_a($model, "MasterDetailModel")){
+			$result = mysqli_query($connection, "DESC ".$model->detail_table) or die("table desc failed for [".$model->detail_table."]\n");
 			while($row = mysqli_fetch_row($result)){
-				$table->detail_schema[$row[0]] = array("type" => $row[1], "null" => $row[2]);
+				$model->detail_schema[$row[0]] = array("type" => $row[1], "null" => $row[2]);
 			}
 		}
 	}
 }
-unset($table);//weird bug otherwise
+unset($model);//weird bug otherwise
 
+//load the value domains
+$tmp = array();
+foreach(Config::$value_domains as $domain_name){
+	$tmp[$domain_name] = getValueDomain($domain_name);
+}
+Config::$value_domains = $tmp;
 
 //create the temporary id linking table
 mysqli_query($connection, "DROP TABLE IF EXISTS id_linking ") or die("DROP tmp failed");
@@ -149,55 +171,39 @@ $query = "CREATE TABLE id_linking(
 	)Engine=InnoDB";
 mysqli_query($connection, $query) or die("temporary table query failed[".mysqli_errno($connection) . ": " . mysqli_error($connection)."]\n");
 
-if(isset($addonQueries) && isset($addonQueries['start'])){
-	print_r($addonQueries);
-	foreach($addonQueries['start'] as $addonQuery){
-		mysqli_query($connection, $addonQuery) or die("[".$addonQuery."] ".mysqli_errno($connection) . ": " . mysqli_error($connection));
-		if($config['printQueries']){
-			echo($addonQuery."\n");
-		}
+foreach(Config::$addon_queries_start as $addon_query_start){
+	mysqli_query($connection, $addon_query_start) or die("[".$addon_query_start."] ".mysqli_errno($connection) . ": " . mysqli_error($connection));
+	if(Config::$print_queries){
+		echo($addon_query_start."\n");
 	}
 }
 
-//define the primary tables (collection links is considered to be a special table)
-$primary_tables = array("participants", "collections");
-
 //iteratover the primary tables who will, in turn, iterate over their children
-foreach($primary_tables as $table_name){
-	insertTable($table_name, $tables);
+foreach(Config::$parent_models as $model_name){
+	insertTable($model_name);
 }
-
-//TODO: treat special tables such as collection links
-//INSERT INTO clinical_collection_links (`participant_id`, `collection_id`, `consent_master_id`) (
-//SELECT p.mysql_id, coll.mysql_id, c.mysql_id  FROM `id_linking` AS p
-//LEFT JOIN id_linking AS c ON substr(p.csv_id, 3)=substr(c.csv_id, 7)
-//LEFT JOIN id_coll AS collt ON p.csv_id=collt.link_to
-//LEFT JOIN id_linking AS coll ON collt.collection_id=coll.csv_id
-//WHERE p.model='participants' AND c.model='consent_masters' AND coll.model='collections')
 
 //validate that each file handler has reached the end of it's file so that no data is left behind
 $insert = true;
-foreach($tables as $ref_name => &$table){
+foreach(Config::$models as $ref_name => &$model){
 	if(IS_XLS){
-		if(isset($table->file_handler) && $table->line <= $table->file_handler["numRows"]){
-			echo("ERROR: Data was not all fetched from [".$ref_name."] - Stopped at line [".$table->line."]\n");
+		if(isset($model->file_handler) && $model->line <= $model->file_handler["numRows"]){
+			echo("ERROR: Data was not all fetched from [".$ref_name."] - Stopped at line [".$model->line."]\n");
 			$insert = false;
 		}
-	}else if(strlen($table->file) > 0){
-		if(!feof($table->file_handler)){
-			echo("ERROR: Data was not all fetched from [".$ref_name."] - Stopped at line [".$tableline."]\n");
+	}else if(strlen($model->file) > 0){
+		if(!feof($model->file_handler)){
+			echo("ERROR: Data was not all fetched from [".$ref_name."] - Stopped at line [".$model->line."]\n");
 			$insert = false;
 		}
 	}
 }
 
 //proceed with addon querries
-if(isset($addonQueries) && isset($addonQueries['end'])){
-	foreach($addonQueries['end'] as $addonQuery){
-		mysqli_query($connection, $addonQuery) or die("[".$addonQuery."] ".mysqli_errno($connection) . ": " . mysqli_error($connection));
-		if($config['printQueries']){
-			echo($addonQuery."\n");
-		}
+foreach(Config::$addon_queries_end as $addon_query_end){
+	mysqli_query($connection, $addon_query_end) or die("[".$addon_query_end."] ".mysqli_errno($connection) . ": " . mysqli_error($connection));
+	if(Config::$print_queries){
+		echo($addon_query_end."\n");
 	}
 }
 
@@ -239,7 +245,6 @@ function buildInsertQuery(array $fields){
  * @return string
  */
 function buildValuesQuery(array $fields, array $values, array $schema){
-	global $created_id;
 	$result = "";
 	foreach($fields as $field => $value){
 		if(is_array($value)){
@@ -249,10 +254,18 @@ function buildValuesQuery(array $fields, array $values, array $schema){
 				$result .= "'".$val_array[$tmp]."', ";
 			}else{
 				$result .= "'', ";
-				echo "WARNING: value[",$tmp,"] is unmatched for field [",$field,"]\n";
+				echo "WARNING: value [",$tmp,"] is unmatched for field [",$field,"]\n";
 			}
 		}else if(strpos($value, "@") === 0){
 			$result .= "'".substr($value, 1)."', ";
+		}else if(strpos($value, "#") === 0){
+			$tmp = substr($value, 1);
+			if(isset($values[$tmp])){
+				$result .= "'".$values[$tmp]."', ";
+			}else{
+				$result .= "'', ";
+				echo "WARNING: custom value [",$tmp,"] is unmatched for field [",$field,"]\n";
+			}	
 		}else if(strlen($value) > 0){
 			if(strlen($values[$value]) > 0){
 				$result .= "'".str_replace("'", "\\'", $values[$value])."', ";
@@ -263,7 +276,7 @@ function buildValuesQuery(array $fields, array $values, array $schema){
 			}
 		}
 	}
-	return $result."NOW(), ".$created_id.", NOW(), ".$created_id;	
+	return $result."NOW(), ".Config::$db_created_id.", NOW(), ".Config::$db_created_id;	
 }
 
 function isDbNumericType($field_type){
@@ -279,82 +292,83 @@ function isDbNumericType($field_type){
 /**
  * Inserts a given table data into the database. For each row, there is a verification to see if children exist to call this
  * function recursively
- * @param unknown_type $table_name The name of the table to work on
- * @param unknown_type $tables The full array containing every tables config
+ * @param unknown_type $ref_name The name of the table to work on
  * @param unknown_type $csv_parent_key The csv key of the parent table if it exists
  * @param unknown_type $mysql_parent_id The id (integer) of the mysql parent row
+ * @param array $parent_data The data of the parent
  */
-function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_parent_id = null, $parent_data = null){
-	global $connection;
-	global $config;
-	if(!isset($tables[$table_name])){
+//table_name -> ref_name
+//table -> Config::$models
+function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null, $parent_data = null){
+	$connection = Config::$db_connection;
+	if(!isset(Config::$models[$ref_name])){
 		return ;
 	}
-	$current_table = &$tables[$table_name];
+	$current_model = &Config::$models[$ref_name];
 	$i = 0;
 	//debug info
-//	echo($table_name."\n");
-//	if($table_name == "collections"){
-//		echo("Size: ".sizeof($current_table->values)."\n");
-//		print_r($current_table->values);
-//		echo($current_table->parent_key." -> ".$current_table->fields[$current_table->parent_key]."\n");
-//		echo($current_table->values[$current_table->fields[$current_table->parent_key]]."  -  ".$csv_parent_key."\n");
-//		echo($current_table->values[$current_table->fields[$current_table->parent_key]]."\n");
+//	echo($ref_name."\n");
+//	if($ref_name == "collections"){
+//		echo("Size: ".sizeof($current_model->values)."\n");
+//		print_r($current_model->values);
+//		echo($current_model->parent_key." -> ".$current_model->fields[$current_model->parent_key]."\n");
+//		echo($current_model->values[$current_model->fields[$current_model->parent_key]]."  -  ".$csv_parent_key."\n");
+//		echo($current_model->values[$current_model->fields[$current_model->parent_key]]."\n");
 //		exit;
 //	}
-	while(sizeof($current_table->values) > 0 && 
-	($csv_parent_key == null || $current_table->values[$current_table->fields[$current_table->parent_key]] == $csv_parent_key)
+	while(sizeof($current_model->values) > 0 && 
+	($csv_parent_key == null || $current_model->values[$current_model->fields[$current_model->parent_key]] == $csv_parent_key)
 	){
 			//replace parent value.
 		if($mysql_parent_id != null){
-			$current_table->values[$current_table->fields[$current_table->parent_key]] = $mysql_parent_id;
+			$current_model->values[$current_model->fields[$current_model->parent_key]] = $mysql_parent_id;
 		}
 		if(isset($parent_data)){
 			//put answers in place
 			foreach($parent_data as $question => $answer){
-				$current_table->values[$question] = $answer;
+				$current_model->values[$question] = $answer;
 			}
 		}
 		
 		//master main
-		$queryValues = buildValuesQuery($current_table->fields, $current_table->values, $current_table->schema);
-		$query = $current_table->query_insert.$queryValues.")";
-		mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+		$queryValues = buildValuesQuery($current_model->fields, $current_model->values, $current_model->schema);
+		$query = $current_model->query_insert.$queryValues.")";
+		mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 		$last_id = mysqli_insert_id($connection);
-		if($config['printQueries']){
+		if(Config::$print_queries){
 			echo $query.";\n";
 		}
 		
-		if($config['insertRevs']){
+		if(Config::$insert_revs){
 			//master revs
-			$query = $current_table->query_insert_revs.$queryValues.", '".$last_id."')";
-			mysqli_query($connection, $query) or die("query failed[".$table_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
-			if($config['printQueries']){
+			$query = $current_model->query_insert_revs.$queryValues.", '".$last_id."')";
+			mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+			if(Config::$print_queries){
 				echo $query.";\n";
 			}
 		}
-		if(is_a($current_table, "MasterDetailModel")){
+		if(is_a($current_model, "MasterDetailModel")){
 			//detail level
-			if(is_array($current_table->query_detail_insert)){
+			if(is_array($current_model->query_detail_insert)){
 				//insert into multi detail tables
-				foreach($current_table->query_detail_insert as $key => $value){
+				foreach($current_model->query_detail_insert as $key => $value){
 					//detail main
-					$current_table->detail_fields[$key][$current_table->detail_master_fkey] = "@".$last_id;
-					echo $current_table->detail_master_fkey,"\n";
+					$current_model->detail_fields[$key][$current_model->detail_master_fkey] = "@".$last_id;
+					echo $current_model->detail_master_fkey,"\n";
 					
-					$queryValues = buildValuesQuery($current_table->detail_fields[$key], $current_table->values, $current_table->detail_schema);
-					$query = $current_table->query_detail_insert[$key].$queryValues.")";
-					mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+					$queryValues = buildValuesQuery($current_model->detail_fields[$key], $current_model->values, $current_model->detail_schema);
+					$query = $current_model->query_detail_insert[$key].$queryValues.")";
+					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 					$last_detail_id = mysqli_insert_id($connection);
-					if($config['printQueries']){
+					if(Config::$print_queries){
 						echo $query.";\n";
 					}
 					
-					if($config['insertRevs']){
+					if(Config::$insert_revs){
 						//detail revs
-						$query = $current_table->query_detail_insert_revs[$key].$queryValues.", '".$last_detail_id."')";
-						mysqli_query($connection, $query) or die("query failed[".$table_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
-						if($config['printQueries']){
+						$query = $current_model->query_detail_insert_revs[$key].$queryValues.", '".$last_detail_id."')";
+						mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+						if(Config::$print_queries){
 							echo $query.";\n";
 						}
 					}
@@ -363,20 +377,20 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 				
 				//insert insto single detail table
 				//detail main
-				$current_table->detail_fields[$current_table->detail_master_fkey] = "@".$last_id;
-				$queryValues = buildValuesQuery($current_table->detail_fields, $current_table->values, $current_table->detail_schema);
-				$query = $current_table->query_detail_insert.$queryValues.")";
-				mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
+				$current_model->detail_fields[$current_model->detail_master_fkey] = "@".$last_id;
+				$queryValues = buildValuesQuery($current_model->detail_fields, $current_model->values, $current_model->detail_schema);
+				$query = $current_model->query_detail_insert.$queryValues.")";
+				mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 				$last_detail_id = mysqli_insert_id($connection);
-				if($config['printQueries']){
+				if(Config::$print_queries){
 					echo $query.";\n";
 				}
 				
-				if($config['insertRevs']){
+				if(Config::$insert_revs){
 					//detail revs
-					$query = $current_table->query_detail_insert_revs.$queryValues.", '".$last_detail_id."')";
-					mysqli_query($connection, $query) or die("query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");
-					if($config['printQueries']){
+					$query = $current_model->query_detail_insert_revs.$queryValues.", '".$last_detail_id."')";
+					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+					if(Config::$print_queries){
 						echo $query.";\n";
 					}
 				}
@@ -384,47 +398,46 @@ function insertTable($table_name, &$tables, $csv_parent_key = null, $mysql_paren
 			}
 		}
 
-		if($current_table->post_write_function != NULL){
-			$func = $current_table->post_write_function;
-			$func($current_table, $last_id);
+		if($current_model->post_write_function != NULL){
+			$func = $current_model->post_write_function;
+			$func($current_model, $last_id);
 		}
 		
 		//saving id if required
-		if($current_table->save_id){
+		if($current_model->save_id){
 			$query = "INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('"
-					.$current_table->values[$current_table->pkey]."', "
-					."'".$table_name."', " 
+					.$current_model->values[$current_model->pkey]."', "
+					."'".$ref_name."', " 
 					.$last_id.", '"
-					.$current_table->table."')";
-			if($config['printQueries']){
+					.$current_model->table."')";
+			if(Config::$print_queries){
 				echo $query.";\n";
 			}
-			mysqli_query($connection, $query) or die("tmp id query failed[".$table_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_table)."\n");	
+			mysqli_query($connection, $query) or die("tmp id query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");	
 		}
 		
-		if(is_array($current_table->child)){
+		if(is_array($current_model->child)){
 			//treat child
-			foreach($current_table->child as $child_table_name){
+			foreach($current_model->child as $child_model_ref){
 				$child_required_data = array();
-				if(isset($tables[$child_table_name]->ask_parent)){
-					foreach($tables[$child_table_name]->ask_parent as $question => $where_to_answer){
+				if(isset($tables[$child_model_ref]->ask_parent)){
+					foreach($tables[$child_model_ref]->ask_parent as $question => $where_to_answer){
 						if($question == "id"){
 							$child_required_data[$where_to_answer] = $last_id;
 						}else{
-							$child_required_data[$where_to_answer] = $current_table->values[$current_table->fields[$question]];
+							$child_required_data[$where_to_answer] = $current_model->values[$current_model->fields[$question]];
 						}
 					}
 				}
 				
-				insertTable($child_table_name, 
-								$tables, 
-								$current_table->values[$current_table->pkey], 
+				insertTable($child_model_ref, 
+								$current_model->values[$current_model->pkey], 
 								$last_id, 
 								$child_required_data);
 			}
 		}
 		flush();
-		readLine($current_table);
+		readLine($current_model);
 	}
 }
 

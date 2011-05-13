@@ -1,65 +1,58 @@
 <?php
-$database['ip'] = "127.0.0.1";
-$database['port'] = "3306";
-$database['user'] = "root";
-$database['pwd'] = "";
-$database['schema'] = "ATiM-Test";
-$database['charset'] = "utf8";
-
-$config['printQueries'] = true;
-$config['insertRevs'] = false;
-
-//-----addon querries------
-//querries listed here will be run at the start/end of the process
-$addonQueries['start'][] = "ALTER TABLE sd_der_plasmas auto_increment=1000000";
-$addonQueries['start'][] = "ALTER TABLE sd_spe_bloods auto_increment=1000000";
-//clinical_collection_links
-$addonQueries['end'][] = "INSERT INTO clinical_collection_links(`participant_id`, `collection_id`, `diagnosis_id`, `created`, `created_by`, `modified`, `modified_by`) 
-SELECT p.mysql_id, col.mysql_id, dx.mysql_id, NOW(), '1', NOW(), '1' FROM `id_linking` AS p
-LEFT JOIN id_linking AS dx ON dx.csv_id=p.mysql_id AND dx.model='diagnoses'
-LEFT JOIN id_linking AS col ON p.csv_id=col.csv_reference AND col.model='collections'
-WHERE p.model = 'participants'";
-
-$addonQueries['end'][] = "UPDATE sample_masters AS sm "
-	."INNER JOIN clinical_collection_links AS ccl on sm.collection_id=ccl.collection_id "
-	."INNER JOIN misc_identifiers AS mi ON ccl.participant_id=mi.participant_id AND mi.name='ovary bank no lab' "
-	."SET sample_label=CONCAT('S - ', mi.identifier_value, ' EDTA') "
-	."WHERE sm.collection_id IN(SELECT mysql_id FROM id_linking WHERE model='collections') AND sm.sample_control_id=2"; 
-$addonQueries['end'][] = "UPDATE sample_masters AS sm "
-	."INNER JOIN clinical_collection_links AS ccl on sm.collection_id=ccl.collection_id "
-	."INNER JOIN misc_identifiers AS mi ON ccl.participant_id=mi.participant_id AND mi.name='ovary bank no lab' "
-	."SET sample_label=CONCAT('BLD-C S - ', mi.identifier_value, ' EDTA') "
-	."WHERE sm.collection_id IN(SELECT mysql_id FROM id_linking WHERE model='collections') AND sm.sample_control_id=7";
-$addonQueries['end'][] = "UPDATE sample_masters AS sm "
-	."INNER JOIN clinical_collection_links AS ccl on sm.collection_id=ccl.collection_id "
-	."INNER JOIN misc_identifiers AS mi ON ccl.participant_id=mi.participant_id AND mi.name='ovary bank no lab' "
-	."SET sample_label=CONCAT('PLS S - ', mi.identifier_value, ' EDTA') "
-	."WHERE sm.collection_id IN(SELECT mysql_id FROM id_linking WHERE model='collections') AND sm.sample_control_id=9";
-$addonQueries['end'][] = "DELETE FROM derivative_details WHERE sample_master_id!=id";	
+class Config{
+	const	INPUT_TYPE_CSV = 1;
+	const	INPUT_TYPE_XLS = 2;
 	
-//$addonQueries[] = "UPDATE misc_identifiers AS mi INNER JOIN misc_identifier_controls AS mic ON mi.misc_identifier_control_id=mic.id 
-//SET mi.identifier_name=mic.misc_identifier_name";
-//
-//$addonQueries[] = "UPDATE sd_spe_tissues AS t
-//INNER JOIN sample_masters AS s ON t.sample_master_id=s.id
-//SET qc_lady_tissue_type='NBR' WHERE s.sample_code LIKE '%Tissue-Norm%'";
-//
-//$addonQueries[] = "UPDATE sd_spe_tissues AS t
-//INNER JOIN sample_masters AS s ON t.sample_master_id=s.id
-//SET qc_lady_tissue_type='TBR' WHERE s.sample_code LIKE '%Tissue-Tum%'";
-//
-//$addonQueries[] = "UPDATE sd_spe_tissues AS t
-//INNER JOIN sample_masters AS s ON t.sample_master_id=s.id
-//SET qc_lady_tissue_type='NBR' WHERE s.sample_code LIKE '%Tissue\.Norm%'";
-//
-//$addonQueries[] = "UPDATE sd_spe_tissues AS t
-//INNER JOIN sample_masters AS s ON t.sample_master_id=s.id
-//SET qc_lady_tissue_type='TBR' WHERE s.sample_code LIKE '%Tissue\.Tum%'";
-//-------------------------
+	//Configure as needed-------------------
+	//db config
+	static $db_ip			= "127.0.0.1";
+	static $db_port 		= "8889";
+	static $db_user 		= "root";
+	static $db_pwd			= "root";
+	static $db_schema		= "atim_new";
+	static $db_charset		= "utf8";
+	static $db_created_id	= 1;//the user id to use in created_by/modified_by fields
+	
+	static $timezone		= "America/Montreal";
+	
+	static $input_type		= Config::INPUT_TYPE_XLS;
+	
+	//if reading excel file
+	static $xls_file_path	= "/Users/francois-michellheureux/Desktop/data.xls";//file to read
+	static $xls_header_rows = 1;
 
+	static $print_queries	= true;//wheter to output the dataImporter generated queries
+	static $insert_revs		= false;//wheter to insert generated queries data in revs as well
+	//--------------------------------------
+	
+	
+	//this shouldn't be edited here
+	static $db_connection	= null;
+	
+	static $addon_queries_end	= array();//queries to run at the start of the import process
+	static $addon_queries_start	= array();//queries to run at the end of the import process
+	
+	static $parent_models	= array();//models to read as parent
+	
+	static $models			= array();
+	
+	static $value_domains	= array();
+	
+	static $config_files	= array();
+}
 
+//add you start queries here
+//Config::$addon_queries_start[] = "..."
 
+//add your end queries here
+//Config::$addon_queries_end[] = "..."
 
-global $created;
-$created_id = 1;
+//add some value domains names that you want to use in post read/write functions
+//Config::$value_domains[] = "...";
+Config::$value_domains[] = "marital_status";
 
+//add the parent models here
+Config::$parent_models[] = "a";
+
+//add your configs
+Config::$config_files[] = 'tables_mapping/a.php'; 
