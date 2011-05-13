@@ -26,7 +26,10 @@ function getConnection(){
 	}
 	
 	if($db_schema != NULL){
-		$db->select_db($db_schema) or die($db->error);
+		if(!$db->select_db($db_schema)) {
+			unset($_SESSION['db']);
+			die($db->error);
+		}
 	}
 	return $db;
 }
