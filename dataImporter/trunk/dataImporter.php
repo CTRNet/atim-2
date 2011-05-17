@@ -5,7 +5,7 @@ require_once("commonFunctions.php");
 
 
 //UPDATE THIS TO POINT TO YOUR CONFIG
-require_once("config.php");
+require_once("../atim_chuq_ovaire/dataImporterConfig/config.php");
 //-----------------------------------
 
 
@@ -302,6 +302,7 @@ function isDbNumericType($field_type){
 function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null, $parent_data = null){
 	$connection = Config::$db_connection;
 	if(!isset(Config::$models[$ref_name])){
+		echo "WARNING: model [".$ref_name."] not found\n";
 		return ;
 	}
 	$current_model = &Config::$models[$ref_name];
