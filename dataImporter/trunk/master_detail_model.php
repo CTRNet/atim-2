@@ -27,7 +27,6 @@ class MasterDetailModel extends Model{
 		$this->detail_table = $detail_table;
 		$this->detail_master_fkey = $detail_master_fkey;
 		
-		$this->updateFieldsValueDomain($detail_fields);
 		$this->detail_fields = $detail_fields;
 	}
 }

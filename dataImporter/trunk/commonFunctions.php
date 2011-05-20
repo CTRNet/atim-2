@@ -152,18 +152,30 @@ function excelDateFix(Model $m){
  */
 function getValueDomain($domain_name){
 	$tmp = array();
-
-	$query = "SELECT value
-		FROM structure_value_domains AS svd
-		INNER JOIN structure_value_domains_permissible_values AS svdpv ON svd.id=svdpv.structure_value_domain_id
-		INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id
-		WHERE svd.domain_name='".$domain_name."'";
-	$result = mysqli_query(Config::$db_connection, $query) or die("reading value domains failed ");
+	
+	$query = 'SELECT source FROM structure_value_domains WHERE domain_name="'.$domain_name.'" AND source LIKE "StructurePermissibleValuesCustom::getCustomDropdown(\'%\')"';
+	$result = mysqli_query(Config::$db_connection, $query) or die("reading value domains failed 1");
+	if($row = $result->fetch_assoc()){
+		$control_name = substr($row['source'], 54, strlen($row['source'] -2));
+		mysqli_free_result($result);
+		$query = "SELECT value
+			FROM structure_permissible_values_customs AS spvc
+			INNER JOIN structure_permissible_values_custom_controls AS spvcc ON spvc.control_id=spvcc.id AND spvcc.name='".$control_name."'";
+		
+	}else{
+		mysqli_free_result($result);
+		$query = "SELECT value
+			FROM structure_value_domains AS svd
+			INNER JOIN structure_value_domains_permissible_values AS svdpv ON svd.id=svdpv.structure_value_domain_id
+			INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id
+			WHERE svd.domain_name='".$domain_name."'";
+		
+	}
+	$result = mysqli_query(Config::$db_connection, $query) or die("reading value domains failed 2");
 	while($row = $result->fetch_assoc()){
 		$tmp[$row['value']] = $row['value'];
 	}
 	mysqli_free_result($result);
-	
 	return $tmp;
 }
 ?>

@@ -19,7 +19,7 @@ $fields = array(
 	"last_name" => "#my value",//This will be inserted but the custom value for the key "my value" must be defined in the post read function 
 	"date_of_birth" => "Date of Birth Date",
 	"dob_date_accuracy" => "Date of Birth Accuracy",
-	"marital_status" => array("married" => "marital_status"),//will read the xls married column and validates if it matches a value in the marital_status value_domain. If not -> warning
+	"marital_status" => array("married" => new ValueDomain("marital_status", ValueDomain::ALLOW_BLANK, ValueDomain::CASE_INSENSITIVE)),//will read the xls married column and validates if it matches a value in the marital_status value_domain. If not -> warning. Tolerates blank values. Case insensitive.
 	"language_preferred" => array("language" => array("fr" => "french", "en" => "english"))//will read the xls language column and use it as a key into this array. The matching value will be inserted. If there is no match a warning is thrown.
 );
 

@@ -2,10 +2,12 @@
 error_reporting(E_ALL | E_STRICT);
 require_once("master_detail_model.php");
 require_once("commonFunctions.php");
+require_once("valueDomain.php");
 
 
 //UPDATE THIS TO POINT TO YOUR CONFIG
-require_once("../atim_chuq_ovaire/dataImporterConfig/config.php");
+//require_once("../atim_tf_coeur/dataImporterConfig/config.php");
+require_once("config.php");
 //-----------------------------------
 
 
@@ -239,37 +241,42 @@ function buildInsertQuery(array $fields){
 /**
  * Takes the fields array and the values array in order to build the values part of the query.
  * The value fields starting with @ will be put directly into the query without beign replaced (minus the first @)
- * @param array $fields The array of the fields configuration
- * @param array $values The array of values read from the csv
- * @param array $schema The db schema going with the current insert
+ * @param Model $model The model to build the values query on
+ * @param array $fields The fields key to use
  * @return string
  */
-function buildValuesQuery(array $fields, array $values, array $schema){
+function buildValuesQuery(Model $model, array $fields){
 	$result = "";
 	foreach($fields as $field => $value){
 		if(is_array($value)){
-			$tmp = $values[key($value)];
-			$val_array = current($value);
-			if(isset($val_array[$tmp])){
-				$result .= "'".$val_array[$tmp]."', ";
+			$tmp = $model->values[$field];
+			$val = current($value);
+			if(is_a($val, 'ValueDomain')){
+				if($val->case_sensitive == ValueDomain::CASE_INSENSITIVE){
+					$tmp = strtolower($tmp);
+				}
+				$val = $val->values;
+			}
+			if(isset($val[$tmp])){
+				$result .= "'".$val[$tmp]."', ";
 			}else{
 				$result .= "'', ";
-				echo "WARNING: value [",$tmp,"] is unmatched for field [",$field,"]\n";
+				echo "WARNING: value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
 			}
 		}else if(strpos($value, "@") === 0){
 			$result .= "'".substr($value, 1)."', ";
 		}else if(strpos($value, "#") === 0){
 			$tmp = substr($value, 1);
-			if(isset($values[$tmp])){
-				$result .= "'".$values[$tmp]."', ";
+			if(isset($model->values[$tmp])){
+				$result .= "'".$model->values[$tmp]."', ";
 			}else{
 				$result .= "'', ";
-				echo "WARNING: custom value [",$tmp,"] is unmatched for field [",$field,"]\n";
+				echo "WARNING: custom value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
 			}	
 		}else if(strlen($value) > 0){
-			if(strlen($values[$value]) > 0){
-				$result .= "'".str_replace("'", "\\'", $values[$value])."', ";
-			}else if(isDbNumericType($schema[$field]['type']) && $schema[$field]){
+			if(strlen($model->values[$value]) > 0){
+				$result .= "'".str_replace("'", "\\'", $model->values[$value])."', ";
+			}else if(isDbNumericType($model->schema[$field]['type']) && $model->schema[$field]){
 				$result .= "NULL, ";
 			}else{
 				$result .= "'', ";
@@ -332,7 +339,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 		}
 		
 		//master main
-		$queryValues = buildValuesQuery($current_model->fields, $current_model->values, $current_model->schema);
+		$queryValues = buildValuesQuery($current_model, $current_model->fields);
 		$query = $current_model->query_insert.$queryValues.")";
 		mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 		$last_id = mysqli_insert_id($connection);
@@ -357,7 +364,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 					$current_model->detail_fields[$key][$current_model->detail_master_fkey] = "@".$last_id;
 					echo $current_model->detail_master_fkey,"\n";
 					
-					$queryValues = buildValuesQuery($current_model->detail_fields[$key], $current_model->values, $current_model->detail_schema);
+					$queryValues = buildValuesQuery($current_model, $current_model->detail_fields[$key]);
 					$query = $current_model->query_detail_insert[$key].$queryValues.")";
 					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 					$last_detail_id = mysqli_insert_id($connection);
@@ -379,7 +386,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 				//insert insto single detail table
 				//detail main
 				$current_model->detail_fields[$current_model->detail_master_fkey] = "@".$last_id;
-				$queryValues = buildValuesQuery($current_model->detail_fields, $current_model->values, $current_model->detail_schema);
+				$queryValues = buildValuesQuery($current_model, $current_model->detail_fields);
 				$query = $current_model->query_detail_insert.$queryValues.")";
 				mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 				$last_detail_id = mysqli_insert_id($connection);

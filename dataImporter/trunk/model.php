@@ -42,19 +42,6 @@ class Model{
 		
 		$this->table = $table;
 		
-		$this->updateFieldsValueDomain($fields);
 		$this->fields = $fields;
-	}
-	
-	protected function updateFieldsValueDomain(&$fields){
-		foreach($fields as &$field){
-			if(is_array($field)){
-				$tmp = current($field);
-				if(is_string($tmp)){
-					//it's a domain name to fetch
-					$field[key($field)] = getValueDomain($tmp);
-				}
-			}
-		}
 	}
 }
