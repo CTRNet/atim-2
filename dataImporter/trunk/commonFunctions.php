@@ -130,13 +130,15 @@ function excelDateFix(Model $m){
 				$m->values[$date_field] = date("Y-m-d", $php_offset + (($m->values[$date_field] - $xls_offset) * 86400));
 			}
 			
-		}else if(preg_match_all('/^([A-Za-z]{3})\1{1,3}\/([0-9]{4})\2$/', $m->values[$date_field], $matches) && isset(MyTime::$months[strtolower($matches[1][0])])){
+		}else if(preg_match_all('/^([A-Za-z]{3})\1{1,3}\/([0-9]{4})\2$/', $m->values[$date_field], $matches) && isset(MyTime::$months[strtolower($matches[1][0])]) && $accuracy_field != null){
 			$m->values[$accuracy_field] = "m";
 			$m->values[$date_field] = $matches[2][0]."-".MyTime::$months[strtolower($matches[1][0])]."-01";
 			
 		}else if(strlen($m->values[$date_field]) > 0 && preg_match_all('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $m->values[$date_field], $matches) === 0 && $accuracy_field != NULL){
 			//not a standard date, consider unknown
-			$m->values[$accuracy_field] = "u";
+			if($accuracy_field != null){
+				$m->values[$accuracy_field] = "u";
+			}
 			if(strlen($m->values[$date_field]) != 10){
 				echo "WARNING ON DATE [",$m->values[$date_field],"] (C) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
 			}

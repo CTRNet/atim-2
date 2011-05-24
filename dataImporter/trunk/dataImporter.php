@@ -6,8 +6,8 @@ require_once("valueDomain.php");
 
 
 //UPDATE THIS TO POINT TO YOUR CONFIG
-//require_once("../atim_tf_coeur/dataImporterConfig/config.php");
-require_once("config.php");
+require_once("../atim_tf_coeur/dataImporterConfig/config.php");
+//require_once("config.php");
 //-----------------------------------
 
 
@@ -129,7 +129,7 @@ foreach(Config::$models as $ref_name => &$model){
 			}
 		}
 		if(!empty($missing)){
-			die("The following key(s) for [$ref_name] were not found: ".implode(", ", $missing)."\n");
+			die("The following key(s) for [$ref_name] were not found: [".implode("], [", $missing)."]\n");
 		}
 		
 		if($model->parent_key != null && !isset($model->fields[$model->parent_key])){
@@ -243,22 +243,23 @@ function buildInsertQuery(array $fields){
  * The value fields starting with @ will be put directly into the query without beign replaced (minus the first @)
  * @param Model $model The model to build the values query on
  * @param array $fields The fields key to use
+ * @param array $schema The schema into which the insert will occur
  * @return string
  */
-function buildValuesQuery(Model $model, array $fields){
+function buildValuesQuery(Model $model, array $fields, array $schema){
 	$result = "";
 	foreach($fields as $field => $value){
 		if(is_array($value)){
-			$tmp = $model->values[$field];
-			$val = current($value);
-			if(is_a($val, 'ValueDomain')){
-				if($val->case_sensitive == ValueDomain::CASE_INSENSITIVE){
+			$possible_values = current($value);
+			$tmp = $model->values[key($value)];
+			if(is_a($possible_values, 'ValueDomain')){
+				if($possible_values->case_sensitive == ValueDomain::CASE_INSENSITIVE){
 					$tmp = strtolower($tmp);
 				}
-				$val = $val->values;
+				$possible_values = $possible_values->values;
 			}
-			if(isset($val[$tmp])){
-				$result .= "'".$val[$tmp]."', ";
+			if(isset($possible_values[$tmp])){
+				$result .= "'".$possible_values[$tmp]."', ";
 			}else{
 				$result .= "'', ";
 				echo "WARNING: value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
@@ -276,7 +277,7 @@ function buildValuesQuery(Model $model, array $fields){
 		}else if(strlen($value) > 0){
 			if(strlen($model->values[$value]) > 0){
 				$result .= "'".str_replace("'", "\\'", $model->values[$value])."', ";
-			}else if(isDbNumericType($model->schema[$field]['type']) && $model->schema[$field]){
+			}else if(isDbNumericType($schema[$field]['type']) && $schema[$field]){
 				$result .= "NULL, ";
 			}else{
 				$result .= "'', ";
@@ -339,7 +340,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 		}
 		
 		//master main
-		$queryValues = buildValuesQuery($current_model, $current_model->fields);
+		$queryValues = buildValuesQuery($current_model, $current_model->fields, $current_model->schema);
 		$query = $current_model->query_insert.$queryValues.")";
 		mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 		$last_id = mysqli_insert_id($connection);
@@ -364,7 +365,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 					$current_model->detail_fields[$key][$current_model->detail_master_fkey] = "@".$last_id;
 					echo $current_model->detail_master_fkey,"\n";
 					
-					$queryValues = buildValuesQuery($current_model, $current_model->detail_fields[$key]);
+					$queryValues = buildValuesQuery($current_model, $current_model->detail_fields[$key], $current_model->detail_schema);
 					$query = $current_model->query_detail_insert[$key].$queryValues.")";
 					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 					$last_detail_id = mysqli_insert_id($connection);
@@ -386,7 +387,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 				//insert insto single detail table
 				//detail main
 				$current_model->detail_fields[$current_model->detail_master_fkey] = "@".$last_id;
-				$queryValues = buildValuesQuery($current_model, $current_model->detail_fields);
+				$queryValues = buildValuesQuery($current_model, $current_model->detail_fields, $current_model->detail_schema);
 				$query = $current_model->query_detail_insert.$queryValues.")";
 				mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 				$last_detail_id = mysqli_insert_id($connection);
