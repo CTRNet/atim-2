@@ -76,16 +76,16 @@ div.sample_node{
 	display: inline-block;
 	vertical-align: middle;	
 }
-.disabled div.sample_cell, .disabled li.aliquot div, li.aliquot.disabled div, .disabled ul.realiquots li, ul.realiquots li.disabled{
+.disabled div.sample_cell, .disabled li.aliquot div, li.aliquot.disabled div, .disabled ul.realiquots li, ul.realiquots li.disabled, div.derivative.disabled{
 	/* disabled */
 	font-style: italic;
 	background-color: grey;	
 }
-.disabled div.sample_cell:hover, .disabled li.aliquot div:hover, li.aliquot.disabled div:hover, .disabled ul.realiquots li:hover, ul.realiquots li.disabled:hover{
+.disabled div.sample_cell:hover, .disabled li.aliquot div:hover, li.aliquot.disabled div:hover, .disabled ul.realiquots li:hover, ul.realiquots li.disabled:hover, div.derivative.disabled:hover{
 	/* disabled hover*/
 	background-color: #CCC;
 }
-div.sample_cell:hover, li.aliquot div:hover, ul.realiquots li:hover{
+div.sample_cell:hover, li.aliquot div:hover, ul.realiquots li:hover, div.derivative:hover{
 	/* active hover */
 	background-color: #FFC;
 }
@@ -107,4 +107,18 @@ ul.realiquots li{
 }
 #diagram{
 	margin-left: -25px;	
+}
+
+div.sample_cell, div.aliquot_cell, li.realiquot{
+	min-height: 20px;	
+}
+
+div.derivative{
+	display: inline-block;
+	border: black dotted 1px;
+	margin: 2px 0 2px -20px;
+	padding: 4px;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	cursor: pointer;
 }

@@ -5,7 +5,7 @@ $json2 = stripslashes($json);
 $json = json_decode($json2) or die("decode failed [".$json2."]");
 
 $sample_qry = "SELECT * FROM parent_to_derivative_sample_controls WHERE id=?";
-$aliquot_qry = "SELECT flag_active FROM sample_to_aliquot_controls WHERE id=?";
+$aliquot_qry = "SELECT flag_active FROM aliquot_controls WHERE id=?";
 $realiquot_qry = "SELECT flag_active FROM realiquoting_controls WHERE id=?";
 
 $stmt = $db->prepare($sample_qry) or die("sqlGenerator prep1 failed");
@@ -73,11 +73,11 @@ if(count($samples_deactivate) > 0){
 }
 if(count($aliquots_activate) > 0){
 	$aliquots_activate = array_unique($aliquots_activate, SORT_NUMERIC);
-	echo("UPDATE sample_to_aliquot_controls SET flag_active=true WHERE id IN(".implode(", ", $aliquots_activate).");<br/>");
+	echo("UPDATE aliquot_controls SET flag_active=true WHERE id IN(".implode(", ", $aliquots_activate).");<br/>");
 }
 if(count($aliquots_deactivate) > 0){
 	$aliquots_deactivate = array_unique($aliquots_deactivate, SORT_NUMERIC);
-	echo("UPDATE sample_to_aliquot_controls SET flag_active=false WHERE id IN(".implode(", ", $aliquots_deactivate).");<br/>");
+	echo("UPDATE aliquot_controls SET flag_active=false WHERE id IN(".implode(", ", $aliquots_deactivate).");<br/>");
 }
 if(count($realiquots_activate) > 0){
 	$realiquots_activate = array_unique($realiquots_activate, SORT_NUMERIC);

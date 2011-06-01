@@ -43,8 +43,12 @@ function requestSql(){
 }
 
 $(function(){
-	$("#dbSelect").change(function(){
-		document.location = "index.php?db=" + $(this).val(); 
+	if($("input:radio[value=" + currentMode + "]").length == 1){
+		$("input:radio[value=" + currentMode + "]").prop("checked", true);
+	}
+	
+	$("#dbSelect, input:radio").change(function(){
+		document.location = "index.php?db=" + $("#dbSelect").val() + "&display_mode=" + $("input:radio:checked").val(); 
 	});
 	
 	
@@ -80,26 +84,6 @@ $(function(){
 		}
 	});
 	
-	//realiquoting
-//	halfHeight = $(".aliquots li").outerHeight() / 2;
-//	realiquotArr = eval(realiquotingData);
-//	jg.setStroke(Stroke.DOTTED);
-//	for(var i = realiquotArr.length - 1; i >= 0; i --){
-//		realiquotJson = realiquotArr[i];
-//		var from = $(".aliquot_" + realiquotJson.parent_sample_to_aliquot_control_id);
-//		if(realiquotJson.parent_sample_to_aliquot_control_id == realiquotJson.child_sample_to_aliquot_control_id){
-//			//self realiquot
-//			var offset = $(from).offset();
-//			jg.drawLine(offset.left - 12, offset.top + halfHeight - 8, offset.left, offset.top + halfHeight - 8);
-//			jg.drawLine(offset.left - 12, offset.top + halfHeight - 8, offset.left - 12, offset.top + halfHeight + 8);
-//			jg.drawLine(offset.left - 12, offset.top + halfHeight + 8, offset.left, offset.top + halfHeight + 8);
-//			jg.fillPolygon(new Array(offset.left - 4, offset.left, offset.left - 4), new Array(offset.top + halfHeight + 6, offset.top + halfHeight + 8, offset.top + halfHeight + 10));
-//		}else{
-//			
-//		}
-//		//$("aliquot_" + )
-//	}
-	
 	jg.paint();
 
 	$(".sample_cell").click(function(){
@@ -131,5 +115,33 @@ $(function(){
 			$(".realiquot_" + json.id).addClass("disabled");
 		}
 		requestSql();
+	});
+	
+	//derivative override
+	var maxWidth = "0";
+	$(".derivative").each(function(){
+		maxWidth = Math.max(maxWidth, $(this).width());
+	});
+	$(".derivative").each(function(){
+		$(this).width(maxWidth);
+	});
+	
+	$(".derivative").click(function(){
+		var json = getJson($(this).attr("class"));
+		if($(this).hasClass("disabled")){
+			$(this).removeClass("disabled");
+			$(".derivative_" + json.id).each(function(){
+				if($(this).hasClass("disabled")){
+					$(this).find(".sample_cell:first").click();
+				}
+			});
+		}else{
+			$(this).addClass("disabled");
+			$(".derivative_" + json.id).each(function(){
+				if(!$(this).hasClass("disabled")){
+					$(this).find(".sample_cell:first").click();
+				}
+			});
+		}
 	});
 });

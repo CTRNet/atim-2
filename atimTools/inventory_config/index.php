@@ -2,8 +2,7 @@
 require_once("../common/myFunctions.php");
 
 class InvConf{
-	static $queryAliquot = "SELECT *, s.id AS mid FROM sample_to_aliquot_controls AS s 
-		INNER JOIN aliquot_controls AS a ON s.aliquot_control_id=a.id 
+	static $queryAliquot = "SELECT * FROM aliquot_controls 
 		WHERE sample_control_id=? ORDER BY aliquot_type";
 	static $querySample = "SELECT assoc.parent_sample_control_id AS parent_sample_control_id,
 		assoc.derivative_sample_control_id AS derivative_sample_control_id,
@@ -16,12 +15,11 @@ class InvConf{
 		WHERE assoc.parent_sample_control_id=?
 		ORDER BY s.sample_type ";
 	static $queryRealiquoting = "SELECT *, rc.id AS mid, rc.flag_active AS flag_active FROM realiquoting_controls AS rc 
-		INNER JOIN sample_to_aliquot_controls AS assoc ON rc.child_sample_to_aliquot_control_id=assoc.id
-		INNER JOIN aliquot_controls AS a ON assoc.aliquot_control_id=a.id
-		WHERE rc.parent_sample_to_aliquot_control_id=?";
+		INNER JOIN aliquot_controls AS a ON rc.child_aliquot_control_id=a.id
+		WHERE rc.parent_aliquot_control_id=?";
 	static $printedSamples = array(); 
 	
-	static function printInner($id, $depth){
+	static function printInner($id, $depth, $display_disabled_options){
 		$db = getConnection();
 		$db2 = getConnection();
 		//aliquot
@@ -35,16 +33,20 @@ class InvConf{
 			echo("<ul class='aliquots'>\n");
 			do{
 				$disabled = $row['flag_active'] ? "" : " disabled ";
-				$json = '{ "id" : "'.$row['mid'].'" }';
-				echo("<li class='aliquot aliquot_".$row['mid']." ".$disabled." ".$json."'><div class='aliquot_cell'>".$row['aliquot_type']."<br/><span class='small'>".$row['form_alias']."</span></div>");
-				$stmt2->bind_param("i", $row['mid']);
+				$json = '{ "id" : "'.$row['sample_control_id'].'" }';
+				if(empty($disabled) || $display_disabled_options){
+					echo("<li class='aliquot aliquot_".$row['sample_control_id']." ".$disabled." ".$json."'><div class='aliquot_cell'>".$row['aliquot_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
+				}
+				$stmt2->bind_param("i", $row['id']);
 				$stmt2->execute();
 				if($stmt2->fetch()){
 					echo("<ul class='realiquots'>\n");
 					do{
 						$disabled = $row2['flag_active'] ? "" : " disabled ";
 						$json = '{ "id" : "'.$row2['mid'].'" }';
-						echo("<li class='realiquot realiquot_".$row2['mid']." ".$disabled." ".$json."'>".$row2['aliquot_type']."</li>\n");
+						if(empty($disabled) || $display_disabled_options){
+							echo("<li class='realiquot realiquot_".$row2['mid']." ".$disabled." ".$json."'>".$row2['aliquot_type']."</li>\n");
+						}
 					}while($stmt2->fetch());
 					echo("</ul>\n");
 				}
@@ -68,15 +70,17 @@ class InvConf{
 				if(!in_array($row['parent_sample_control_id'], InvConf::$printedSamples) && $depth < 8){
 					$disabled = $row['flag_active'] ? "" : " disabled";
 					$json = '{ "id" : "'.$row['control_id'].'"}';
-					echo("<li class='sample sample_".$row['control_id'].$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type']."<br/><span class='small'>".$row['form_alias']."</span></div>");
-					if($row['derivative_sample_control_id'] == $row['parent_sample_control_id']){
-						array_push(InvConf::$printedSamples, $row['derivative_sample_control_id']);
-					} 
-					InvConf::printInner($row['derivative_sample_control_id'], $depth + 1);
-					if($row['derivative_sample_control_id'] == $row['parent_sample_control_id']){
-						array_pop(InvConf::$printedSamples);
-					} 
-					echo("</li>\n");
+					if(empty($disabled) || $display_disabled_options){
+						echo("<li class='sample sample_".$row['control_id']." derivative_".$row['derivative_sample_control_id'].$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
+						if($row['derivative_sample_control_id'] == $row['parent_sample_control_id']){
+							array_push(InvConf::$printedSamples, $row['derivative_sample_control_id']);
+						} 
+						InvConf::printInner($row['derivative_sample_control_id'], $depth + 1, $display_disabled_options);
+						if($row['derivative_sample_control_id'] == $row['parent_sample_control_id']){
+							array_pop(InvConf::$printedSamples);
+						} 
+						echo("</li>\n");
+					}
 				}
 			}while($stmt->fetch());
 			echo("</ul>\n");
@@ -93,10 +97,13 @@ class InvConf{
 <link rel="stylesheet" type="text/css" href="style.css"/>
 <link rel="stylesheet" type="text/css" href="print.css" media="print"/>
 <title>Inventory Configuration</title>
-<script type="text/javascript" src="../common/js/jquery-1.4.4.min.js"></script>
+<script type="text/javascript" src="../common/js/jquery-1.6.min.js"></script>
 <script type="text/javascript" src="../common/js/wz_jsgraphics.js"></script>
 <script type="text/javascript" src="../common/js/common.js"></script>
 <script type="text/javascript" src="default.js"></script>
+<script>
+	var currentMode = "<?php echo isset($_GET['display_mode']) ? $_GET['display_mode'] : "work" ?>";
+</script>
 </head>
 <body>
 <div id="top">
@@ -117,6 +124,13 @@ class InvConf{
 		}
 		?>
 	</select>
+	<fieldset style="display: inline-block;">
+	<legend>Display mode</legend>
+	<ul>
+		<li><label>Work:</label><input type='radio' name='display_mode' value='work' id="work"/></li>
+		<li><label>Light:</label><input type='radio' name='display_mode' value='light' id="light"/></li>
+	</ul>
+	</fieldset>
 </div>
 <div id="diagram">
 	<ul>
@@ -126,17 +140,36 @@ class InvConf{
 		."INNER JOIN parent_to_derivative_sample_controls AS assoc ON assoc.derivative_sample_control_id=s.id "  
 		."WHERE s.sample_category='specimen' ORDER BY s.sample_type";
 	$result = $db->query($query) or die("Spe 1 qry failed ".$db->error);
+	$display_disabled_options = isset($_GET['display_mode']) && $_GET['display_mode'] != 'light';
 	while($row = $result->fetch_assoc()){
 		$disabled = $row['flag_active'] ? "" : " disabled ";
 		$json = '{ "id" : "'.$row['mid'].'" }';
-		echo("<li class='sample sample_".$row['mid']." ".$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type']."<br/><span class='small'>".$row['form_alias']."</span></div>");
-		InvConf::printInner($row['id'], 1);
+		if(empty($disabled) || $display_disabled_options){
+			echo("<li class='sample sample_".$row['mid']." ".$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
+			InvConf::printInner($row['id'], 1, $display_disabled_options);
+		}
 		echo("</li>");
 	}
 	$result->close();
 	?>
 	</ul>
 </div>
+	<fieldset>
+		<legend>Derivatives toggles</legend>
+		<p style='color: red;'>These are toggles buttons. They do not represent the actual state of any derivative.</p>
+		<ul>
+		<?php 
+		$query = "SELECT id, sample_type FROM sample_controls WHERE sample_category='derivative' ORDER BY sample_type";
+		$result = $db->query($query) or die("Spe 1 qry failed ".$db->error);
+		while($row = $result->fetch_assoc()){
+			$json = '{ "id" : "'.$row['id'].'" }';
+			echo "<li><div class='derivative ", $json,"'>", $row['sample_type'], "</div></li>";
+		}
+		$result->close();
+		?>
+		</ul>
+	</fieldset>
+	<br/>
 	<fieldset>
 	<legend>Queries</legend>
 	<div id="out"></div>
