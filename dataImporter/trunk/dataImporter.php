@@ -109,7 +109,7 @@ foreach(Config::$models as $ref_name => &$model){
 		
 		//check dupes
 		if(count(array_unique($model->keys)) != count($model->keys)){
-			die("[".$ref_name."] contains duplicate row names\n");
+			die("[".$ref_name."] contains duplicate column names\n");
 		}
 		
 		//check all non empty configured keys are found
@@ -128,18 +128,21 @@ foreach(Config::$models as $ref_name => &$model){
 				$missing[] = $val;
 			}
 		}
+		if(!in_array($model->csv_pkey, $model->keys) && !in_array($model->csv_pkey, $missing)){
+			$missing[] = $model->csv_pkey;
+		}
+		
 		if(!empty($missing)){
+			print_r($tmp_fields);
+			print_r($model->keys);
 			die("The following key(s) for [$ref_name] were not found: [".implode("], [", $missing)."]\n");
 		}
 		
-		if($model->parent_key != null && !isset($model->fields[$model->parent_key])){
-			die("The parent key must be binded to a field for [".$model->file."]\n");
-		}
-		
-		readLine($model);
-		if(!empty($model->values) && !isset($model->values[$model->pkey])){
+		readLine($model, false);
+		-- $model->line;
+		if(!empty($model->values) && !isset($model->values[$model->csv_pkey])){
 			print_r($model->values);
-			die("Missing pkey [".$model->pkey."] in file [".$model->file."]\n");
+			die("Missing csv_pkey [".$model->csv_pkey."] in file [".$model->file."]\n");
 		}
 		
 		$result = mysqli_query($connection, "DESC ".$model->table) or die("table desc failed for [".$model->table."]\n");
@@ -301,56 +304,55 @@ function isDbNumericType($field_type){
  * Inserts a given table data into the database. For each row, there is a verification to see if children exist to call this
  * function recursively
  * @param unknown_type $ref_name The name of the table to work on
- * @param unknown_type $csv_parent_key The csv key of the parent table if it exists
- * @param unknown_type $mysql_parent_id The id (integer) of the mysql parent row
- * @param array $parent_data The data of the parent
+ * @param Model $parent_model The parent model
  */
 //table_name -> ref_name
 //table -> Config::$models
-function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null, $parent_data = null){
+function insertTable($ref_name, $parent_model = null){
 	$connection = Config::$db_connection;
 	if(!isset(Config::$models[$ref_name])){
 		echo "WARNING: model [".$ref_name."] not found\n";
 		return ;
 	}
 	$current_model = &Config::$models[$ref_name];
+	$current_model->parent_model = $parent_model;
+	
+	if($current_model->first_read){
+		$current_model->first_read = false;
+		readLine($current_model);
+	}
+	
 	$i = 0;
 	//debug info
 //	echo($ref_name."\n");
-//	if($ref_name == "collections"){
-//		echo("Size: ".sizeof($current_model->values)."\n");
-//		print_r($current_model->values);
-//		echo($current_model->parent_key." -> ".$current_model->fields[$current_model->parent_key]."\n");
-//		echo($current_model->values[$current_model->fields[$current_model->parent_key]]."  -  ".$csv_parent_key."\n");
-//		echo($current_model->values[$current_model->fields[$current_model->parent_key]]."\n");
-//		exit;
-//	}
-	while(sizeof($current_model->values) > 0 && 
-	($csv_parent_key == null || $current_model->values[$current_model->fields[$current_model->parent_key]] == $csv_parent_key)
+	//if($ref_name == "qc_tf_dxd_progression_site2"){
+		//echo "Current parent csv ref: ", $current_model->values[$current_model->parent_csv_key],"\n";
+		//echo "Current parent csv key: ", $current_model->parent_model->csv_key_value,"\n";
+		//exit;
+	//}
+	$insert_condition_function = $current_model->insert_condition_function;
+	while(!empty($current_model->values) && 
+		($current_model->parent_model == null || $current_model->values[$current_model->parent_csv_key] == $current_model->parent_model->csv_key_value)
+		&& ($insert_condition_function == null || $insert_condition_function($current_model))
 	){
 			//replace parent value.
-		if($mysql_parent_id != null){
-			$current_model->values[$current_model->fields[$current_model->parent_key]] = $mysql_parent_id;
-		}
-		if(isset($parent_data)){
-			//put answers in place
-			foreach($parent_data as $question => $answer){
-				$current_model->values[$question] = $answer;
-			}
+		if($parent_model != null && $current_model->parent_sql_key != null){
+			$current_model->values[$current_model->fields[$current_model->parent_sql_key]] = $parent_model->last_id;
 		}
 		
 		//master main
 		$queryValues = buildValuesQuery($current_model, $current_model->fields, $current_model->schema);
 		$query = $current_model->query_insert.$queryValues.")";
-		mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
-		$last_id = mysqli_insert_id($connection);
+	
+		mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]\n");
+		$current_model->last_id = mysqli_insert_id($connection);
 		if(Config::$print_queries){
 			echo $query.";\n";
 		}
 		
 		if(Config::$insert_revs){
 			//master revs
-			$query = $current_model->query_insert_revs.$queryValues.", '".$last_id."')";
+			$query = $current_model->query_insert_revs.$queryValues.", '".$current_model->last_id."')";
 			mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 			if(Config::$print_queries){
 				echo $query.";\n";
@@ -362,7 +364,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 				//insert into multi detail tables
 				foreach($current_model->query_detail_insert as $key => $value){
 					//detail main
-					$current_model->detail_fields[$key][$current_model->detail_master_fkey] = "@".$last_id;
+					$current_model->detail_fields[$key][$current_model->detail_master_fkey] = "@".$current_model->last_id;
 					echo $current_model->detail_master_fkey,"\n";
 					
 					$queryValues = buildValuesQuery($current_model, $current_model->detail_fields[$key], $current_model->detail_schema);
@@ -386,7 +388,7 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 				
 				//insert insto single detail table
 				//detail main
-				$current_model->detail_fields[$current_model->detail_master_fkey] = "@".$last_id;
+				$current_model->detail_fields[$current_model->detail_master_fkey] = "@".$current_model->last_id;
 				$queryValues = buildValuesQuery($current_model, $current_model->detail_fields, $current_model->detail_schema);
 				$query = $current_model->query_detail_insert.$queryValues.")";
 				mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
@@ -409,15 +411,15 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 
 		if($current_model->post_write_function != NULL){
 			$func = $current_model->post_write_function;
-			$func($current_model, $last_id);
+			$func($current_model);
 		}
 		
 		//saving id if required
 		if($current_model->save_id){
 			$query = "INSERT INTO id_linking (csv_id, csv_reference, mysql_id, model) VALUES('"
-					.$current_model->values[$current_model->pkey]."', "
+					.$current_model->values[$current_model->csv_pkey]."', "
 					."'".$ref_name."', " 
-					.$last_id.", '"
+					.$current_model->last_id.", '"
 					.$current_model->table."')";
 			if(Config::$print_queries){
 				echo $query.";\n";
@@ -428,21 +430,8 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 		if(is_array($current_model->child)){
 			//treat child
 			foreach($current_model->child as $child_model_ref){
-				$child_required_data = array();
-				if(isset($tables[$child_model_ref]->ask_parent)){
-					foreach($tables[$child_model_ref]->ask_parent as $question => $where_to_answer){
-						if($question == "id"){
-							$child_required_data[$where_to_answer] = $last_id;
-						}else{
-							$child_required_data[$where_to_answer] = $current_model->values[$current_model->fields[$question]];
-						}
-					}
-				}
 				
-				insertTable($child_model_ref, 
-								$current_model->values[$current_model->pkey], 
-								$last_id, 
-								$child_required_data);
+				insertTable($child_model_ref, $current_model);
 			}
 		}
 		flush();
@@ -450,48 +439,41 @@ function insertTable($ref_name, $csv_parent_key = null, $mysql_parent_id = null,
 	}
 }
 
-function readLine(&$current_table){
-	$proceed = true;
+function readLine(&$current_model, $do_post_read = true){
 	$end_of_file_eval = NULL;
 	if(IS_XLS){
-		$end_of_file_eval = 'return $current_table->line > $current_table->file_handler["numRows"];';
-	}else if(feof($current_table->file_handler)){
-		$end_of_file_eval = 'return feof($current_table->file_handler);';
+		$end_of_file_eval = 'return $current_model->line > $current_model->file_handler["numRows"];';
+	}else if(feof($current_model->file_handler)){
+		$end_of_file_eval = 'return feof($current_model->file_handler);';
 	}
 	if(eval($end_of_file_eval)){
-		$current_table->values = array();
+		$current_model->values = array();
 	}else{
+		$func = $current_model->post_read_function;
 		do{
 			//read line, skip empty lines
-			$current_table->line ++;
+			$current_model->line ++;
 			if(IS_XLS){
-				$current_table->values = isset($current_table->file_handler['cells'][$current_table->line]) ? $current_table->file_handler['cells'][$current_table->line] : array();
+				$current_model->values = isset($current_model->file_handler['cells'][$current_model->line]) ? $current_model->file_handler['cells'][$current_model->line] : array();
 			}else{
-				$line = fgets($current_table->file_handler, 4096);
-				$current_table->values = lineToArray($line);
+				$line = fgets($current_model->file_handler, 4096);
+				$current_model->values = lineToArray($line);
 			}
-			associate($current_table->keys, $current_table->values);
-		}while(!eval($end_of_file_eval) && (sizeof($current_table->values) <= (sizeof($current_table->keys) + 1) ||
-		(strlen($current_table->pkey) > 0 && strlen($current_table->values[$current_table->pkey]) == 0)));
+			associate($current_model->keys, $current_model->values);
+			$current_model->csv_key_value = $current_model->values[$current_model->csv_pkey];
+			
+			if(eval($end_of_file_eval)){
+				break;
+			}
+			$go_on = sizeof($current_model->values) <= (sizeof($current_model->keys) + 1) ||
+				(strlen($current_model->csv_pkey) > 0 && strlen($current_model->values[$current_model->csv_pkey]) == 0);
+			if($do_post_read && !$go_on && $func != null){
+				$go_on = !$func($current_model);
+			}
+		}while($go_on);
 		
 		if(eval($end_of_file_eval)){
-			$current_table->values = array();
-		}else{
-			if($current_table->parent_key != null){
-				if($current_table->parent_key_value != null
-				&& strlen($current_table->values[$current_table->parent_key]) != 0 
-				&& $current_table->parent_key_value > $current_table->values[$current_table->parent_key]){
-					echo("WARNING: parent_key ".$current_table->parent_key." is not in ascending order at line ".$current_table->line." of file ".$current_table->file
-						.". Previous: ".$current_table->parent_key_value." Current: ".$current_table->values[$current_table->parent_key]."\n");
-				}
-				if(isset($current_table->values[$current_table->parent_key])){
-					$current_table->parent_key_value = $current_table->values[$current_table->parent_key];
-				}
-			}
-			if($current_table->post_read_function != null){
-				$func = $current_table->post_read_function;
-				$func($current_table);
-			}
+			$current_model->values = array();
 		}
 	}
 }

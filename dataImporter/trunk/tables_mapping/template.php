@@ -24,7 +24,7 @@ $fields = array(
 );
 
 //see the Model class definition for more info
-$model = new Model(0, $pkey, $child, true, NULL, 'participants', $fields);
+$model = new Model(0, $pkey, $child, true, NULL, NULL, 'participants', $fields);
 
 //we can then attach post read/write functions
 $model->post_read_function = 'postTemplateRead';

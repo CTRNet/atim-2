@@ -120,6 +120,11 @@ function excelDateFix(Model $m){
 			if($m->values[$date_field] < 2500){
 				//only year
 				$m->values[$date_field] = $m->values[$date_field]."-01-01";
+				if(!isset($m->values[$accuracy_field])){
+					print_r($m->values);
+					print_r($accuracy_field);
+					die("dead");
+				}
 				if($accuracy_field != null && MyTime::$uncertainty_level[$m->values[$accuracy_field]] < MyTime::$uncertainty_level['y']){
 					$m->values[$accuracy_field] = 'y';
 				}
@@ -145,6 +150,8 @@ function excelDateFix(Model $m){
 		}
 		//echo $m->values[$date_field],"\n";
 	}
+	
+	return true;
 }
 
 /**
