@@ -33,9 +33,9 @@ class InvConf{
 			echo("<ul class='aliquots'>\n");
 			do{
 				$disabled = $row['flag_active'] ? "" : " disabled ";
-				$json = '{ "id" : "'.$row['sample_control_id'].'" }';
+				$json = '{ "id" : "'.$row['id'].'" }';
 				if(empty($disabled) || $display_disabled_options){
-					echo("<li class='aliquot aliquot_".$row['sample_control_id']." ".$disabled." ".$json."'><div class='aliquot_cell'>".$row['aliquot_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
+					echo("<li class='aliquot aliquot_".$row['id']." ".$disabled." ".$json."'><div class='aliquot_cell'>".$row['aliquot_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
 				}
 				$stmt2->bind_param("i", $row['id']);
 				$stmt2->execute();
