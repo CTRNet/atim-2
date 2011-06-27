@@ -46,4 +46,11 @@ class ValueDomain{
 			}
 		}
 	}
+	
+	function isValidValue($value){
+		if($this->case_sensitive == ValueDomain::CASE_INSENSITIVE){
+			$value = strtolower($value);
+		}
+		return array_key_exists($value, $this->values) ? $this->values[$value] : null; 
+	}
 }
