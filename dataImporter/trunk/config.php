@@ -23,6 +23,9 @@ class Config{
 
 	static $print_queries	= true;//wheter to output the dataImporter generated queries
 	static $insert_revs		= false;//wheter to insert generated queries data in revs as well
+	
+	static $addon_function_start= null;//function to run at the start of the import process
+	static $addon_function_end	= null;//function to run at the end of the import process
 	//--------------------------------------
 	
 	

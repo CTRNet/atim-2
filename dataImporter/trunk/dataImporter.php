@@ -139,7 +139,9 @@ foreach(Config::$models as $ref_name => &$model){
 		}
 		
 		readLine($model, false);
-		-- $model->line;
+		if(!empty($model->values)){
+			-- $model->line;
+		}
 		if(!empty($model->values) && !isset($model->values[$model->csv_pkey])){
 			print_r($model->values);
 			die("Missing csv_pkey [".$model->csv_pkey."] in file [".$model->file."]\n");
@@ -162,7 +164,7 @@ unset($model);//weird bug otherwise
 //load the value domains
 $tmp = array();
 foreach(Config::$value_domains as $domain_name){
-	$tmp[$domain_name] = getValueDomain($domain_name);
+	$tmp[$domain_name] = new ValueDomain($domain_name, ValueDomain::DONT_ALLOW_BLANK, ValueDomain::CASE_INSENSITIVE);
 }
 Config::$value_domains = $tmp;
 
@@ -181,6 +183,11 @@ foreach(Config::$addon_queries_start as $addon_query_start){
 	if(Config::$print_queries){
 		echo($addon_query_start."\n");
 	}
+}
+
+if(Config::$addon_function_start != null){
+	$func = Config::$addon_function_start;
+	$func();
 }
 
 //iteratover the primary tables who will, in turn, iterate over their children
@@ -210,6 +217,11 @@ foreach(Config::$addon_queries_end as $addon_query_end){
 	if(Config::$print_queries){
 		echo($addon_query_end."\n");
 	}
+}
+
+if(Config::$addon_function_end != null){
+	$func = Config::$addon_function_end;
+	$func();
 }
 
 if($insert){
@@ -256,12 +268,12 @@ function buildValuesQuery(Model $model, array $fields, array $schema){
 			$possible_values = current($value);
 			$tmp = $model->values[key($value)];
 			if(is_a($possible_values, 'ValueDomain')){
-				if($possible_values->case_sensitive == ValueDomain::CASE_INSENSITIVE){
-					$tmp = strtolower($tmp);
+				if(($val = $possible_values->isValidValue($tmp)) === null){
+					echo "WARNING: value [",$tmp,"] is unmatched for ValueDomain field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
+				}else{
+					$result .= "'".$val."', ";
 				}
-				$possible_values = $possible_values->values;
-			}
-			if(isset($possible_values[$tmp])){
+			}else if(isset($possible_values[$tmp])){
 				$result .= "'".$possible_values[$tmp]."', ";
 			}else{
 				$result .= "'', ";
@@ -324,18 +336,20 @@ function insertTable($ref_name, $parent_model = null){
 	
 	$i = 0;
 	//debug info
-//	echo($ref_name."\n");
-	//if($ref_name == "qc_tf_dxd_progression_site2"){
-		//echo "Current parent csv ref: ", $current_model->values[$current_model->parent_csv_key],"\n";
-		//echo "Current parent csv key: ", $current_model->parent_model->csv_key_value,"\n";
-		//exit;
-	//}
+/*	echo($ref_name."\n");
+	if($ref_name == "qc_tf_dxd_other_primary_cancers"){
+		echo $current_model->line;
+		print_r($current_model->values);
+		echo "Current parent csv ref: ", $current_model->values[$current_model->parent_csv_key],"\n";
+		echo "Current parent csv key: ", $current_model->parent_model->csv_key_value,"\n";
+		exit;
+	}*/
 	$insert_condition_function = $current_model->insert_condition_function;
 	while(!empty($current_model->values) && 
 		($current_model->parent_model == null || $current_model->values[$current_model->parent_csv_key] == $current_model->parent_model->csv_key_value)
 		&& ($insert_condition_function == null || $insert_condition_function($current_model))
 	){
-			//replace parent value.
+		//replace parent value.
 		if($parent_model != null && $current_model->parent_sql_key != null){
 			$current_model->values[$current_model->fields[$current_model->parent_sql_key]] = $parent_model->last_id;
 		}
@@ -427,10 +441,10 @@ function insertTable($ref_name, $parent_model = null){
 			mysqli_query($connection, $query) or die("tmp id query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");	
 		}
 		
+		
 		if(is_array($current_model->child)){
 			//treat child
 			foreach($current_model->child as $child_model_ref){
-				
 				insertTable($child_model_ref, $current_model);
 			}
 		}
