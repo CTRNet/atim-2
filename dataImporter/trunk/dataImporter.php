@@ -190,13 +190,15 @@ if(Config::$addon_function_start != null){
 	$func();
 }
 
+global $insert;
+$insert = true;
+
 //iteratover the primary tables who will, in turn, iterate over their children
 foreach(Config::$parent_models as $model_name){
 	insertTable($model_name);
 }
 
 //validate that each file handler has reached the end of it's file so that no data is left behind
-$insert = true;
 foreach(Config::$models as $ref_name => &$model){
 	if(IS_XLS){
 		if(isset($model->file_handler) && $model->line <= $model->file_handler["numRows"]){
@@ -270,9 +272,9 @@ function buildValuesQuery(Model $model, array $fields, array $schema){
 			if(is_a($possible_values, 'ValueDomain')){
 				if(($val = $possible_values->isValidValue($tmp)) === null){
 					echo "WARNING: value [",$tmp,"] is unmatched for ValueDomain field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
-				}else{
-					$result .= "'".$val."', ";
+					$val = "";
 				}
+				$result .= "'".$val."', ";
 			}else if(isset($possible_values[$tmp])){
 				$result .= "'".$possible_values[$tmp]."', ";
 			}else{
@@ -335,16 +337,28 @@ function insertTable($ref_name, $parent_model = null){
 	}
 	
 	$i = 0;
-	//debug info
-/*	echo($ref_name."\n");
-	if($ref_name == "qc_tf_dxd_other_primary_cancers"){
-		echo $current_model->line;
-		print_r($current_model->values);
-		echo "Current parent csv ref: ", $current_model->values[$current_model->parent_csv_key],"\n";
-		echo "Current parent csv key: ", $current_model->parent_model->csv_key_value,"\n";
-		exit;
-	}*/
 	$insert_condition_function = $current_model->insert_condition_function;
+
+	//debug info
+// 	echo($ref_name."\n");
+	
+// 	if($ref_name == "qc_tf_dxd_progression_site_ca125"){
+// 		echo $current_model->line;
+// 		print_r($current_model->values);
+// 		echo "Current parent csv ref: ", $current_model->values[$current_model->parent_csv_key],"\n";
+// 		echo "Current parent csv key: ", $current_model->parent_model->csv_key_value,"\n";
+		
+// 		if(!empty($current_model->values) &&
+// 			($current_model->parent_model == null || $current_model->values[$current_model->parent_csv_key] == $current_model->parent_model->csv_key_value)
+// 			&& ($insert_condition_function == null || $insert_condition_function($current_model))
+// 		){
+// 			echo "WILL GO IN";
+// 		}else{
+// 			echo "WONT GO IN";
+// 		}
+// 		exit;
+// 	}
+	
 	while(!empty($current_model->values) && 
 		($current_model->parent_model == null || $current_model->values[$current_model->parent_csv_key] == $current_model->parent_model->csv_key_value)
 		&& ($insert_condition_function == null || $insert_condition_function($current_model))
