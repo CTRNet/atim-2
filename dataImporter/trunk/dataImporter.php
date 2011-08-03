@@ -161,13 +161,6 @@ foreach(Config::$models as $ref_name => &$model){
 }
 unset($model);//weird bug otherwise
 
-//load the value domains
-$tmp = array();
-foreach(Config::$value_domains as $domain_name){
-	$tmp[$domain_name] = new ValueDomain($domain_name, ValueDomain::DONT_ALLOW_BLANK, ValueDomain::CASE_INSENSITIVE);
-}
-Config::$value_domains = $tmp;
-
 //create the temporary id linking table
 mysqli_query($connection, "DROP TABLE IF EXISTS id_linking ") or die("DROP tmp failed");
 $query = "CREATE TABLE id_linking(
