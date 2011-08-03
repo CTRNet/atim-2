@@ -11,22 +11,32 @@ class ValueDomain{
 	var $domain_name = null;
 	var $case_sensitive = null;
 	var $values = null;
+	var $allow_blank = null;
 	
 	function __construct($domain_name, $allow_blank, $case_sensitive){
 		$this->domain_name = $domain_name;
 		$this->case_sensitive = $case_sensitive;
+		$this->allow_blank = $allow_blank;
 		
 		$tmp = null;
 		if(array_key_exists($domain_name, self::$domain_cache)){
 			$tmp = array_merge(self::$domain_cache);
-		}else{
-			$tmp = getValueDomain($domain_name);
-			self::$domain_cache = array_merge($tmp);
+			$this->buildValueDomain($values);
+		}else if(Config::$db_connection != null){
+			$this->initiateValueDomain();
 		}
-		
-		if($case_sensitive == self::CASE_INSENSITIVE){
+	}
+	
+	public function initiateValueDomain(){
+		$values = getValueDomain($this->domain_name);
+		self::$domain_cache = array_merge($values);
+		$this->buildValueDomain($values);
+	}
+	
+	private function buildValueDomain($values){
+		if($this->case_sensitive == self::CASE_INSENSITIVE){
 			$this->values = array();
-			foreach($tmp as $key => $val){
+			foreach($values as $key => $val){
 				$lower_key = strtolower($key);
 				if(array_key_exists($lower_key, $this->values)){
 					echo "WARNING: ignoring value [".$val."] in value domain [".$domain_name."] because the case sentivity setting makes it conflict with [".$this->values[$lower_key]."]\n";
@@ -35,16 +45,17 @@ class ValueDomain{
 				}
 			}
 		}else{
-			$this->values = $tmp;
+			$this->values = $values;
 		}
 		
-		if($allow_blank){
+		if($this->allow_blank){
 			if(array_key_exists("", $this->values)){
 				echo "WARNING: Blank was not added to value domain [".$domain_name."] because it already contains an association to it\n";
 			}else{
 				$this->values[""] = "";
 			}
 		}
+		
 	}
 	
 	function isValidValue($value){
