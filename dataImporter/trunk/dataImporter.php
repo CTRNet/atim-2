@@ -8,7 +8,7 @@ require_once("valueDomain.php");
 //UPDATE THIS TO POINT TO YOUR CONFIG
 
 //require_once("config.php");
-//require_once("../atim_tf_coeur/dataImporterConfig/config.php");
+// require_once("../atim_tf_coeur/dataImporterConfig/config.php");
 require_once("C:/NicolasLucDir/LocalServer/ATiM/terry_fox_coeur/dataImporterConfig/config.php");
 
 //-----------------------------------
@@ -186,13 +186,13 @@ foreach(Config::$addon_queries_start as $addon_query_start){
 	}
 }
 
+global $insert;
+$insert = true;
+
 if(Config::$addon_function_start != null){
 	$func = Config::$addon_function_start;
 	$func();
 }
-
-global $insert;
-$insert = true;
 
 //iteratover the primary tables who will, in turn, iterate over their children
 foreach(Config::$parent_models as $model_name){
