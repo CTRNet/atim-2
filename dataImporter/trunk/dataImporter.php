@@ -6,8 +6,11 @@ require_once("valueDomain.php");
 
 
 //UPDATE THIS TO POINT TO YOUR CONFIG
-require_once("../atim_tf_coeur/dataImporterConfig/config.php");
+
 //require_once("config.php");
+//require_once("../atim_tf_coeur/dataImporterConfig/config.php");
+require_once("C:/NicolasLucDir/LocalServer/ATiM/terry_fox_coeur/dataImporterConfig/config.php");
+
 //-----------------------------------
 
 
@@ -163,7 +166,7 @@ unset($model);//weird bug otherwise
 
 //initiate the value domains
 foreach(Config::$value_domains as $value_domain){
-	$domain_name->initiateValueDomain();
+	$value_domain->initiateValueDomain();
 }
 
 //create the temporary id linking table
