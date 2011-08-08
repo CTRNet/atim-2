@@ -90,8 +90,30 @@ while ($row = $result->fetch_assoc()) {
 	}
 }
 $result->free();
-echo("<h1>Corrections to do</h1>\n");
+$control_tables = array();
+$control_tables_to_ignore = array('datamart_browsing_controls', 'misc_identifier_controls', 'parent_to_derivative_sample_controls', 'realiquoting_controls', 'structure_permissible_values_custom_controls');
+$control_tables_to_ignore = array_flip($control_tables_to_ignore);
+$detail_tables = array();
+foreach($tables as $table => $foo){
+	if(array_key_exists($table, $control_tables_to_ignore)){
+		continue;
+	}
+	$pos = strpos($table, "_controls");
+	if($pos !== false && $pos == strlen($table) - 9){
+		$control_tables[] = $table;
+		$result = $db->query("SELECT detail_tablename FROM ".$table." GROUP BY detail_tablename") or die($table." ".$db->error);
+		while($row = $result->fetch_row()){
+			$detail_tables[] = $row[0];
+		}
+	}
+}
+$detail_tables = array_flip($detail_tables);
+
+echo "<h1>Corrections to do</h1>\n";
 $correction = false;
+$main_table_req_fields = array('created', 'created_by', 'modified', 'modified_by', 'deleted');
+$detail_table_req_fields = array('deleted');
+$revs_table_ignore_fields = array_flip(array('created', 'created_by', 'modified', 'deleted'));
 foreach($tables as $tname => $foo){
 	if(isset($tables[$tname."_revs"])){
 		$result = $db->query("DESCRIBE ".$tname) or die($db->error);
@@ -114,10 +136,21 @@ foreach($tables as $tname => $foo){
 		$primary_table['version_created']['Default'] = "";
 		$primary_table['version_created']['Extra'] = "";
 		$result->free();
+		
+		$loop_on = array_key_exists($tname, $detail_tables) ? $detail_table_req_fields : $main_table_req_fields;
+		foreach($loop_on as $main_table_req_field){
+			if(!array_key_exists($main_table_req_field, $primary_table)){
+				$correction = true;
+				echo("+ ".$tname.".".$main_table_req_field."<br/>\n");
+			}
+		}
 
 		$result = $db->query("DESCRIBE ".$tname."_revs") or die($db->error);
 		while ($row = $result->fetch_assoc()) {
 			if(!isset($primary_table[$row['Field']])){
+				if(in_array($row['Field'], $main_table_req_fields)){
+					continue;
+				}
 				echo("- ".$tname."_revs.".$row['Field']."<br/>");
 				$correction = true;
 			}elseif ($primary_table[$row['Field']]['Type'] != $row['Type']
@@ -125,16 +158,20 @@ foreach($tables as $tname => $foo){
 //				|| $primary_table[$row['Field']]['Key'] != $row['Key']
 				|| $primary_table[$row['Field']]['Default'] != $row['Default']
 //				|| $primary_table[$row['Field']]['Extra'] != $row['Extra']
-				){
+			){
 					$correction = true;
 					echo("c ".$tname.".".$row['Field']."<br/>\n");
-				}
-				unset($primary_table[$row['Field']]);
+			}
+			unset($primary_table[$row['Field']]);
 		}
+
 		foreach($primary_table as $field => $foo){
-			$correction = true;
-			echo("+ ".$tname."_revs.".$field."<br/>\n");
+			if(!array_key_exists($field, $revs_table_ignore_fields)){
+				$correction = true;
+				echo "+ ".$tname."_revs.".$field."<br/>\n";
+			}
 		}
+		
 		$result->free();
 		unset($tables[$tname]);
 		unset($tables[$tname."_revs"]);
@@ -192,7 +229,7 @@ foreach($control_tables as $control_table){
 		}
 		do{
 			foreach($keys_to_look_for as $key){
-				if($row[$key] != null && strlen($row[$key]) > 0 && !array_key_exists($row[$key], $non_control_tables)){
+				if($row[$key] != null && strlen($row[$key]) > 0 && !array_key_exists(trim($row[$key]), $non_control_tables)){
 					$missing_details[] = $control_table." &rarr; ".$key." &rarr; ".$row[$key];
 				}
 			}
@@ -204,8 +241,76 @@ foreach($control_tables as $control_table){
 if(empty($missing_details)){
 	echo "All detail and extend tables were found";
 }else{
-	echo "<ul><li>",implode("</li><li>", $missing_details),"</li></ul>";
+	echo "<ul><li>",implode("</li><li>", $missing_details),"]</li></ul>";
 }
+?>
+
+<h1>Dates without accuracy</h1>
+<?php
+//cannot be done in a single query because of the permissions on information_schema 
+$query = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS "
+	."WHERE TABLE_SCHEMA='".$_SESSION['db']."' AND DATA_TYPE IN('date', 'datetime') AND COLUMN_NAME NOT IN('created', 'modified', 'version_created') AND TABLE_NAME NOT LIKE '%_revs'";
+$result = $db->query($query) or die($db->error);
+$date_fields = array();
+while($row = $result->fetch_row()){
+	$date_fields[$row[0].".".$row[1]] = null;
+}
+$result->free();
+$query = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS "
+	."WHERE TABLE_SCHEMA='".$_SESSION['db']."' AND DATA_TYPE IN('char', 'varchar') AND COLUMN_NAME LIKE '%_accuracy' AND TABLE_NAME NOT LIKE '%_revs'";
+
+$result = $db->query($query) or die($db->error);
+$bad_accuracy = array();
+while($row = $result->fetch_row()){
+	$key = str_replace("_accuracy", "", $row[0].".".$row[1]);
+	if(array_key_exists($key, $date_fields)){
+		unset($date_fields[$key]);
+	}else{
+		$bad_accuracy[] = $row[0].".".$row[1];
+	}
+}
+?>
+<ul>
+	<li>Fields without accuracy
+		<ul>
+			<li>
+				<?php 
+					echo empty($date_fields) ? "All date fields have an accuracy field" : implode("</li>\n<li>", array_keys($date_fields));
+				?>
+			</li>
+		</ul>
+	</li>
+	<li>Useless/non date accuracy fields
+		<ul>
+			<li>
+				<?php 
+				 echo empty($bad_accuracy) ? "No useless accuracy fields" : implode("</li>\n<li>", $bad_accuracy);
+				?>
+			</li>
+		</ul>
+	</li>
+</ul>
+
+<h1>Structures with duplicate fields</h1>
+<?php 
+$query = "SELECT COUNT(*) AS c, s.alias, sfi.plugin, sfi.tablename, sfi.field 
+	FROM structure_formats AS sfo
+	INNER JOIN structure_fields AS sfi ON sfi.id=sfo.structure_field_id 
+	INNER JOIN structures AS s ON sfo.structure_id=s.id
+    GROUP BY structure_field_id, structure_id HAVING c > 1";
+
+$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+if($row = $result->fetch_assoc()){
+	echo "<table><thead><tr><th>Structure</th><th>Plugin</th><th>Tablename</th><th>field</th><th>Count</th></tr></thead><tbody>\n";
+	$line = "<tr>".str_repeat("<td>%s</td>", 5)."</tr>\n";
+	do{
+		printf($line, $row['alias'], $row['plugin'], $row['tablename'], $row['field'], $row['c']);
+	}while($row = $result->fetch_assoc());
+	echo "</tbody></table>";
+}else{
+	echo "<p>No duplicate fields</p>";
+}
+$result->free();
 ?>
 
 <h1>Strings requiring translation</h1>
