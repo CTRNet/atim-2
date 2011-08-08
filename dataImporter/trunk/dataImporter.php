@@ -70,7 +70,7 @@ foreach(Config::$models as $ref_name => &$model){
 			if(is_array($model->detail_table)){
 				//prep for multi detail tables
 				foreach($model->detail_table as $key => $value){
-					$model->query_detail_insert[$key] = " (".buildInsertQuery($models[$ref_name]['detail'][$key]);
+					$model->query_detail_insert[$key] = " (".buildInsertQuery($models[$ref_name]['detail'][$key],true);
 					if(Config::$insert_revs){
 						$model->query_detail_insert_revs[$key] = "INSERT INTO ".$model->detail_table[$key]."_revs".$model->query_detail_insert[$key].", `id`) VALUES(";
 					}
@@ -78,7 +78,7 @@ foreach(Config::$models as $ref_name => &$model){
 				}
 			}else{
 				//prep for single detail table
-				$model->query_detail_insert = " (".buildInsertQuery(array_merge($model->detail_fields, array($model->detail_master_fkey => "@")));
+				$model->query_detail_insert = " (".buildInsertQuery(array_merge($model->detail_fields, array($model->detail_master_fkey => "@")),true);
 				if(Config::$insert_revs){
 					$model->query_detail_insert_revs = "INSERT INTO ".$model->detail_table."_revs".$model->query_detail_insert.", `id`) VALUES(";
 				}
@@ -243,17 +243,20 @@ if($insert){
  * Takes an array of field and returns a string contaning those who have a non empty string value
  * and adds the default created, created_by, modified, modified_by fields at the end
  * @param array $fields 
+ * @param boolean $is_details_table 
  * @return string
  */
-function buildInsertQuery(array $fields){
+function buildInsertQuery(array $fields, $is_details_table = false){
 	$result = "";
+	$field_separator = '';
 	foreach($fields as $field => $value){
 		if(is_array($value) || strlen($value) > 0){
-			$result .= $field.", ";
+			$result .= $field_separator.$field;
+			$field_separator = ", ";
 		}
 	}
 	
-	return $result."created, created_by, modified, modified_by";
+	return $result.($is_details_table? "" : $field_separator." created, created_by, modified, modified_by");
 }
 
 /**
@@ -262,10 +265,12 @@ function buildInsertQuery(array $fields){
  * @param Model $model The model to build the values query on
  * @param array $fields The fields key to use
  * @param array $schema The schema into which the insert will occur
+ * @param boolean $is_details_table 
  * @return string
  */
-function buildValuesQuery(Model $model, array $fields, array $schema){
+function buildValuesQuery(Model $model, array $fields, array $schema, $is_details_table = false){
 	$result = "";
+	$field_separator = '';
 	foreach($fields as $field => $value){
 		if(is_array($value)){
 			$possible_values = current($value);
@@ -275,34 +280,50 @@ function buildValuesQuery(Model $model, array $fields, array $schema){
 					echo "WARNING: value [",$tmp,"] is unmatched for ValueDomain field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
 					$val = "";
 				}
-				$result .= "'".$val."', ";
+				$result .= $field_separator."'".$val."'";
 			}else if(isset($possible_values[$tmp])){
-				$result .= "'".$possible_values[$tmp]."', ";
+				$result .= $field_separator."'".$possible_values[$tmp]."'";
 			}else{
-				$result .= "'', ";
+				$result .= $field_separator."''";
 				echo "WARNING: value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
 			}
 		}else if(strpos($value, "@") === 0){
-			$result .= "'".substr($value, 1)."', ";
+			$result .= $field_separator."'".substr($value, 1)."'";
 		}else if(strpos($value, "#") === 0){
 			$tmp = substr($value, 1);
 			if(isset($model->values[$tmp])){
-				$result .= "'".$model->values[$tmp]."', ";
+				$result .= $field_separator."'".$model->values[$tmp]."'";
 			}else{
-				$result .= "'', ";
+				$result .= $field_separator."''";
 				echo "WARNING: custom value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
 			}	
 		}else if(strlen($value) > 0){
 			if(strlen($model->values[$value]) > 0){
-				$result .= "'".str_replace("'", "\\'", $model->values[$value])."', ";
+				$result .= $field_separator."'".str_replace("'", "\\'", $model->values[$value])."'";
 			}else if(isDbNumericType($schema[$field]['type']) && $schema[$field]){
-				$result .= "NULL, ";
+				$result .= $field_separator."NULL";
 			}else{
-				$result .= "'', ";
+				$result .= $field_separator."''";
 			}
 		}
+		$field_separator = ", ";
 	}
-	return $result."NOW(), ".Config::$db_created_id.", NOW(), ".Config::$db_created_id;	
+	return $result.($is_details_table? "" : $field_separator."NOW(), ".Config::$db_created_id.", NOW(), ".Config::$db_created_id);	
+}
+
+/**
+ * Takes the fields array and the values array in order to build the values part of the query.
+ * The value fields starting with @ will be put directly into the query without beign replaced (minus the first @)
+ * @param Model $model The model to build the values query on
+ * @param array $fields The fields key to use
+ * @param array $schema The schema into which the insert will occur
+ * @param boolean $is_details_table 
+ * @return string
+ */
+function formatQueryForRevs($sql_statement){
+	$sql_statement = str_replace(" created, created_by, modified, modified_by", " modified_by", $sql_statement);
+	$sql_statement = str_replace("NOW(), ".Config::$db_created_id.", NOW(), ".Config::$db_created_id, Config::$db_created_id, $sql_statement);
+	return $sql_statement;
 }
 
 function isDbNumericType($field_type){
@@ -381,7 +402,7 @@ function insertTable($ref_name, $parent_model = null){
 		
 		if(Config::$insert_revs){
 			//master revs
-			$query = $current_model->query_insert_revs.$queryValues.", '".$current_model->last_id."')";
+			$query = formatQueryForRevs($current_model->query_insert_revs.$queryValues.", '".$current_model->last_id."')");
 			mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 			if(Config::$print_queries){
 				echo $query.";\n";
@@ -396,7 +417,7 @@ function insertTable($ref_name, $parent_model = null){
 					$current_model->detail_fields[$key][$current_model->detail_master_fkey] = "@".$current_model->last_id;
 					echo $current_model->detail_master_fkey,"\n";
 					
-					$queryValues = buildValuesQuery($current_model, $current_model->detail_fields[$key], $current_model->detail_schema);
+					$queryValues = buildValuesQuery($current_model, $current_model->detail_fields[$key], $current_model->detail_schema, true);
 					$query = $current_model->query_detail_insert[$key].$queryValues.")";
 					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 					$last_detail_id = mysqli_insert_id($connection);
@@ -406,7 +427,7 @@ function insertTable($ref_name, $parent_model = null){
 					
 					if(Config::$insert_revs){
 						//detail revs
-						$query = $current_model->query_detail_insert_revs[$key].$queryValues.", '".$last_detail_id."')";
+						$query = formatQueryForRevs($current_model->query_detail_insert_revs[$key].$queryValues.", '".$last_detail_id."')");
 						mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 						if(Config::$print_queries){
 							echo $query.";\n";
@@ -418,7 +439,7 @@ function insertTable($ref_name, $parent_model = null){
 				//insert insto single detail table
 				//detail main
 				$current_model->detail_fields[$current_model->detail_master_fkey] = "@".$current_model->last_id;
-				$queryValues = buildValuesQuery($current_model, $current_model->detail_fields, $current_model->detail_schema);
+				$queryValues = buildValuesQuery($current_model, $current_model->detail_fields, $current_model->detail_schema, true);
 				$query = $current_model->query_detail_insert.$queryValues.")";
 				mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 				$last_detail_id = mysqli_insert_id($connection);
@@ -428,7 +449,7 @@ function insertTable($ref_name, $parent_model = null){
 				
 				if(Config::$insert_revs){
 					//detail revs
-					$query = $current_model->query_detail_insert_revs.$queryValues.", '".$last_detail_id."')";
+					$query = formatQueryForRevs($current_model->query_detail_insert_revs.$queryValues.", '".$last_detail_id."')");
 					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
 					if(Config::$print_queries){
 						echo $query.";\n";
