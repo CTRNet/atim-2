@@ -280,19 +280,19 @@ function buildValuesQuery(Model $model, array $fields, array $schema, $is_detail
 					echo "WARNING: value [",$tmp,"] is unmatched for ValueDomain field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
 					$val = "";
 				}
-				$result .= $field_separator."'".$val."'";
+				$result .= $field_separator."'".str_replace("'", "\\'", $val)."'";
 			}else if(isset($possible_values[$tmp])){
-				$result .= $field_separator."'".$possible_values[$tmp]."'";
+				$result .= $field_separator."'".str_replace("'", "\\'", $possible_values[$tmp])."'";
 			}else{
 				$result .= $field_separator."''";
 				echo "WARNING: value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
 			}
 		}else if(strpos($value, "@") === 0){
-			$result .= $field_separator."'".substr($value, 1)."'";
+			$result .= $field_separator."'".str_replace("'", "\\'", substr($value, 1))."'";
 		}else if(strpos($value, "#") === 0){
 			$tmp = substr($value, 1);
 			if(isset($model->values[$tmp])){
-				$result .= $field_separator."'".$model->values[$tmp]."'";
+				$result .= $field_separator."'".str_replace("'", "\\'", $model->values[$tmp])."'";
 			}else{
 				$result .= $field_separator."''";
 				echo "WARNING: custom value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
