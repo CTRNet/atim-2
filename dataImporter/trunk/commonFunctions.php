@@ -98,6 +98,10 @@ function excelDateFix(Model $m){
 		$m->values[$date_field] = trim($m->values[$date_field]);
 		//echo "IN DATE: ",$m->values[$date_field]," -> ";
 		$matches = array();
+		if(preg_match_all('/[0-9]{2}\\.[0-9]{2}\\.[0-9]{2}/', $m->values[$date_field], $matches) === 1){
+			$m->values[$date_field] = str_replace(".", "-", $m->values[$date_field]);
+		}
+		
 		if(preg_match_all(MyTime::$full_date_pattern, $m->values[$date_field], $matches, PREG_OFFSET_CAPTURE) > 0){
 			if(isset(MyTime::$months[strtolower($matches[1][0][0])])){
 				$m->values[$date_field] = $matches[4][0][0]."-".MyTime::$months[strtolower($matches[1][0][0])]."-".sprintf("%02d", $matches[2][0][0]);
