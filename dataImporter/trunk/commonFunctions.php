@@ -119,6 +119,7 @@ function excelDateFix(Model $m){
 		}else if(is_numeric($m->values[$date_field])){
 			if($m->values[$date_field] < 2500){
 				//only year
+				echo $m->values[$date_field],"---fmlh\n";
 				$m->values[$date_field] = $m->values[$date_field]."-01-01";
 				if(!isset($m->values[$accuracy_field])){
 					echo "ERROR: Cannot set the date for field [", $date_field, "] because no accuracy fields is matched to it. See file [",$m->file, "] at line [", $m->line, "]\n";
@@ -139,16 +140,19 @@ function excelDateFix(Model $m){
 			$m->values[$accuracy_field] = "m";
 			$m->values[$date_field] = $matches[2][0]."-".MyTime::$months[strtolower($matches[1][0])]."-01";
 			
-		}else if(strlen($m->values[$date_field]) > 0 && preg_match_all('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $m->values[$date_field], $matches) === 0 && $accuracy_field != NULL){
+		}else if(strlen($m->values[$date_field]) > 0 && preg_match_all('/[0-9]{4}-[0-9]{2}-[0-9]{2}/', $m->values[$date_field], $matches) === 0){
 			//not a standard date, consider unknown
-			if($accuracy_field != null){
+			if($accuracy_field = NULL){
 				$m->values[$accuracy_field] = "u";
-			}
-			if(strlen($m->values[$date_field]) != 10){
-				echo "WARNING ON DATE [",$m->values[$date_field],"] (C) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+				if(strlen($m->values[$date_field]) != 10){
+					echo "WARNING ON DATE [",$m->values[$date_field],"] (C) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+				}
+			}else{
+				global $insert;
+				$insert = false;
+				echo "ERROR ON DATE [",$m->values[$date_field],"] (D) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
 			}
 		}
-		//echo $m->values[$date_field],"\n";
 	}
 	
 	return true;
