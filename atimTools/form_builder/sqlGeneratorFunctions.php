@@ -60,7 +60,6 @@ function valueToQueryWherePart($value, $where = true){
  * @param unknown_type $data The targetted data
  */
 function getUpdateQuery($fields, $row, $data){
-//	print_r($data);
 	$result = "";
 	foreach($fields as $field){
 		if($row[$field] != $data->{$field} && !($row[$field] == NULL && $data->{$field} == "NULL")){
@@ -86,7 +85,7 @@ function getSameSfi($field){
 		if($sf == "structure_value_domain"){
 			$tmp[] = "`structure_value_domain` ".castStructureValueDomain($field->structure_value_domain, true); 
 		}else{
-			$tmp[] = sprintf("`%s`='%s'", $sf, $field->{$sf});
+			$tmp[] = sprintf("`%s`='%s'", $sf, addslashes($field->{$sf}));
 		}
 	}
 	$query = "FROM structure_fields WHERE ".implode(" AND ", $tmp);
@@ -131,9 +130,14 @@ function getSimilarSfi($field){
 function getSfo($field){
 	global $STRUCTURE_FIELDS_FIELDS_LIGHT;
 	$sfoData = getDataFromQuery("SELECT * FROM structure_formats WHERE id='".$field->sfo_id."'");
+	if(empty($sfoData)){
+		echo "-- WARNING: Bad sfo_id\n";
+		return null;
+	}
 	$structureData = getDataFromQuery("SELECT * FROM structures WHERE id='".$sfoData['structure_id']."'");
 	$structure_id_query = "SELECT id FROM structures WHERE alias='".$structureData['alias']."'";
 	$sfiData = getDataFromQuery("SELECT * FROM structure_fields WHERE id='".$sfoData['structure_field_id']."'");
+	assert(!empty($sfiData));
 	$structure_field_id_query = sprintf(getSelectSfiQuery($sfiData), "id");
 	return array("query_id" => "SELECT id FROM structure_formats WHERE structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.")", 
 		'where' => " structure_id=(".$structure_id_query.") AND structure_field_id=(".$structure_field_id_query.") ", 
@@ -158,7 +162,7 @@ function getInsertIntoSfi($field){
 		if($sf == "structure_value_domain"){
 			$tmp[] = castStructureValueDomain($field->structure_value_domain, false); 
 		}else{
-			$tmp[] = "'".$field->{$sf}."'";
+			$tmp[] = "'".addslashes($field->{$sf})."'";
 		}
 	}
 	return "(".implode(", ", $tmp)."), ";
@@ -184,6 +188,13 @@ function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 	return $query;
 }
 
+/**
+ * Enter description here ...
+ * @param unknown_type $field
+ * @param unknown_type $sfi
+ * @param unknown_type $sfo
+ * @param unknown_type $ignore_sfo_sfi_id_update
+ */
 function getUpdateSfo($field, $sfi, $sfo, $ignore_sfo_sfi_id_update = false){
 	global $STRUCTURE_FORMATS_FIELDS;
 	global $OVERRIDES_NAMES;
@@ -213,8 +224,12 @@ function getUpdateSfo($field, $sfi, $sfo, $ignore_sfo_sfi_id_update = false){
 	}
 	//TODO: compare structure id and update if necessary
 	//compare structure_field_id and update if necessary
-	if(!$ignore_sfo_sfi_id_update && (($sfi != NULL && $field->sfi_id != $sfi['data']['id']) || $sfi == NULL && $field->sfi_id > 0)){
-		$query = "`structure_field_id`=(SELECT `id` FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `type`='".$field->type."' AND `structure_value_domain`".castStructureValueDomain($field->structure_value_domain, true)."), ";
+	if(($sfi != NULL && $field->sfi_id != $sfi['data']['id']) || $sfi == NULL && $field->sfi_id > 0){
+		if(!$ignore_sfo_sfi_id_update){
+			$query = "`structure_field_id`=(SELECT `id` FROM structure_fields WHERE `model`='".$field->model."' AND `tablename`='".$field->tablename."' AND `field`='".$field->field."' AND `type`='".$field->type."' AND `structure_value_domain`".castStructureValueDomain($field->structure_value_domain, true)."), ";
+		}else if($sfi != null){
+			$query .= "`structure_field_id`=(SELECT `id` FROM structure_fields WHERE `model`='".$sfi['data']['model']."' AND `tablename`='".$sfi['data']['tablename']."' AND `field`='".$sfi['data']['field']."' AND `type`='".$sfi['data']['type']."' AND `structure_value_domain`".castStructureValueDomain($sfi['data']['structure_value_domain'], true)."), ";
+		}
 	}
 	if(strlen($query) > 0){
 		$query = "UPDATE structure_formats SET ".substr($query, 0, -2)." WHERE ".trim($sfo['where']); 

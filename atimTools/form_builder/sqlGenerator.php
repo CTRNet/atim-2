@@ -73,7 +73,7 @@ foreach($json->fields as $field){
 			//no change to structure field
 			if(strlen($field->sfo_id) > 0 && $sfo != NULL){
 				//generate update sfo if necessary
-				$str = getUpdateSfo($field, $sameSfi, $sfo);
+				$str = getUpdateSfo($field, $sameSfi, $sfo, false);
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
 				}
@@ -90,7 +90,7 @@ foreach($json->fields as $field){
 				$sfoDeleteIgnoreId[] = $field->sfi_id;
 				$old_sfi = getStructureFieldById($field->sfi_id);
 				$deleteFromStructureFieldArray[] = "model='".$old_sfi['model']."' AND tablename='".$old_sfi['tablename']."' AND field='".$old_sfi['field']."' AND `type`='".$old_sfi['type']."' AND structure_value_domain".castStructureValueDomain($old_sfi['structure_value_domain'], true);
-				$str = getUpdateSfo($field, $tmp_similar_sfi, $sfo, false);//clear sfo overrides if needed
+				$str = getUpdateSfo($field, $tmp_similar_sfi, $sfo, true);//update sfo overrides if needed
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
 				}
@@ -110,7 +110,7 @@ foreach($json->fields as $field){
 		}else if($similarSfi['data']['id'] == $field->sfi_id){
 			//override is possible
 			if($sfo != NULL){
-				$str = getUpdateSfo($field, $similarSfi, $sfo);
+				$str = getUpdateSfo($field, $similarSfi, $sfo, false);
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
 				}
@@ -125,7 +125,7 @@ foreach($json->fields as $field){
 				$insertIntoStructureFields .= getInsertIntoSfi($field).LS;
 			}
 			if($sfo != NULL){
-				$str = getUpdateSfo($field, NULL, $sfo);
+				$str = getUpdateSfo($field, NULL, $sfo, false);
 				if(strlen($str) > 0){
 					$updateStructureFormatsArray[] = $str;
 				}
@@ -215,7 +215,7 @@ if(count($sfoDeleteIgnoreId) > 0){
 						}
 					}
 					echo $delete_query, $delete_query_structure_id, " AND structure_field_id=(SELECT id FROM structure_fields WHERE ", implode(" AND ", $where_part), ");\n";
-					if(getFieldUsageCount($sfId) == 1){
+					if(getFieldUsageCount($sfi_id) == 1){
 						//delete from sfi
 						$deleteFromStructureFieldArray[] = "". implode(" AND ", $where_part);
 					}
