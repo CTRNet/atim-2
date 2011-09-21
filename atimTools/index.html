@@ -52,7 +52,7 @@ ul.menu li div{
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	padding: 10px;
-	width: 870px;
+	width: 1011px;
 	text-align: left;
 	white-space: normal;
 	display: none;
@@ -76,6 +76,9 @@ ul.menu li:hover div{
 #box6{
 	left: -736px;
 }
+#box7{
+	left: -893px;
+}
 .red{
 	color: #F33;
 }
@@ -95,6 +98,8 @@ a{
 			<p>Reads a database, compares base tables with revs tables and gives the difference between those.</p>
 			<p>Gives the list of tables without revs.</p>
  			<p>Gives the list of non existing tables pointed by *_controls tables.</p>
+ 			<p>Gives the list of dates without accuracy.</p>
+ 			<p>Gives the list of structures with duplicate fields.</p>
  			<p>Gives a list of strings without tranlsation.</p>
  		</div>
 		</li>
@@ -126,6 +131,11 @@ a{
 			<div id="box6">
 				<p>Visual representation of menu hierarchy in ATiM2. Clicking on the nodes disables/enables them. The
 				queries to alter the configuration are generated at the bottom of the page.</p>
+			</div>
+		</li>
+		<li><a href="menu_config/">Collection merge</a>
+			<div id="box7">
+				<p>You provide a list of acquisition label from;to and it generates the queries to run.</p>
 			</div>
 		</li>
 	</ul>

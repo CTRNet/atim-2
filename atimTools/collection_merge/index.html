@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Collection Merger</title>
+<style>
+body{
+	font-family: arial;
+	text-align: center;
+	background-color: #4297D7;
+}
+
+.main{
+	display: inline-block;
+	margin: auto;
+	background-color: #ffffff;
+	padding: 0 20px 20px 20px;
+	border-radius: 10px;
+	
+}
+.circle{
+	display: inline-block;
+	border: solid black 1px;
+	width: 40px;
+	height: 30px;
+	border-radius: 20px;
+	padding-top: 10px;
+	padding-bottom: -10px;
+	text-align: center;
+	font-weight: bold;
+	font-size: 120%;
+	margin-right: 10px;
+	color: #888888;
+}
+.downArrow{
+	width: 1px;
+	border: transparent solid 30px;
+	border-top: black solid 30px;
+	border-bottom: none;
+	display: inline-block;
+	margin-top: 20px;
+}
+</style>
+</head>
+<body>
+	<div class='main'>
+	<h1>Collection merge based on acquisition labels</h1>
+	<p><div class='circle'>1</div>Paste your acqusition labels here.</p>
+	<textarea rows="15" cols="100" class="in">
+acquisition_label_from; acquisition_label_to
+acquisition_label_from2; acquisition_label_to2
+acquisition_label_fromX; acquisition_label_toX
+	</textarea>
+	
+	<br/>
+	<div class='downArrow'></div>
+	
+	<p><div class='circle'>2</div>Generated output.</p>
+	<textarea rows="15" cols="100" class="out">
+	</textarea>
+	</div>
+	
+	<script src="../common/js/jquery-1.6.min.js"></script>
+	<script>
+	function go(){
+		$.post("collection_merge.php", { "data" : $(".in").val() }, function(data){
+			$(".out").val(data);
+		});
+	}
+	
+	$(function(){
+		$(".in").change(go).keyup(go).bind('paste', go);
+		$(".in").click(function(){
+			$(".in").unbind('click').val('');
+		});
+	});
+	</script>
+</body>
+</html>
