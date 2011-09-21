@@ -26,8 +26,8 @@ foreach($json as $node){
 }
 
 if(count($to_disable)){
-	echo "UPDATE menus SET flag_active=false WHERE id IN(", implode(", ", $to_disable), ");<br/>";
+	echo "UPDATE menus SET flag_active=false WHERE id IN('", implode("', '", $to_disable), "');<br/>";
 }
 if(count($to_enable)){
-	echo "UPDATE menus SET flag_active=true WHERE id IN(", implode(", ", $to_enable), ");<br/>";
+	echo "UPDATE menus SET flag_active=true WHERE id IN('", implode("', '", $to_enable), "');<br/>";
 }
