@@ -89,6 +89,7 @@ while ($row = $result->fetch_assoc()) {
 		$tables[$value] = "";
 	}
 }
+$all_tables = array_merge($tables, array());
 $result->free();
 $control_tables = array();
 $control_tables_to_ignore = array('datamart_browsing_controls', 'misc_identifier_controls', 'parent_to_derivative_sample_controls', 'realiquoting_controls', 'structure_permissible_values_custom_controls');
@@ -241,7 +242,7 @@ foreach($control_tables as $control_table){
 if(empty($missing_details)){
 	echo "All detail and extend tables were found";
 }else{
-	echo "<ul><li>",implode("</li><li>", $missing_details),"]</li></ul>";
+	echo "<ul><li>",implode("</li><li>", $missing_details),"</li></ul>";
 }
 ?>
 
@@ -313,6 +314,96 @@ if($row = $result->fetch_assoc()){
 $result->free();
 ?>
 
+<h1>Grouped structures with duplicate fields</h1>
+<table>
+	<thead>
+		<tr>
+			<th>Structure(s)</th>
+			<th>Field</th>
+			<th>Count</th>
+			<td>Sfo id(s)</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+
+$grouped_forms = array();
+foreach($control_tables as $control_table){
+	$query = "SELECT form_alias FROM ".$control_table;
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		$grouped_forms[] = $row['form_alias'];
+	}
+	$result->free();
+}
+$grouped_forms = array_unique($grouped_forms);
+foreach($grouped_forms as $grouped_form){
+	$forms = explode(',', $grouped_form);
+	array_filter($forms);
+	$query = "SELECT COUNT(*) AS c, sfi.field, GROUP_CONCAT(DISTINCT s.alias SEPARATOR ', ') AS aliases, GROUP_CONCAT(DISTINCT sfo.id SEPARATOR ', ') AS sfo_ids 
+		FROM structure_formats AS sfo
+		INNER JOIN structure_fields AS sfi ON sfi.id=sfo.structure_field_id 
+		INNER JOIN structures AS s ON sfo.structure_id=s.id
+		WHERE s.alias IN('".implode("', '", $forms)."')
+    	GROUP BY structure_field_id HAVING c > 1";
+    $result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['aliases'], $row['field'], $row['c'], $row['sfo_ids']);
+	}
+	$result->free();
+
+}
+?>
+	</tbody>
+</table>
+
+<h1>Detail fields used for search without tablename</h1>
+<table>
+	<thead>
+		<tr>
+			<th>id</th>
+			<th>Model</th>
+			<th>Field</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+$query = "SELECT sfi.* FROM structure_fields AS sfi 
+	INNER JOIN structure_formats AS sfo ON sfi.id=sfo.structure_field_id AND sfo.flag_search=1 
+	WHERE model LIKE '%Detail' AND tablename=''
+	GROUP BY sfi.id";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['id'], $row['model'], $row['field']);
+	}
+	$result->free();
+
+?>
+	</tbody>
+</table>
+
+<h1>Fields referring to non existent tables</h1>
+<table>
+	<thead>
+		<tr>
+			<th>id</th>
+			<th>Model</th>
+			<th>Field</th>
+			<th>invalid tablename</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	$query = "SELECT * FROM structure_fields WHERE tablename!='' AND tablename NOT IN('".implode("', '", array_keys($all_tables))."')";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['id'], $row['model'], $row['field'], $row['tablename']);
+	}
+	$result->free();
+	?>
+	</tbody>
+</table>
+
 <h1>Strings requiring translation</h1>
 <div id="tr_target"></div>
 <table id="mt"><tr>
@@ -378,6 +469,121 @@ $result->free();
 
 ?>
 </table>
+
+<h1>Update on non strict fields</h1>
+<?php 
+$query = "SELECT TABLE_NAME, COLUMN_NAME FROM information_schema.COLUMNS WHERE table_schema='".$_SESSION['db']."' AND column_default LIKE '0000-00-00%'";
+if($result = $db->query($query)){
+	?>
+	<table>
+		<thead>
+			<tr><th colspan='2'>Fields with an invalid default date</th></tr>
+			<tr><th>Table</th><th>Field</th></tr>
+		</thead>
+		<tbody>
+		<?php
+		$fmlh = array();
+		if($row = $result->fetch_assoc()){
+			do{
+				printf ('<tr><td>%s</td><td>%s</td></tr>', $row['TABLE_NAME'], $row['COLUMN_NAME']);
+				if($row['COLUMN_NAME'] == 'created' || $row['COLUMN_NAME'] == 'modified'){
+					$fmlh[$row['TABLE_NAME']][] = "MODIFY COLUMN ".$row['COLUMN_NAME']." DATETIME DEFAULT NULL";
+				}
+			}while($row = $result->fetch_assoc());
+		}else{
+			echo "<tr><td colspan='2'>All fields are conform to strict standards.</td></tr>";
+		}
+		?>
+		</tbody>
+	</table>
+	<?php
+}else{
+	echo "<p>You don't have sufficent privileges to run the quick query to detect non strict fields.<p/>";
+}
+
+?>
+<h1>Dropdown values length exceeding database field capacity</h1>
+<h2>Direct dropdown</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Table</th>
+			<th>Field</th>
+			<th>Max length</th>
+			<th>Exceeding values</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php 
+$query = "SELECT sf.tablename, sf.field, c.COLUMN_TYPE, svd.id, svd.domain_name FROM structure_fields AS sf 
+INNER JOIN structure_value_domains AS svd ON sf.structure_value_domain=svd.id AND (svd.source IS NULL OR svd.source='')
+INNER JOIN information_schema.columns AS c ON c.table_schema='".$_SESSION['db']."' AND c.table_name=sf.tablename AND c.column_name=sf.field AND c.COLUMN_TYPE LIKE '%char%'  
+WHERE sf.type='select'";
+if($results = $db->query($query)){
+	$db2 = getConnection();
+	$query = "SELECT value, LENGTH(value), language_alias FROM structure_value_domains_permissible_values AS svdpv
+	INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id
+	WHERE svdpv.structure_value_domain_id=? AND LENGTH(value) > ?";
+	$stmt = $db2->prepare($query) or die("svd validation prep failed");
+	$all_good = true;
+	while($row = $results->fetch_assoc()){
+		$match = array();
+		if(preg_match('/[0-9]+/', $row['COLUMN_TYPE'], $match)){
+			$stmt->bind_param('ii', $row['id'], $match[0]);
+			$stmt->execute();
+			$row2 = bindRow($stmt);
+			if($stmt->fetch()){
+				$all_good = false;
+				printf('<tr><td>%s</td><td>%s</td><td>%d</td><td>', $row['tablename'], $row['field'], $match[0]);
+				$str = array();
+				do{
+					$str[] = $row2['value'];
+				}while($stmt->fetch());
+				echo implode(', ', $str),'</td></tr>';
+			}
+		}else{
+			die("No match for column type ".$row['COLUMN_TYPE']);
+		}
+	}
+	if($all_good){
+		echo '<tr><td colspan=4>All good!</td></tr>';
+	}
+	$results->free();
+}else{
+	echo $db->error;
+}
+
+?>
+	<tbody>
+</table>
+
+<h2>Custom dropdowns</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Custom control name</th>
+			<th>Max length</th>
+			<th>Exceeding values</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	$query = "SELECT name, values_max_length, GROUP_CONCAT(spvc.value) AS m_values FROM structure_permissible_values_custom_controls AS spvcc
+	INNER JOIN structure_permissible_values_customs AS spvc ON spvcc.id=spvc.control_id AND LENGTH(spvc.value) > spvcc.values_max_length
+	GROUP BY spvcc.id";
+	$result = $db->query($query) or die("svd validation 2 failed");
+	if($row = $result->fetch_assoc()){
+		do{
+			printf('<tr><td>%s</td><td>%d</td><td>%s</td></tr>', $row['name'], $row['values_max_length'], $row['m_values']);
+		}while($row = $result->fetch_assoc());
+	}else{
+		echo '<tr><td colspan=3>All good</td></tr>';
+	}
+	$result->free();
+	?>
+	</tbody>
+</table>
+
 <ul id="translations" style="list-style: none;">
 	<?php 
 	foreach ($tables as $table => $count){
