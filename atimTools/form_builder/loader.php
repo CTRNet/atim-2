@@ -27,9 +27,10 @@ if($json->type == 'structures'){
 				."WHERE sfo.id = '".$json->val."'";
 	}
 }else if($json->type == 'tables'){
-	echo ("<h3>Table: <span id='tablename'>".$json->val."</span></h3>");
-	echo ("Autotype: <input id='table_autotype' type='checkbox' checked='checked'/>");
+	echo "<h3>Table: <span id='tablename'>".$json->val."</span></h3>";
+	echo "Autotype: <input id='table_autotype' type='checkbox' checked='checked'/>";
 	$query = "DESC ".$json->val;
+	echo '<button id="createAll">Create All</button>';
 }else if($json->type == 'fields'){
 	$query = "SELECT * FROM structure_fields WHERE model = '".$json->val."'";
 }else if($json->type == 'structure_permissible_values'){

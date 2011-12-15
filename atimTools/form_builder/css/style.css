@@ -14,11 +14,10 @@ tbody tr:nth-child(odd){
 
 tr.clickable:hover{
 	background-color: #00ffff;
-	cursor: pointer;
 }
 
 .clickable{
-	
+	cursor: pointer;
 }
 
 input.readonly{

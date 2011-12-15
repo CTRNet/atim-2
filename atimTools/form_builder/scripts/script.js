@@ -8,7 +8,7 @@ $(function(){
 	
 	$("#piton5").scroll(function() { 
 		$("td.scrollingButtons:last").css("padding-left", Math.max($(this).scrollLeft() - 110, 0));
-		$("#autoBuild2 th:nth-child(4), #autoBuild2 td:nth-child(4)").css("left", $(this).scrollLeft())
+		$("#autoBuild2 th:nth-child(4), #autoBuild2 td:nth-child(4)").css("left", $(this).scrollLeft());
 	});
 	$("#dbSelect").change(function(){
 		document.location = "?db=" + $(this).children(":selected").html();
@@ -237,10 +237,8 @@ $(function(){
 							}
 							$("#autoBuild2").children("tbody").children("tr").remove();
 							$("#autoBuild2").children("tbody").append(data);
-							$("#autoBuild2").children("tbody").children("tr").addClass("clickable");
-							$("#autoBuild2").children("tbody").children("tr").click(function(){
-								editLine(this);
-							});
+							$("#autoBuild2 tbody td:first-child").addClass("first_td");
+							$("#autoBuild2 tbody td:not(.first_td)").addClass("clickable").addClass("editable");
 							initDeleteLine("#autoBuild2 tbody tr");
 							$("#autoBuild2 a.deleteLine").click(function(e){
 								$(this).parent().parent().remove();
@@ -483,6 +481,18 @@ $(function(){
 	});
 	
 	calculateAutoBuild2LeftMargin();
+	
+	$(document).delegate("#createAll", "click", function(){
+		$("#tableResult").find("tr").each(function(){
+			$(this).click();
+			addLine();
+		});
+
+	}).delegate(".clickable.editable", "click", function(event){
+		fieldToggle(this);
+	}).delegate("input[type=checkbox]", "click", function(event){
+		event.stopPropagation();
+	});
 });
 
 function flashColor(item, color){
@@ -627,18 +637,15 @@ function addLine(){
 		}else{
 				val = $(this).children("input").val();
 		}
-		line += "<td>" + val + "</td>";
+		line += "<td class='clickable editable'>" + val + "</td>";
 	});
 	line += "</tr>";
 	if(valid){
-		$(".add.autoBuild2").parent().parent().parent().parent().children("tbody").append(line);
-		initDeleteLine($(".add.autoBuild2").parent().parent().parent().parent().children("tbody").children("tr:last"));
-		$(".add.autoBuild2").parent().parent().parent().parent().children("tbody").children("tr:last").addClass("clickable").find("input[type=checkbox]").click(function(e){ e.stopPropagation();});
-		$(".add.autoBuild2").parent().parent().parent().parent().children("tbody").children("tr:last").click(function(){
-			editLine($(this));
-			return false;
-		});
-		$(".add.autoBuild2").parent().parent().parent().parent().children("tfoot").children("tr:first").children("td").each(function(){
+		var table = $(".add.autoBuild2").closest("table"); 
+		$(table).children("tbody").append(line);
+		initDeleteLine($(table).find("tbody tr:last"));
+		$(table).find("tbody tr:last td:first").removeClass("clickable").removeClass("editable");
+		$(table).find("tfoot tr:first td").each(function(){
 			var field = $(this).children("input"); 
 			if($(field).hasClass("autoBuildIncrement")){
 				incrementField(field);
@@ -653,42 +660,42 @@ function addLine(){
 	}
 }
 
-function editLine(line){
-	if($("a.autoBuild2").children("span:nth-child(1)").hasClass("ui-icon-disk")){
-		tmpLine = line;
-		$("#saveDeleteDialog").dialog('open');
-	}else{
-		lineWithoutChanges = line;
-		var cells = $(line).children("td");
-		$(cells[0]).html($(cells[0]).html().substr(41));
-		var inputs = $(line).parent().parent().children("tfoot").children("tr:first").children("td");
-		for(var i = 0; i < cells.length; ++ i){
-			if($(inputs[i]).children("input").attr("type") == "checkbox"){
-				$(inputs[i]).children("input").attr("checked", $(cells[i]).find("input").attr("checked"));
-			}else{
-				$(inputs[i]).children("input").val($(cells[i]).html());
-			}
-		}
-		$(line).remove();
-		toggleEditMode(true);
-		$("#autoBuild2").trigger('update');
-		$("a.autoBuild2").children("span:nth-child(2)").html("Save");
-	}
-	calculateAutoBuild2LeftMargin();
-}
+//function editLine(line){
+//	if($("a.autoBuild2").children("span:nth-child(1)").hasClass("ui-icon-disk")){
+//		tmpLine = line;
+//		$("#saveDeleteDialog").dialog('open');
+//	}else{
+//		lineWithoutChanges = line;
+//		var cells = $(line).children("td");
+//		$(cells[0]).html($(cells[0]).html().substr(41));
+//		var inputs = $(line).parent().parent().children("tfoot").children("tr:first").children("td");
+//		for(var i = 0; i < cells.length; ++ i){
+//			if($(inputs[i]).children("input").attr("type") == "checkbox"){
+//				$(inputs[i]).children("input").attr("checked", $(cells[i]).find("input").attr("checked"));
+//			}else{
+//				$(inputs[i]).children("input").val($(cells[i]).html());
+//			}
+//		}
+//		$(line).remove();
+//		toggleEditMode(true);
+//		$("#autoBuild2").trigger('update');
+//		$("a.autoBuild2").children("span:nth-child(2)").html("Save");
+//	}
+//	calculateAutoBuild2LeftMargin();
+//}
 
-function ignoreChanges(){
-	toggleEditMode(false);
-	$("#autoBuild2").children("tbody").append(lineWithoutChanges);
-	$(lineWithoutChanges).click(function(){
-		editLine(this);
-		calculateAutoBuild2LeftMargin();
-	});
-	initDeleteLine($("#autoBuild2 tbody tr").last());
-	$("#autoBuild2 tbody tr input[type=checkbox]").click(function(e){ e.stopPropagation();});
-	$("#autoBuild2").trigger('update');
-	calculateAutoBuild2LeftMargin();
-}
+//function ignoreChanges(){
+//	toggleEditMode(false);
+//	$("#autoBuild2").children("tbody").append(lineWithoutChanges);
+//	$(lineWithoutChanges).click(function(){
+//		editLine(this);
+//		calculateAutoBuild2LeftMargin();
+//	});
+//	initDeleteLine($("#autoBuild2 tbody tr").last());
+//	$("#autoBuild2 tbody tr input[type=checkbox]").click(function(e){ e.stopPropagation();});
+//	$("#autoBuild2").trigger('update');
+//	calculateAutoBuild2LeftMargin();
+//}
 
 function deleteRow(){
 	toggleEditMode(false);
@@ -730,4 +737,34 @@ function initDeleteLine(scope){
 		$(this).parent().parent().remove();
 		e.stopPropagation();
 	});
+}
+
+function fieldToggle(field){
+	if($(field).find('input[type=checkbox]').length){
+		$(field).find('input[type=checkbox]').attr("checked", !$(field).find('input[type=checkbox]').attr("checked"));
+	}else if($(field).find('input[type=text]').length == 0){
+		var val = $(field).html(); 
+		$(field).html('<input id="currentMod" type="text" value="" style="width: 100%;"/>');
+		$(field).find("input").val(val).data("orgVal", val).select().focusout(function(){
+			$(field).html($(this).val());
+		}).keyup(function(event){
+			if(event.keyCode == 27){
+				//esc
+				$(this).val($(this).data("orgVal")).focusout();
+			}
+		}).keydown(function(event){
+			if(event.keyCode == 9){
+				//tab
+				//
+				var elem = event.shiftKey ? $(this).closest('td').prev() : $(this).closest('td').next();
+				$('#currentMod').focusout();
+				if($(elem).find('input[type=checkbox]').length){
+					$(elem).find('input[type=checkbox]').focus();
+				}else{
+					fieldToggle(elem);
+				}
+				return false;
+			}			
+		});
+	}
 }
