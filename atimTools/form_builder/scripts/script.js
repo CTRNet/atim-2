@@ -740,31 +740,33 @@ function initDeleteLine(scope){
 }
 
 function fieldToggle(field){
-	if($(field).find('input[type=checkbox]').length){
-		$(field).find('input[type=checkbox]').attr("checked", !$(field).find('input[type=checkbox]').attr("checked"));
-	}else if($(field).find('input[type=text]').length == 0){
-		var val = $(field).html(); 
-		$(field).html('<input id="currentMod" type="text" value="" style="width: 100%;"/>');
-		$(field).find("input").val(val).data("orgVal", val).select().focusout(function(){
-			$(field).html($(this).val());
-		}).keyup(function(event){
-			if(event.keyCode == 27){
-				//esc
-				$(this).val($(this).data("orgVal")).focusout();
-			}
-		}).keydown(function(event){
-			if(event.keyCode == 9){
-				//tab
-				//
-				var elem = event.shiftKey ? $(this).closest('td').prev() : $(this).closest('td').next();
-				$('#currentMod').focusout();
-				if($(elem).find('input[type=checkbox]').length){
-					$(elem).find('input[type=checkbox]').focus();
-				}else{
-					fieldToggle(elem);
+	if($(field).is(".clickable.editable")){
+		if($(field).find('input[type=checkbox]').length){
+			$(field).find('input[type=checkbox]').attr("checked", !$(field).find('input[type=checkbox]').attr("checked"));
+		}else if($(field).find('input[type=text]').length == 0){
+			var val = $(field).html(); 
+			$(field).html('<input id="currentMod" type="text" value="" style="width: 100%;"/>');
+			$(field).find("input").val(val).data("orgVal", val).select().focusout(function(){
+				$(field).html($(this).val());
+			}).keyup(function(event){
+				if(event.keyCode == 27){
+					//esc
+					$(this).val($(this).data("orgVal")).focusout();
 				}
-				return false;
-			}			
-		});
+			}).keydown(function(event){
+				if(event.keyCode == 9){
+					//tab
+					//
+					var elem = event.shiftKey ? $(this).closest('td').prev() : $(this).closest('td').next();
+					$('#currentMod').focusout();
+					if($(elem).find('input[type=checkbox]').length){
+						$(elem).find('input[type=checkbox]').focus();
+					}else{
+						fieldToggle(elem);
+					}
+					return false;
+				}			
+			});
+		}
 	}
 }
