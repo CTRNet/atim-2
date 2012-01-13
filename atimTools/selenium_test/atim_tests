@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost/workspace/atim/" />
+<title>atim_tests</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">atim_tests</td></tr>
+</thead><tbody>
+<!--Testing all main menus-->
+<tr>
+	<td>open</td>
+	<td></td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[User][username]</td>
+	<td>administrator</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[User][password]</td>
+	<td>administrator2</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Login failed. Invalid username or password.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[User][username]</td>
+	<td>administrator</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[User][password]</td>
+	<td>administrator</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Clinical Annotation</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Inventory Management</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Query Tool</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Tools</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_main']/li/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='root_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_main']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Collections</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='root_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='root_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Collections</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='root_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_main']/li[3]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Back to main menu</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='root_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Back to main menu</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='root_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_main']/li[4]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Back to main menu</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='root_menu_for_header']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Back to main menu</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Temporary browsing</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/ul/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>All </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/ul/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>My Batch Sets </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/ul/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Aliquot Spent Times Summary</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Temporary browsing</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>All </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[3]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>My Batch Sets </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Aliquot Spent Times Summary </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Groups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Drugs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Order</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Protocols</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[5]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Standard Operating Procedures « ATiM - Advanced Tissue Management</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[6]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Storages</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[7]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Study &amp; Project</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[8]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Collection Template « ATiM - Advanced Tissue Management</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Groups</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[2]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Drugs</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Order</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Protocols</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[5]/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Standard Operating Procedures « ATiM - Advanced Tissue Management</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[6]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Storages</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='big_menu_tools']/li[7]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Search Type: Study &amp; Project</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li[4]/ul/li[8]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertTitle</td>
+	<td>Collection Template « ATiM - Advanced Tissue Management</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//ul[@id='main_menu_for_header']/li/a</td>
+	<td></td>
+</tr>
+<!--Testing bottom flyover menus-->
+<tr>
+	<td>mouseOver</td>
+	<td>link=New Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyVisible</td>
+	<td>link=Participants</td>
+	<td>Participants</td>
+</tr>
+<tr>
+	<td>verifyVisible</td>
+	<td>link=Identifiers</td>
+	<td>Identifiers</td>
+</tr>
+<tr>
+	<td>verifyVisible</td>
+	<td>link=Participant messages</td>
+	<td>Participant messages</td>
+</tr>
+<!--Testing search fields add fields-->
+<tr>
+	<td>click</td>
+	<td>//a[@onclick='return false;']</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyVisible</td>
+	<td>css=span.adv_ctrl.nowrap &gt; input[name=&quot;data[Participant][participant_identifier][]&quot;]</td>
+	<td></td>
+</tr>
+<!--Testing Add Participant-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Add Participant</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyElementPresent</td>
+	<td>name=data[Participant][participant_identifier]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Participant][participant_identifier]</td>
+	<td>sel_part_id</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[Participant][title]</td>
+	<td>label=Mr.</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Participant][first_name]</td>
+	<td>FN</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Participant][middle_name]</td>
+	<td>MN</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Participant][last_name]</td>
+	<td>LN</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Participant][notes]</td>
+	<td>note field</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>sel_part_id </td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Mr. </td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>FN</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>MN</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>LN</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
