@@ -14,7 +14,7 @@
 <!--Testing all main menus-->
 <tr>
 	<td>open</td>
-	<td>.</td>
+	<td>Menus</td>
 	<td></td>
 </tr>
 <tr>
@@ -309,7 +309,7 @@
 </tr>
 <tr>
 	<td>assertTitle</td>
-	<td>Standard Operating Procedures « ATiM - Advanced Tissue Management</td>
+	<td>Standard Operating Procedures « ATiM</td>
 	<td></td>
 </tr>
 <tr>
@@ -339,7 +339,7 @@
 </tr>
 <tr>
 	<td>assertTitle</td>
-	<td>Collection Template « ATiM - Advanced Tissue Management</td>
+	<td>Collection Template « ATiM</td>
 	<td></td>
 </tr>
 <tr>
@@ -414,7 +414,7 @@
 </tr>
 <tr>
 	<td>assertTitle</td>
-	<td>Standard Operating Procedures « ATiM - Advanced Tissue Management</td>
+	<td>Standard Operating Procedures « ATiM</td>
 	<td></td>
 </tr>
 <tr>
@@ -459,7 +459,7 @@
 </tr>
 <tr>
 	<td>assertTitle</td>
-	<td>Collection Template « ATiM - Advanced Tissue Management</td>
+	<td>Collection Template « ATiM</td>
 	<td></td>
 </tr>
 <!--Testing bottom flyover menus in participants search page-->
