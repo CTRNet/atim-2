@@ -419,7 +419,7 @@ $(function(){
 	$("#structure_fields_type").jsonSuggest(structureTypes);
 	$("#autoBuild2_type").jsonSuggest(structureTypes);
 	
-	$("#queryBuilder").tabs({ selected : 4, disabled: [0, 1, 2] });
+	$("#queryBuilder").tabs({selected: 1});
 	$("#databaseExplorer").tabs();
 	
 	$('.ui-state-default').hover(function(){
@@ -483,9 +483,12 @@ $(function(){
 	calculateAutoBuild2LeftMargin();
 	
 	$(document).delegate("#createAll", "click", function(){
+		var toIgnore = [ "id", "created", "created_by", "modified", "modified_by", "deleted" ];
 		$("#tableResult").find("tr").each(function(){
-			$(this).click();
-			addLine();
+			if($.inArray($(this).find("td:first").html(), toIgnore) == -1){
+				$(this).click();
+				addLine();
+			}
 		});
 
 	}).delegate(".clickable.editable", "click", function(event){
@@ -726,6 +729,7 @@ function calculateAutoBuild2LeftMargin(){
 	$("#autoBuild2 thead th:nth-child(1), #autoBuild2 tbody td:nth-child(1), #autoBuild2 tfoot tr:nth-child(1) td:nth-child(1)").each(function(){
 		maxWidth = Math.max($(this).width(), maxWidth);
 	});
+	console.log(maxWidth);
 	$("#autoBuild2").css("margin-left", maxWidth + "px");
 }
 

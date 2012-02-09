@@ -3,18 +3,9 @@ require_once("../common/myFunctions.php");
 ?>
 <html>
 <head>
-<script type="text/javascript" src="../common/js/jquery-1.4.4.min.js"></script>
-<script type="text/javascript" src="scripts/jquery.jsonSuggestME.js"></script>
-<script type="text/javascript" src="scripts/jquery.color.js"></script>
-<script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
-<script type="text/javascript" src="scripts/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="scripts/script.js"></script>
 <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/jsonSuggestME.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/cupertino/jquery-ui-1.7.2.custom.css" />
-<script>
-</script>
-
 </head>
 <body>
 	<div id="db_select_div" class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="width: 100%; position: relative; left: -3px; margin: 0px; padding: 0px;">
@@ -60,108 +51,9 @@ require_once("../common/myFunctions.php");
 
 	<div id="queryBuilder" style="width: 100%; margin-right: 10px; position: relative; left: -3px; margin: 0px; padding: 0px;">
 		<ul>
-			<li><a href="#piton1">Structures</a></li>
-			<li><a href="#piton2">Fields</a></li>
-			<li><a href="#piton3">Sutrcture format</a></li>
 			<li><a href="#piton4">Value domain</a></li>
 			<li><a href="#piton5">Auto build</a></li>
 		</ul>
-		<div id="piton1" class="structuresDiv create">
-			<h3>Create Structure</h3>
-			<div style="overflow: auto">
-			<table class="insert">
-				<thead class="structures">
-					<tr>
-						<th class="autoincrement">old_id</th>
-						<th class="notEmpty">alias</th>
-						<th>language_title</th>
-						<th>language_help</th>
-						<th class="checkbox">flag_add_columns</th>
-						<th class="checkbox">flag_edit_columns</th>
-						<th class="checkbox">flag_search_columns</th>
-						<th class="checkbox">flag_detail_columns</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-				<tfoot>
-				</tfoot>
-			</table>
-			</div>
-		</div>
-		<div id="piton2" class="structure_fieldsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
-			<h3>Create field</h3>
-			<table class="insert">
-				<thead class="structure_fields">
-					<tr>
-					</th>
-						<th>public_identifier</th>
-						<th class="autoincrement">old_id</th>
-						<th class="notEmpty">plugin</th>
-						<th class="notEmpty">model</th>
-						<th>tablename</th>
-						<th class="notEmpty">field</th>
-						<th>language_label</th>
-						<th>language_tag</th>
-						<th class="notEmpty">type</th>
-						<th>setting</th>
-						<th>default</th>
-						<th class="notEmpty">structure_value_domain</th>
-						<th>language_help</th>
-						<th>validation_control</th>
-						<th>value_domain_control</th>
-						<th>field_control</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-				<tfoot>
-				</tfoot>
-			</table>
-		</div>
-		<div id="piton3" class="structure_formatsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
-			<h3>Create structure format</h3>
-			<table class="insert">
-				<thead class="structure_formats">
-					<tr>
-						<th class="readonly">old_id</th>
-						<th class="readonly">structure_id</th>
-						<th class="gen">structure_old_id</th>
-						<th class="readonly">structure_field_id</th>
-						<th class="gen autoincrement">structure_field_old_id</th>
-						<th class="autoincrement">display_column</th>
-						<th class="autoincrement">display_order</th>
-						<th>language_heading</th>
-						<th class="checkbox">flag_override_label</th>
-						<th>language_label</th>
-						<th class="checkbox">flag_override_tag</th>
-						<th>language_tag</th>
-						<th class="checkbox">flag_override_help</th>
-						<th>language_help</th>
-						<th class="checkbox">flag_override_type</th>
-						<th>type</th>
-						<th class="checkbox">flag_override_setting</th>
-						<th>setting</th>
-						<th class="checkbox">flag_override_default</th>
-						<th>default</th>
-						<th class="checkbox">flag_add</th>
-						<th class="checkbox">flag_add_readonly</th>
-						<th class="checkbox">flag_edit</th>
-						<th class="checkbox">flag_edit_readonly</th>
-						<th class="checkbox">flag_search</th>
-						<th class="checkbox">flag_search_readonly</th>
-						<th class="checkbox">flag_datagrid</th>
-						<th class="checkbox">flag_datagrid_readonly</th>
-						<th class="checkbox">flag_index</th>
-						<th class="checkbox">flag_detail</th>
-					</tr>
-				</thead>
-				<tbody>
-				</tbody>
-				<tfoot>
-				</tfoot>
-			</table>
-		</div>
 		<div id="piton4" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
 			<h3>Create structure value domains</h3>
 			<table class="insert">
@@ -353,5 +245,13 @@ require_once("../common/myFunctions.php");
 		WARNING: The current structure has duplicate fields. The form builder does not support that.</p>
 		<p id="duplicateFieldsMsg"></p>	
 	</div>
+	
+<script type="text/javascript" src="../common/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.jsonSuggestME.js"></script>
+<script type="text/javascript" src="scripts/jquery.color.js"></script>
+<script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="scripts/script.js"></script>
+	
 </body>
 </html>
