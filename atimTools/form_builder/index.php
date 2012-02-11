@@ -74,11 +74,12 @@ require_once("../common/myFunctions.php");
 			<table class="insert">
 				<thead class="custom struct_val_domain">
 					<tr>
-						<th class="notEmpty">domain_name</th>
+						<th></th><!-- delete button -->
 						<th>value</th>
 						<th>language_alias</th>
 						<th>display_order</th>
-						<th>flag_active</th>
+						<th class="checkbox">flag_active</th>
+						<th>structure_permissible_value_id</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -86,6 +87,9 @@ require_once("../common/myFunctions.php");
 				<tfoot>
 				</tfoot>
 			</table>
+			
+			<a href="#" id="generateSQLValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
+			<a href="#" id="clearAutoBuildTableValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
 		</div>
 		<div id="piton5" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: auto;">
 			<table class="insert ui-widget ui-widget-content">
@@ -162,7 +166,7 @@ require_once("../common/myFunctions.php");
 				$query = "SELECT id, alias FROM structures ORDER BY alias";
 				$result = $db->query($query) or die("STI");
 				while($row = $result->fetch_assoc()){
-					echo("<a href='#".$row['id']."' class='structLink'>".$row['alias']."</a> - <a href='#".$row['id']."' class='structLinkAdd'>[+]</a><br/>");
+					echo("<a href='#".$row['id']."' class='structLink'>".$row['alias']."</a><br/>");
 				}
 				?>
 			</div>
@@ -210,7 +214,7 @@ require_once("../common/myFunctions.php");
 			$result = $db->query($query) or die("STI");
 			while($row = $result->fetch_row()){
 				if(strpos($row[0], "_revs") != strlen($row[0]) - 5){
-					echo("<a href='#".$row[0]."' class='tableLink'>".$row[0]."</a> - <a href='#".$row[0]."' class='tableLinkAdd'>[+]</a><br/>");
+					echo("<a href='#".$row[0]."' class='tableLink'>".$row[0]."</a><br/>");
 				}
 			}
 			?>
@@ -223,7 +227,7 @@ require_once("../common/myFunctions.php");
 	
 	
 	
-	<textarea style="width: 100%; height: 20%; margin: 0px;"></textarea>
+	<textarea id="resultZone" style="width: 100%; height: 20%; margin: 0px;"></textarea>
 	<div id="db_select_div_target"></div>
 	
 	
@@ -236,14 +240,22 @@ require_once("../common/myFunctions.php");
 		<p><span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 20px 0;"></span>
 		There is no data for the provided structure alias.</p>
 	</div>
-	<div id="saveDeleteDialog">
-		<p><span class="ui-icon ui-icon-help" style="float:left; margin:0 7px 20px 0;"></span>
-		There is already a line beign edited. What do you wish to do?</p>
+	<div id="noDataValueDomainDialog">
+		<p><span class="ui-icon ui-icon-info" style="float:left; margin:0 7px 20px 0;"></span>
+		There is no data for the provided value domain.</p>
 	</div>
 	<div id="duplicateFieldsDialog">
 		<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
 		WARNING: The current structure has duplicate fields. The form builder does not support that.</p>
 		<p id="duplicateFieldsMsg"></p>	
+	</div>
+	<div id="addFromTextAreaDialog">
+		2 modes
+		<ul>
+			<li>Insert values on lines. They will be used as both value and language alias. display_order will be set to 0.</li>
+			<li>Insert lines with value, language alias and display_order separated by a single tab (as copy pasted from a worksheet) and they will be added as is.</li> 
+		</ul>
+		<textarea cols=90" rows="13"></textarea>
 	</div>
 	
 <script type="text/javascript" src="../common/js/jquery-1.7.1.min.js"></script>

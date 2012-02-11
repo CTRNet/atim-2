@@ -1,6 +1,13 @@
 <?php
 require_once("../common/myFunctions.php");
-$json = json_decode(stripslashes($_GET['json'])) or die("decode failed");
+$json = null;
+if($_POST){
+	foreach($_POST as $key => $val){
+		$json->$key = $val;
+	}	
+}else{
+	$json = json_decode(stripslashes($_GET['json'])) or die("decode failed");
+}
 $query = "";
 if($json->type == 'structures'){
 	
@@ -44,25 +51,33 @@ if($json->type == 'structures'){
 	$query = "SELECT 'error'";
 }
 $result = $db->query($query) or die("Query failed ".$db->error);
-echo('<table class="ui-widget ui-widget-content">');
-if($row = $result->fetch_assoc()){
-	echo("<thead><tr class='ui-widget-header'>");
-	foreach($row as $k => $v){
-		echo("<th>".$k."</td>");
+if(isset($json->as) && $json->as == 'json'){
+	$json_result = array();
+	while($row = $result->fetch_assoc()){
+		$json_result[] = $row;
 	}
-	echo("</tr></thead>");
-	echo("<tbody>");
-	foreach($row as $k => $v){
-		echo("<td class='".$k."'>".$v."</td>");
+	echo json_encode($json_result);
+}else{
+	echo('<table class="ui-widget ui-widget-content">');
+	if($row = $result->fetch_assoc()){
+		echo("<thead><tr class='ui-widget-header'>");
+		foreach($row as $k => $v){
+			echo("<th>".$k."</td>");
+		}
+		echo("</tr></thead>");
+		echo("<tbody>");
+		foreach($row as $k => $v){
+			echo("<td class='".$k."'>".$v."</td>");
+		}
+		echo("</tr>");
 	}
-	echo("</tr>");
+	while($row = $result->fetch_assoc()){
+		echo("<tr>");
+		foreach($row as $k => $v){
+			echo("<td class='".$k."'>".$v."</td>");
+		}
+		echo("</tr>");
+	}
+	echo("<tdoby></table>");
 }
-while($row = $result->fetch_assoc()){
-	echo("<tr>");
-	foreach($row as $k => $v){
-		echo("<td class='".$k."'>".$v."</td>");
-	}
-	echo("</tr>");
-}
-echo("<tdoby></table>");
 ?>

@@ -1,7 +1,7 @@
 var structureTypes = '[{"text" : "autocomplete"},{"text" : "checkbox"},{"text" : "date"},{"text" : "datetime"},{"text" : "file"},{"text" : "hidden"},{"text" : "input"},{"text" : "input-readonly"},{"text" : "number"},{"text" : "password"},{"text" : "radio"},{"text" : "radiolist"},{"text" : "select"},{"text" : "textarea"},{"text" : "time"},{"text":"integer"},{"text":"integer_positive"},{"text":"float"},{"text":"float_positive"},{"text":"yes_no"}]';
 var tmpLine = "";
 var lineWithoutChanges = "";
-
+var deleteLine = '<a href="#no" class="deleteLine">(x)</a>';
 
 $(function(){
 	$("#db_select_div_target").append($("#db_select_div"));
@@ -26,6 +26,7 @@ $(function(){
 		return false;
 	});
 	
+	//Second third of the screen function - displays a structure in the right pane
 	$(".structLink").click(function(){
 		var oldId = $(this).attr('href').substring(1);
 		var val = 'json={"val" : "' + oldId + '", "type" : "structures"}';
@@ -36,20 +37,7 @@ $(function(){
 		return false;
 	});
 
-	$(".structLinkAdd").click(function(){
-		var oldId = $(this).attr('href').substring(1);
-		var val = 'json={"val" : "' + oldId + '", "type" : "structures"}';
-		$("#selectedStruct").html(oldId);
-		$("#structure_formats_structure_old_id").val(oldId);
-		genStructureFormatOldId();
-		$("#structure_formats_structure_id").val("(SELECT id FROM structures WHERE old_id = '" + oldId + "')");
-		$.ajax({ url: "loader.php", data: val, success: function(data){
-	        $("#structureResult").html(data);
-	        setStructureGetField();
-	    }});
-		return false;
-	});
-
+	//Second third of the screen function - displays a table in the right pane
 	$(".tableLink").click(function(){
 		var tableName = $(this).attr('href').substring(1);
 		var val = 'json={"val" : "' + tableName + '", "type" : "tables"}';
@@ -60,32 +48,17 @@ $(function(){
 		return false;
 	});
 
-	$(".tableLinkAdd").click(function(){
-		var tableName = $(this).attr('href').substring(1);
-		$("#selectedTable").html(tableName);
-		$("#structure_fields_tablename").val(tableName);
-		return false;
-	});
-
+	//Second third of the screen function - displays a model's fields in the right pane
 	$(".fieldLink").click(function(){
 		var modelName = $(this).attr('href').substring(1);
 		var val = 'json={"val" : "' + modelName + '", "type" : "fields"}';
 		$.ajax({ url: "loader.php", data: val, success: function(data){
 	        $("#fieldResult").html(data);
-	        $("#fieldResult").children("table").children("tbody").children("tr").each(function(){
-	    		$(this).click(function(){
-		    		var oldId = $(this).find(".old_id").html();
-	    			$("#selectedField").html(oldId);
-	    			$("#structure_formats_structure_field_old_id").val(oldId);
-	    			genStructureFormatOldId();
-	    			$("#structure_formats_structure_field_id").val("(SELECT id FROM structure_fields WHERE old_id = '" + oldId + "')");
-	    		});
-	    		$(this).addClass("clickable");
-	      	});
 		}});
 		return false;
 	});
 
+	//Second third of the screen function - displays a value domain in the right pane
 	$(".vDomainLink").click(function(){
 		var domainName = $(this).attr('href').substring(1);
 		var val = 'json={"val" : "' + domainName + '", "type" : "value_domains"}';
@@ -95,6 +68,7 @@ $(function(){
 		return false;
 	});
 
+	//Sets the selected value domain name in the structure value domain field of the structure building pane
 	$(".vDomainLinkAdd").click(function(){
 		var domainName = $(this).attr('href').substring(1);
 		var val = 'json={"val" : "' + domainName + '", "type" : "value_domains"}';
@@ -107,12 +81,7 @@ $(function(){
 		return false;
 	});
 	
-	$("input[type=radio]").click(function(){
-		toggleList($(this).val());
-		toggleCreate($(this).val());
-		return false;
-	});
-
+	//builds the input fields related to an "insert" table
 	$(".insert").each(function(){
 		var prefix = $(this).children("thead").attr("class");
 		if(prefix.lastIndexOf(" ") > 0){
@@ -133,7 +102,7 @@ $(function(){
 				css += " readonly ";
 			}
 			if($(this).hasClass("autoincrement")){
-				var autoincrement = '<a href="#" class="autoincrementButton">[+]</a>';
+				autoincrement = '<a href="#" class="autoincrementButton">[+]</a>';
 			}
 			if($(this).hasClass("notEmpty")){
 				css += " notEmpty ";
@@ -150,47 +119,85 @@ $(function(){
 		result += "</tr>";
 		$(this).children("tfoot").html(result + '<tr><td colspan="30" class="scrollingButtons"><a href="#" class="add ui-state-default ui-corner-all button_link ' + $(this).children("thead").attr("class") + '" name="' + $(this).children("thead").attr("class") + '"><span class="button_icon ui-icon ui-icon-plus"></span><span>Add</span></a></td></tr>');
 	});
-
-	$(".add:not(.custom)").click(function(){
-		var str = "INSERT INTO " + $(this).attr("name") + "(";
-		$(this).parent().parent().parent().parent().children("thead").children("tr").children("th").each(function(){
-			str += "`" + $(this).html().replace(/<br\>/g, "_") + "`, ";
-		});
-		str = str.substring(0, str.length - 2) + ") VALUES (";
-		var valid = true;
-		$(this).parent().parent().parent().parent().children("tfoot").children("tr:first").children("td").each(function(){
-			if($(this).children("input").hasClass("notEmpty") && $(this).children("input").val().length == 0){
-				flashColor($(this).children("input"), "#f00");
-				$(this).children("input").focus();
-				valid = false;
-			}else if($(this).children("input").val().indexOf("SELECT") > -1 || $(this).children("input").val().toUpperCase() == "NULL"){
-				str += "" + $(this).children("input").val() + ", ";
-			}else if($(this).children("input").attr("type") == "checkbox"){
-				if($(this).children("input").attr("checked")){
-					str += "'" + $(this).children("input").val() + "', ";
-				}else{
-					str += "'0', ";
-				}
-			}else{
-				str += "'" + $(this).children("input").val() + "', ";
-			}
-		});
-		str = str.substring(0, str.length - 2) + ");";
-		if(valid){
-			$("textarea").val($("textarea").val() + str + "\n");
-			$("textarea")[0].scrollTop = $("textarea")[0].scrollHeight;
-		}
-		return false;
-	});
-
-	$(".add.struct_val_domain").click(function(){
-		$("textarea").val($("textarea").val() 
-			+ 'INSERT IGNORE INTO structure_permissible_values (`value`, `language_alias`) VALUES("' + $("#struct_val_domain_value").val() + '", "' + $("#struct_val_domain_language_alias").val() + '");\n'
-			+ 'INSERT INTO structure_value_domains_permissible_values (`structure_value_domain_id`, `structure_permissible_value_id`, `display_order`, `flag_active`) VALUES((SELECT id FROM structure_value_domains WHERE domain_name="' + $("#struct_val_domain_domain_name").val() + '"),  (SELECT id FROM structure_permissible_values WHERE value="' + $("#struct_val_domain_value").val() + '" AND language_alias="' + $("#struct_val_domain_language_alias").val() + '"), "' + $("#struct_val_domain_display_order").val() + '", "' + $("#struct_val_domain_flag_active").val() + '");\n'  
-			+ "\n");
-		return false;
-	});
 	
+	//update structure value domain functions
+	$("#piton4 table:first a").each(function(){
+		$($(this).find("span")[0]).removeClass("ui-icon-plus").addClass("ui-icon-arrowthickstop-1-s");
+		$($(this).find("span")[1]).html("Load value domain");
+		$("#piton4 table:nth-child(4)").find("input:first, input:last").prop("type", "hidden");
+		$($("#piton4 table:nth-child(4) tfoot tr:first input")[4]).prop("checked", true);
+		$("#piton4 table:nth-child(4) tfoot tr:nth-child(2) td").append(' <a href="#no" id="addFromPopup" class="ui-state-default ui-corner-all button_link"><span class="button_icon ui-icon ui-icon-newwin"></span><span>Add from text area</span></a>');
+		$("#addFromPopup").click(function(){ $("#addFromTextAreaDialog").dialog('open').find("textarea").focus(); });
+		$(this).click(function(){
+			//load value domain
+			var command = { type : "value_domains", as : "json", val : $("#structure_value_domains_domain_name").val() };
+			$.post("loader.php", command, function(data){
+				data = $.parseJSON(data);
+				if(data.length == 0){
+					$("#noDataValueDomainDialog").dialog('open');
+				}else{
+					$("#structure_value_domains_override").val(data[0].override);
+					$("#structure_value_domains_category").val(data[0].category);
+					$("#structure_value_domains_source").val(data[0].source);
+					var html = "";
+					for(var i = 0; i < data.length; ++ i){
+						var line = data[i];
+						line.flag_active = '<input type="checkbox" ' + (line.flag_active == 0 ? "" : 'checked="checked"') + '/>'; 
+						html += "<tr><td>" + deleteLine + "</td><td>" + line.value + "</td><td>" + line.language_alias + "</td><td>" + line.display_order + "</td><td>" + line.flag_active + "</td><td>" + line.structure_permissible_value_id + "</td></tr>";
+						
+					}
+					$("#piton4 table:nth-child(4) tbody").html(html);
+				}
+			});
+		});
+		$("#piton4 table:nth-child(4) a.add").click(function(){
+			var html = "<tr><td>" + deleteLine + "</td>";
+			$("#piton4 table:nth-child(4) tfoot tr:first input").each(function(){
+				if($(this).attr("type") == "checkbox"){
+					html += '<td><input type="checkbox" ' + ($(this).prop("checked") ? 'checked="checked"' : "") + "/></td>";
+				}else if($(this).attr("type") != "hidden"){
+					html += "<td>" + $(this).val() + "</td>";
+				}
+			});
+			html += "<td></td></tr>";
+			$("#piton4 table:nth-child(4) tbody").append(html);
+		});
+		
+		$("#clearAutoBuildTableValueDomain").click(function(){
+			$("#piton4 table:nth-child(4) tbody").html("");
+		});
+		$("#generateSQLValueDomain").click(function(){
+			if($("#structure_value_domains_domain_name").val().length == 0){
+				flashColor($("#structure_value_domains_domain_name"), "#f00");
+			}else{
+				var toSend = new Object();
+				toSend.domain_name = $("#structure_value_domains_domain_name").val(); 
+				toSend.override = $("#structure_value_domains_override").val();
+				toSend.category = $("#structure_value_domains_category").val();
+				toSend.source = $("#structure_value_domains_source").val();
+				toSend.rows = new Array();
+				//as of jQuery 1.7.1, if the "tr" part is within the original call, some browsers return nothing
+				$("#piton4 table:nth-child(4) tbody").find("tr").each(function(){
+					var tds = $(this).find("td");
+					var currentRow = new Object();
+					currentRow.value = $(tds[1]).html();
+					currentRow.language_alias = $(tds[2]).html();
+					currentRow.display_order = $(tds[2]).html();
+					currentRow.flag_active = $(tds[4]).find("input").prop("checked");
+					currentRow.id = $(tds[5]).html();
+					toSend.rows.push(currentRow);
+				});
+				$.post("sqlGeneratorValueDomain.php", toSend, function(data){
+					console.log(data);
+					$("#resultZone").val($("#resultZone").val() + data + "\n");
+				});
+			}
+			return false;
+		});
+	});
+			
+
+	//Structure build - update display
 	$(".add.autoBuild2 span").html("Add row");
 	$(".add.autoBuild2").click(function(){
 		addLine();
@@ -215,6 +222,7 @@ $(function(){
 		});
 	});
 	
+	//Dialog when trying to load a structure
 	$("#confirmDialog").dialog({
 		resizable: false,
 		height: 170,
@@ -236,15 +244,10 @@ $(function(){
 								data = data.substr(data.indexOf("<tr>"));
 							}
 							$("#autoBuild2").children("tbody").children("tr").remove();
-							$("#autoBuild2").children("tbody").append(data);
+							$("#autoBuild2").children("tbody").append(data).find("td:nth-child(1)").prepend('<a href="#no" class="deleteLine">(x)</a> ');
 							$("#autoBuild2 tbody td:first-child").addClass("first_td");
 							$("#autoBuild2 tbody td:not(.first_td)").addClass("clickable").addClass("editable");
-							initDeleteLine("#autoBuild2 tbody tr");
-							$("#autoBuild2 a.deleteLine").click(function(e){
-								$(this).parent().parent().remove();
-								e.stopPropagation();
-							});
-							$("#autoBuild2").children("tbody").find("input[type=checkbox]").click(function(e){e.stopPropagation()});
+							$("#autoBuild2").children("tbody").find("input[type=checkbox]").click(function(e){e.stopPropagation();});
 							$("#autoBuild2").trigger('update');
 							calculateAutoBuild2LeftMargin();
 						}else{
@@ -255,6 +258,7 @@ $(function(){
 		}
 	});
 		
+	//dialog when the load structure button call returns nothing
 	$("#noDataDialog").dialog({
 		resizable: false,
 		height: 170,
@@ -268,6 +272,21 @@ $(function(){
 		}
 	});
 	
+	//dialog when the load value domain button call returns nothing
+	$("#noDataValueDomainDialog").dialog({
+		resizable: false,
+		height: 170,
+		width: 400,
+		modal: true,
+		autoOpen: false,
+		buttons: {
+			'Close': function(){
+				$(this).dialog('close');
+			}
+		}
+	});
+	
+	//dialog when 2 identical fields (same structure_field_id) are part of the same structure
 	$("#duplicateFieldsDialog").dialog({
 		resizable: false,
 		height: 170,
@@ -281,34 +300,53 @@ $(function(){
 		}
 	});
 	
-	$("#saveDeleteDialog").dialog({
-		resizable: false,
-		height: 170,
-		width: 400,
+	//dialog for structure value domain add from textarea
+	$("#addFromTextAreaDialog").dialog({
+		resizable: true,
+		height: 359,
+		width: 600,
 		modal: true,
 		autoOpen: false,
 		buttons: {
-			'Cancel': function(){
+			'Close': function(){
 				$(this).dialog('close');
-			},
-			'Delete': function(){
-				deleteRow();
-				editLine(tmpLine);
-				$(this).dialog('close');
-			},
-			'Ignore changes': function(){
-				ignoreChanges();
-				editLine(tmpLine);
-				$(this).dialog('close');
-			},
-			'Save': function(){
-				addLine();
-				editLine(tmpLine);
+			}, 'Add': function(){
+				var txt = $.trim($("#addFromTextAreaDialog textarea").val()).split("\n");
+				if(txt.length > 0){
+					var single = txt[0].indexOf("\t") == -1;
+					$("#struct_val_domain_flag_active").prop("checked", true);
+					if(single){
+						for(var i = 0; i < txt.length; ++ i){
+							$("#struct_val_domain_value").val(txt[i]);
+							$("#struct_val_domain_language_alias").val(txt[i]);
+							$("#struct_val_domain_display_order").val(0);
+							$("#struct_val_domain_flag_active").prop("checked", true);
+							$("#piton4 table:nth-child(4) a.add").click();
+						}
+					}else{
+						for(var i = 0; i < txt.length; ++ i){
+							var part = txt[i].split("\t");
+							var err = "";
+							if(part.length == 3){
+								$("#struct_val_domain_value").val(part[0]);
+								$("#struct_val_domain_language_alias").val(part[1]);
+								$("#struct_val_domain_display_order").val(part[2]);
+								$("#piton4 table:nth-child(4) a.add").click()
+							}else{
+								err += txt[i] + "\n";
+							}
+							if(err.length > 0){
+								allert("The textarea contained some invalid rows\n\n" + err);
+							}
+						}
+					}
+				}
 				$(this).dialog('close');
 			}
 		}
 	});
-	
+	 
+	//table sorter applied to auto build
 	$("#autoBuild2").tablesorter();
 	
 	$(".ignoreButton").click(function(){
@@ -328,7 +366,7 @@ $(function(){
 		}});
 		return false;
 	});
-	////<a href="#a" class="ui-state-default ui-corner-all loginButton"><span class="button_icon ui-icon ui-icon-power"></span>Connecter</a>
+
 	$(".add.structures").parent().parent().append("<td><a href='#' id='copy_structure' class='ui-state-default ui-corner-all button_link '><span class='button_icon ui-icon ui-icon-copy'></span>Copy structure with old_id</a><input id='structures_copy_old_id'/></td>");
 	$("#copy_structure").click(function(){
 		$(".add.structures").click();
@@ -443,7 +481,7 @@ $(function(){
 			$("#autoBuild2").children("tbody").children("tr").each(function(){
 				var fieldsArr = $(this).children("td");
 				fields += '{ ';
-				for(i = 0; i < fieldsArr.length; ++ i){
+				for(var i = 0; i < fieldsArr.length; ++ i){
 					var fieldVal = null;
 					if($(headerArr[i]).hasClass("checkbox")){
 						fieldVal = $(fieldsArr[i]).children("input").attr("checked") ? 1 : 0;
@@ -462,7 +500,7 @@ $(function(){
 			var val = 'json={"global" : ' + global + ', "fields" : ' + fields + ' }';
 			val = val.replace(/%/g, "%25").replace(/&gt;/g, "%3E").replace(/&lt;/g, "%3C");
 			$.ajax({ url: "sqlGenerator.php", data: val, type: "POST", success: function(data){
-				$("textarea").val($("textarea").val() + data + "\n");
+				$("#resultZone").val($("#resultZone").val() + data + "\n");
 			}});
 		}
 		return false;
@@ -495,6 +533,10 @@ $(function(){
 		fieldToggle(this);
 	}).delegate("input[type=checkbox]", "click", function(event){
 		event.stopPropagation();
+	}).delegate(".deleteLine", "click", function(event){
+		$(this).parents("tr:first").remove();
+		event.stopPropagation();
+		return false;
 	});
 });
 
@@ -646,8 +688,7 @@ function addLine(){
 	if(valid){
 		var table = $(".add.autoBuild2").closest("table"); 
 		$(table).children("tbody").append(line);
-		initDeleteLine($(table).find("tbody tr:last"));
-		$(table).find("tbody tr:last td:first").removeClass("clickable").removeClass("editable");
+		$(table).find("tbody tr:last td:first").removeClass("clickable").removeClass("editable").prepend('<a href="#no" class="deleteLine">(x)</a> ');
 		$(table).find("tfoot tr:first td").each(function(){
 			var field = $(this).children("input"); 
 			if($(field).hasClass("autoBuildIncrement")){
@@ -662,43 +703,6 @@ function addLine(){
 		calculateAutoBuild2LeftMargin();
 	}
 }
-
-//function editLine(line){
-//	if($("a.autoBuild2").children("span:nth-child(1)").hasClass("ui-icon-disk")){
-//		tmpLine = line;
-//		$("#saveDeleteDialog").dialog('open');
-//	}else{
-//		lineWithoutChanges = line;
-//		var cells = $(line).children("td");
-//		$(cells[0]).html($(cells[0]).html().substr(41));
-//		var inputs = $(line).parent().parent().children("tfoot").children("tr:first").children("td");
-//		for(var i = 0; i < cells.length; ++ i){
-//			if($(inputs[i]).children("input").attr("type") == "checkbox"){
-//				$(inputs[i]).children("input").attr("checked", $(cells[i]).find("input").attr("checked"));
-//			}else{
-//				$(inputs[i]).children("input").val($(cells[i]).html());
-//			}
-//		}
-//		$(line).remove();
-//		toggleEditMode(true);
-//		$("#autoBuild2").trigger('update');
-//		$("a.autoBuild2").children("span:nth-child(2)").html("Save");
-//	}
-//	calculateAutoBuild2LeftMargin();
-//}
-
-//function ignoreChanges(){
-//	toggleEditMode(false);
-//	$("#autoBuild2").children("tbody").append(lineWithoutChanges);
-//	$(lineWithoutChanges).click(function(){
-//		editLine(this);
-//		calculateAutoBuild2LeftMargin();
-//	});
-//	initDeleteLine($("#autoBuild2 tbody tr").last());
-//	$("#autoBuild2 tbody tr input[type=checkbox]").click(function(e){ e.stopPropagation();});
-//	$("#autoBuild2").trigger('update');
-//	calculateAutoBuild2LeftMargin();
-//}
 
 function deleteRow(){
 	toggleEditMode(false);
@@ -729,18 +733,8 @@ function calculateAutoBuild2LeftMargin(){
 	$("#autoBuild2 thead th:nth-child(1), #autoBuild2 tbody td:nth-child(1), #autoBuild2 tfoot tr:nth-child(1) td:nth-child(1)").each(function(){
 		maxWidth = Math.max($(this).width(), maxWidth);
 	});
-	console.log(maxWidth);
+	
 	$("#autoBuild2").css("margin-left", maxWidth + "px");
-}
-
-function initDeleteLine(scope){
-	$(scope).each(function(){
-		$(this).find("td").first().prepend('<a href="#no" class="deleteLine">(X)</a> ');
-	});
-	$(scope).find("a.deleteLine").click(function(e){
-		$(this).parent().parent().remove();
-		e.stopPropagation();
-	});
 }
 
 function fieldToggle(field){
