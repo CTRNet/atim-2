@@ -140,11 +140,11 @@ $(function(){
 					$("#structure_value_domains_category").val(data[0].category);
 					$("#structure_value_domains_source").val(data[0].source);
 					var html = "";
+					var mTd = '<td class="clickable editable">';
 					for(var i = 0; i < data.length; ++ i){
 						var line = data[i];
 						line.flag_active = '<input type="checkbox" ' + (line.flag_active == 0 ? "" : 'checked="checked"') + '/>'; 
-						html += "<tr><td>" + deleteLine + "</td><td>" + line.value + "</td><td>" + line.language_alias + "</td><td>" + line.display_order + "</td><td>" + line.flag_active + "</td><td>" + line.structure_permissible_value_id + "</td></tr>";
-						
+						html += "<tr><td>" + deleteLine + "</td>" + mTd + line.value + "</td>" + mTd + line.language_alias + "</td>" + mTd + line.display_order + "</td><td>" + line.flag_active + "</td><td>" + line.structure_permissible_value_id + "</td></tr>";
 					}
 					$("#piton4 table:nth-child(4) tbody").html(html);
 				}
@@ -156,11 +156,13 @@ $(function(){
 				if($(this).attr("type") == "checkbox"){
 					html += '<td><input type="checkbox" ' + ($(this).prop("checked") ? 'checked="checked"' : "") + "/></td>";
 				}else if($(this).attr("type") != "hidden"){
-					html += "<td>" + $(this).val() + "</td>";
+					html += '<td class="clickable editable">' + $(this).val() + "</td>";
+					
 				}
 			});
 			html += "<td></td></tr>";
 			$("#piton4 table:nth-child(4) tbody").append(html);
+			return false;
 		});
 		
 		$("#clearAutoBuildTableValueDomain").click(function(){
@@ -182,8 +184,8 @@ $(function(){
 					var currentRow = new Object();
 					currentRow.value = $(tds[1]).html();
 					currentRow.language_alias = $(tds[2]).html();
-					currentRow.display_order = $(tds[2]).html();
-					currentRow.flag_active = $(tds[4]).find("input").prop("checked");
+					currentRow.display_order = $(tds[3]).html();
+					currentRow.flag_active = $(tds[4]).find("input").prop("checked") ? 1 : 0;
 					currentRow.id = $(tds[5]).html();
 					toSend.rows.push(currentRow);
 				});
@@ -331,7 +333,7 @@ $(function(){
 								$("#struct_val_domain_value").val(part[0]);
 								$("#struct_val_domain_language_alias").val(part[1]);
 								$("#struct_val_domain_display_order").val(part[2]);
-								$("#piton4 table:nth-child(4) a.add").click()
+								$("#piton4 table:nth-child(4) a.add").click();
 							}else{
 								err += txt[i] + "\n";
 							}

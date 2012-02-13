@@ -19,7 +19,7 @@ function getConnection(){
 	$db = @new mysqli($config['mysql_host'], $config['mysql_user'], $config['mysql_pwd']);
 	
 	if ($db->connect_errno) {
-	    die('Connect Error: ' . $db->connect_errno."<br/>You need to configure the database connection in myFunctions.php");
+	    die('Connect Error: ' . $db->connect_errno.": ".$db->connect_error."<br/>You need to configure the database connection in myFunctions.php");
 	}
 	if(!$db->set_charset("latin1")){
 		die("We failed");
@@ -63,4 +63,12 @@ function bindRow($stmt){
 	return $row;
 }
 
+
+function getFieldsToUpdateQueryPart(array $key_values){
+	$result = array();
+	foreach($key_values as $key => $value){
+		$result[] = '`'.$key.'`="'.$value.'"';
+	}
+	return implode(", ", $result);
+}
 ?>
