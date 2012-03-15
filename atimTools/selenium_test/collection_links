@@ -103,8 +103,13 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForElementPresent</td>
+	<td>css=#6</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
-	<td>//*[@id=&quot;6&quot;]</td>
+	<td>css=#6</td>
 	<td></td>
 </tr>
 <tr>
@@ -142,7 +147,6 @@
 	<td>link=Click here to access it.</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

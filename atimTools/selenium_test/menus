@@ -39,7 +39,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//ul[@id='big_menu_main']/li/a/span</td>
+	<td>//div[@id='header']/div/ul[2]/li/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -89,7 +89,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//ul[@id='big_menu_main']/li[3]/a/span</td>
+	<td>//div[@id='header']/div/ul[2]/li[3]/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -129,7 +129,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//ul[@id='big_menu_main']/li[4]/a/span</td>
+	<td>//div[@id='header']/div/ul[2]/li[4]/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -224,7 +224,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Custom Queries&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Custom Queries&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
 	<td></td>
 </tr>
 <tr>
@@ -239,7 +239,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Batch Sets&quot;] &gt; span.menuLabel</td>
+	<td>link=Batch SetsDataset defined subsequently in order to process/analyze this data together: Data export, performing the same process on all, data sharing, etc..</td>
 	<td></td>
 </tr>
 <tr>
@@ -254,7 +254,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Reports&quot;] &gt; span.menuLabel</td>
+	<td>link=ReportsReports generated from recorded data.</td>
 	<td></td>
 </tr>
 <tr>
@@ -364,7 +364,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Drug Administration&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Drug Administration&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
 	<td></td>
 </tr>
 <tr>
@@ -379,7 +379,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Order Management&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Order Management&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
 	<td></td>
 </tr>
 <tr>
@@ -394,7 +394,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Protocols&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Protocols&quot;] &gt; div.row &gt; span.menuLabel.cell &gt; span.menuDesc</td>
 	<td></td>
 </tr>
 <tr>
@@ -409,7 +409,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Standard Operating Procedures&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Standard Operating Procedures&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
 	<td></td>
 </tr>
 <tr>
@@ -424,7 +424,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Storage Layout&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Storage Layout&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
 	<td></td>
 </tr>
 <tr>
@@ -439,7 +439,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Study &amp; Project&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Study &amp; Project&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
 	<td></td>
 </tr>
 <tr>
@@ -454,7 +454,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Collection Template&quot;] &gt; span.menuLabel</td>
+	<td>css=a[title=&quot;Collection Template&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
 	<td></td>
 </tr>
 <tr>

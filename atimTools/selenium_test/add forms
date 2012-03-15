@@ -103,11 +103,6 @@
 </tr>
 <!--Testing creation and modified fields-->
 <tr>
-	<td>pause</td>
-	<td></td>
-	<td>2000</td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
 	<td></td>
@@ -221,7 +216,7 @@
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>Wrist or foot drop (acquired) </td>
+	<td>Wrist or foot drop (acquired)</td>
 	<td></td>
 </tr>
 <tr>
@@ -238,6 +233,68 @@
 	<td>verifyValue</td>
 	<td>name=data[Participant][cod_icd10_code]</td>
 	<td>M213</td>
+</tr>
+<!--Testing field numeral length validation-->
+<tr>
+	<td>open</td>
+	<td>InventoryManagement/SampleMasters/add/1/2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SampleDetail][collected_volume]</td>
+	<td>123456.7890</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SampleDetail][collected_tube_nbr]</td>
+	<td>12345678901234567890</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>the value must be between -2.14748e+9 and 2.14748e+9</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>the value must be between -100000 and 100000</td>
+	<td></td>
+</tr>
+<!--Testing field string length-->
+<tr>
+	<td>open</td>
+	<td>InventoryManagement/Collections/add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][acquisition_label]</td>
+	<td>123456789012345678901234567890123456789012345678901</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.icon16.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>The string length must not exceed 50 characters!</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>
