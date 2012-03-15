@@ -6,6 +6,14 @@ require_once("../common/myFunctions.php");
 <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/jsonSuggestME.css" />
 <link rel="stylesheet" type="text/css" media="screen" href="css/cupertino/jquery-ui-1.7.2.custom.css" />
+
+<script type="text/javascript" src="../common/js/jquery-1.7.1.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.jsonSuggestME.js"></script>
+<script type="text/javascript" src="scripts/jquery.color.js"></script>
+<script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
+<script type="text/javascript" src="scripts/jquery.tablesorter.min.js"></script>
+<script type="text/javascript" src="scripts/script.js"></script>
+
 </head>
 <body>
 	<div id="db_select_div" class="ui-tabs ui-widget ui-widget-content ui-corner-all" style="width: 100%; position: relative; left: -3px; margin: 0px; padding: 0px;">
@@ -257,13 +265,5 @@ require_once("../common/myFunctions.php");
 		</ul>
 		<textarea cols=90" rows="13"></textarea>
 	</div>
-	
-<script type="text/javascript" src="../common/js/jquery-1.7.1.min.js"></script>
-<script type="text/javascript" src="scripts/jquery.jsonSuggestME.js"></script>
-<script type="text/javascript" src="scripts/jquery.color.js"></script>
-<script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
-<script type="text/javascript" src="scripts/jquery.tablesorter.min.js"></script>
-<script type="text/javascript" src="scripts/script.js"></script>
-	
 </body>
 </html>

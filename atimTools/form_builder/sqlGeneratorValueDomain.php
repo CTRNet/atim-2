@@ -189,7 +189,7 @@ function checkFlagActiveAndOrder(array $value, $domain_name){
 
 function echoInsertIntoSvdpv(array $value, $domain_name){
 	printf(
-		'INSERT INTO structure_value_domains_permissible_values (structure_value_domain_id, structure_permissible_value_id, display_order, flag_active) VALUES ((%s), (%s), "%s", "%s");',
+		'INSERT INTO structure_value_domains_permissible_values (structure_value_domain_id, structure_permissible_value_id, display_order, flag_active) VALUES ((%s), (%s), "%s", "%s");'.NL,
 		getSvdIdQuery($domain_name),
 		getSpvIdQuery($value),
 		$value['display_order'],
