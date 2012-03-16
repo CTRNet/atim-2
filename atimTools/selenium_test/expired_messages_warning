@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8888/workspace/atim/" />
+<title>expired messages warning</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">expired messages warning</td></tr>
+</thead><tbody>
+<!--creating expired and non expired messages-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[ParticipantMessage][message_type]</td>
+	<td>label=Memo</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][title]</td>
+	<td>expired date passed</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][due_date][year]</td>
+	<td>2012</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][due_date][month]</td>
+	<td>01</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][due_date][day]</td>
+	<td>01</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=List</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[ParticipantMessage][message_type]</td>
+	<td>label=Memo</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][title]</td>
+	<td>due date in the future</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][due_date][year]</td>
+	<td>2099</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][due_date][month]</td>
+	<td>01</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][due_date][day]</td>
+	<td>01</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=List</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][title]</td>
+	<td>due date passed</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][expiry_date][year]</td>
+	<td>2010</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ParticipantMessage][expiry_date][month]</td>
+	<td>01</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--see if the warning is present-->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Not done participant message(s) having reached their due date.: 1. Click here to see them. </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>id=goToNotDue</td>
+	<td></td>
+</tr>
+<!--testing search page-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>1-1 of 1</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>
