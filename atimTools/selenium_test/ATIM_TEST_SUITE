@@ -17,6 +17,8 @@
 <tr><td><a href="collection_links">collection links warnings</a></td></tr>
 <tr><td><a href="storage_empty_spaces">storage empty spaces</a></td></tr>
 <tr><td><a href="icd_codes_search">icd codes search</a></td></tr>
+<tr><td><a href="expired_messages_warning">expired messages warning</a></td></tr>
+<tr><td><a href="unlinked_collections">unlinked_collections</a></td></tr>
 </tbody></table>
 </body>
 </html>
