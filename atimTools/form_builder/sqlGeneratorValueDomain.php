@@ -82,10 +82,10 @@ if($to_delete){
 	$result = $db->query($query) or die("Query failed at line ".__LINE__." ".$query." ".$db->error);
 	
 	$to_delete = array();
-	if($row = $result->fetch_assoc()){
+	while($row = $result->fetch_assoc()){
 		echo 'DELETE svdpv FROM structure_value_domains_permissible_values AS svdpv '
-			.'INNER JOIN structure_permissible_values AS spv ON svpdv.structure_permissible_value_id=spv.id '
-			.'WHERE svd.value="'.$row['value'].'" AND language_alias="'.$row['language_alias']."';".NL;
+			.'INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id '
+			.'WHERE spv.value="'.$row['value'].'" AND spv.language_alias="'.$row['language_alias'].'";'.NL;
 		$to_delete[] = $row;
 	}
 	$result->free();
