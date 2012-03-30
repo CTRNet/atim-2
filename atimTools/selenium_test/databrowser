@@ -1,0 +1,574 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8888/workspace/atim/" />
+<title>databrowser</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">databrowser</td></tr>
+</thead><tbody>
+<!--various browsing-->
+<tr>
+	<td>open</td>
+	<td>Datamart/Browser/index</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=actionsTarget</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='4']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Participants (4)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.ui-icon.ui-icon-triangle-1-s</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[20]/li/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//span[@id='6']/span[2])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='6/true/']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Identification (7)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='data[MiscIdentifier][id][]'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[19]/li/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[17]/li[11]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='4_2_5-3']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Drilldown </td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Laterality</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[20]/li/span/span/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[17]/li[13]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[13]/li[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[20]/li/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[17]/li[3]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[3]/li[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<!--test all node types-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Annotation (3)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[20]/li/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//span[@id='8']/span[2])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[5]/li[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Consents/Consent National (3)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Diagnosis (12)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[20]/li/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//span[@id='10']/span[2])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[14]/li[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Treatments (11)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[20]/li</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[17]/li[9]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='2_5_15/true/']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Path Review/Tissue - Breast Review (1)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[6]/td[6]/div/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[19]/li</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//span[@id='5_1_16_17']/span[2])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='5_1_16_17/true/']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Shipments (1)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[7]/td[18]/div/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Order Items (4)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[6]/td[6]/div/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[19]/li</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[17]/li/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='5_1_7/true/']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=p</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Aliquot uses (24)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[6]/td[6]/div/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[19]/li/span/span/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//span[@id='5_13']/span[2])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='5_13/true/']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Quality Controls (9)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Check all</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=actionsTarget</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[20]/li</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[17]/li[16]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='19/true/']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>reproductive histories (1)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.participants</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<!--testing merge-->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[7]/td[22]/div/div/div[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Participants (4) - Collections (5) - Samples (27) - Aliquots (55) - Order Items (4) - Shipments (1)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>xpath=(//a[contains(text(),'Acquisition Label')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Participants (4) - Collections (5) - Samples (27) - Aliquots (55) - Order Items (4) - Shipments (1)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.shipments</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.icon16.link</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Shipments (1) - Order Items (4) - Aliquots (55) - Samples (27) - Collections (5) - Participants (4)</td>
+	<td></td>
+</tr>
+<!--unused parents-->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[6]/td[6]/div/a/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Participants (1)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Unused parents </td>
+	<td></td>
+</tr>
+<!--search based on previous node-->
+<!--BUG! Cannot test-->
+<!--search with a filter-->
+
+</tbody></table>
+</body>
+</html>
