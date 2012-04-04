@@ -357,31 +357,6 @@ foreach($grouped_forms as $grouped_form){
 	</tbody>
 </table>
 
-<h1>Detail fields used for search without tablename</h1>
-<table>
-	<thead>
-		<tr>
-			<th>id</th>
-			<th>Model</th>
-			<th>Field</th>
-		</tr>
-	</thead>
-	<tbody>
-<?php
-$query = "SELECT sfi.* FROM structure_fields AS sfi 
-	INNER JOIN structure_formats AS sfo ON sfi.id=sfo.structure_field_id AND sfo.flag_search=1 
-	WHERE model LIKE '%Detail' AND tablename=''
-	GROUP BY sfi.id";
-	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
-	while($row = $result->fetch_assoc()){
-		printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['id'], $row['model'], $row['field']);
-	}
-	$result->free();
-
-?>
-	</tbody>
-</table>
-
 <h1>Fields referring to non existent tables</h1>
 <table>
 	<thead>
@@ -592,6 +567,51 @@ if($results = $db->query($query)){
 	?>
 	<li><input id="where" type="checkbox" checked="true"/><label>Show where</label></li>
 </ul>
+
+<h2>CodingICD validations</h2>
+<?php 
+//test validation on CodingIcd fields
+$query = "SELECT sf.id, plugin, model, field, setting, rule FROM structure_fields AS sf LEFT JOIN structure_validations AS sv ON sv.structure_field_id=sf.id WHERE setting like '%coding%'";
+$result = $db->query($query) or die("Invalid CodingICD validations failed");
+if($row = $result->fetch_assoc()){
+	?>
+	<table>
+		<thead>
+			<tr>
+				<th>id</th><th>plugin</th><th>model</th><th>field</th><th>setting</th><th>rule</th><th>status</th>
+			</tr>
+		</thead>
+	<?php 
+	do{
+		$matches = array();
+		$code = '';
+		preg_match('/Coding(Icd[o]?[\d]+)s\/[\w]+\/([\w]+)$/', $row['setting'], $matches);
+		$status = null;
+		if($matches){
+			if($row['rule']){
+				$code = strtoupper($matches[1].$matches[2]);
+				if(strpos(strtoupper($row['rule']), $code) == false){
+					$status = 'error';
+				}else{
+					$status = 'ok';
+				}
+			}else{
+				$status = 'validation missing';
+			}
+		}else{
+			$status = '?';
+		}
+		
+		printf('<tr><td>%d</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['id'], $row['plugin'], $row['model'], $row['field'], $row['setting'], $row['rule'], $status);
+	}while($row = $result->fetch_assoc());
+	?>
+	</table>
+	<?php 
+}else{
+	echo 'No CodingIcd fields';
+}
+$result->free();
+?>
 
 </body>
 </html>
