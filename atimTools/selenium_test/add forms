@@ -12,13 +12,8 @@
 <tr><td rowspan="1" colspan="3">add forms</td></tr>
 </thead><tbody>
 <tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='header']/div/ul[2]/li/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>link=Add Participant</td>
+	<td>open</td>
+	<td>ClinicalAnnotation/Participants/add</td>
 	<td></td>
 </tr>
 <tr>
@@ -262,12 +257,12 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>the value must be between -2.14748e+9 and 2.14748e+9</td>
+	<td>The value must be between -2.14748e+9 and 2.14748e+9</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>the value must be between -100000 and 100000</td>
+	<td>The value must be between -100000 and 100000</td>
 	<td></td>
 </tr>
 <!--Testing field string length-->

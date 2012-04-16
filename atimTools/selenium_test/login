@@ -18,7 +18,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>typeKeys</td>
+	<td>type</td>
 	<td>name=data[User][username]</td>
 	<td>disabled_usr_test</td>
 </tr>
