@@ -25,7 +25,9 @@ if($row = $result->fetch_assoc()){
 }else{
 	//create the value domain
 	$is_new = false;
-	echo 'INSERT INTO structure_value_domains ('.implode(", ", array_keys($_POST)).') VALUES ("'.implode('", "', $_POST).'");'.NL;
+	$source = $_POST['source'];
+	unset($_POST['source']);
+	echo 'INSERT INTO structure_value_domains ('.implode(", ", array_keys($_POST)).', source) VALUES ("'.implode('", "', $_POST).'", '.($source == 'NULL' || strlen($source) == 0 ? 'NULL' : '"'.$source.'"').');'.NL;
 }
 $result->free();
 

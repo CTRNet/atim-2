@@ -144,6 +144,7 @@ require_once("../common/myFunctions.php");
 						<th class="checkbox">flag_index</th>
 						<th class="checkbox">flag_detail</th>
 						<th class="checkbox">flag_summary</th>
+						<th class="checkbox">flag_float</th>
 						<th class="readonly clear">sfi_id</th>
 						<th class="readonly clear">sfo_id</th>
 					</tr>

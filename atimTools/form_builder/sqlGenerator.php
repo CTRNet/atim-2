@@ -15,7 +15,7 @@ global $STRUCTURE_FIELDS_FIELDS_LIGHT;
 $STRUCTURE_FIELDS_FIELDS_LIGHT = array_slice($STRUCTURE_FIELDS_FIELDS, 1, 6, false);
 
 global $STRUCTURE_FORMATS_FLAGS;
-$STRUCTURE_FORMATS_FLAGS = array("flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_batchedit", "flag_batchedit_readonly", "flag_index", "flag_detail", "flag_summary");
+$STRUCTURE_FORMATS_FLAGS = array("flag_add", "flag_add_readonly", "flag_edit", "flag_edit_readonly", "flag_search", "flag_search_readonly", "flag_addgrid", "flag_addgrid_readonly", "flag_editgrid", "flag_editgrid_readonly", "flag_batchedit", "flag_batchedit_readonly", "flag_index", "flag_detail", "flag_summary", 'flag_float');
 
 $tmp = array();
 foreach($OVERRIDES_NAMES as $k => $v){
