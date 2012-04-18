@@ -13,6 +13,26 @@
 </thead><tbody>
 <tr>
 	<td>open</td>
+	<td>Administrate/Permissions/tree/1/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='data[Group][flag_show_confidential]'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
 	<td>ClinicalAnnotation/Participants/add</td>
 	<td></td>
 </tr>
@@ -330,7 +350,6 @@
 	<td>This field must be unique (Value)</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

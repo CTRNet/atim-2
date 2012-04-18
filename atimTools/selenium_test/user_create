@@ -243,10 +243,9 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>You cannot create a user for that group because it has no permission </td>
+	<td>You cannot create a user for that group because</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>
