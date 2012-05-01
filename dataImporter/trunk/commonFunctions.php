@@ -53,6 +53,57 @@ class MyTime{
 	public static $uncertainty_level = array('c' => 0, 'd' => 1, 'm' => 2, 'y' => 3, 'u' => 4);
 }
 
+class Database{
+	
+	static private $fields_cache = array();
+	
+	static function getFields($table_name){
+		global $connection;
+		
+		if(!array_key_exists($table_name, self::$fields_cache)){
+			$query = 'DESC '.$table_name;
+			if(Config::$print_queries){
+				echo $query."\n";
+			}
+			$result = mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
+			$rows = mysqli_fetch_all($result);
+			$fields = array();
+			foreach($rows as $row){
+				$fields[] = $row[0];
+			}
+			self::$fields_cache[$table_name] = $fields;
+		}
+		
+		return self::$fields_cache[$table_name];
+	}
+	
+	static function insertRev($source_table_name, $pkey_val = null, $pkey_name = 'id'){
+		if(Config::$insert_revs){
+			global $connection;
+			$fields_org = self::getFields($source_table_name);
+			$fields_rev = self::getFields($source_table_name.'_revs');
+			$fields = implode(', ', array_intersect($fields_org, $fields_rev));
+			$where = $pkey_val == null ? '' : ' WHERE '.$pkey_name.'="'.$pkey_val.'" ';
+			$query = 'INSERT INTO '.$source_table_name.'_revs ('.$fields.', version_created) (SELECT '.$fields.', NOW() FROM '.$source_table_name.' '.$where.' ORDER BY '.$pkey_name.' DESC LIMIT 1)';
+			if(Config::$print_queries){
+				echo $query."\n";
+			}
+			mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
+		}
+	}
+	
+	/**
+	 * @deprecated Use insertRev instead
+	 */
+	static function insertRevForLastRow($source_table_name){
+		self::insertRev($source_table_name);
+	}
+	
+	static function sqlEmpty($value){
+		return empty($value) || $value == '0000-00-00' || $value == '0000-00-00 00:00:00';
+	}
+}
+
 
 /**
  * Used as an array map, removes the " from a string
@@ -89,12 +140,26 @@ function lineToArray($line){
 
 /**
  * Tries to rewrite an excel date to year-month-day format. Will fix the 
- * accuracy (if any) accordingly. Use Model->custom_data['date_fields] = array(date_field => accuracy_field)
+ * accuracy (if any) accordingly. Use Model->custom_data['date_fields'] = array(date_field => accuracy_field, ...)
  * @param Model $m
  */
 function excelDateFix(Model $m){
 	//rearrange dates
+	global $insert;
 	foreach($m->custom_data['date_fields'] as $date_field => $accuracy_field){
+		
+		//hardcoded for OHRI
+		if($m->values[$date_field]){
+			$m->values[$date_field] = substr($m->values[$date_field], 6, 4).'-'.substr($m->values[$date_field], 3, 2).'-'.substr($m->values[$date_field], 0, 2);
+			$m->values[$accuracy_field] = 'c';
+		}
+		continue;
+		
+		if(!array_key_exists($date_field, $m->values)){
+			echo 'ERROR: excelDateFix index key not found ['.$date_field.'] for file ['.$m->file.'] on table ['.$m->table."]\n";
+			$insert = false;
+			continue;
+		}
 		$m->values[$date_field] = trim($m->values[$date_field]);
 		//echo "IN DATE: ",$m->values[$date_field]," -> ";
 		$matches = array();
@@ -123,7 +188,6 @@ function excelDateFix(Model $m){
 		}else if(is_numeric($m->values[$date_field])){
 			if($m->values[$date_field] < 2500){
 				//only year
-				echo $m->values[$date_field],"---fmlh\n";
 				$m->values[$date_field] = $m->values[$date_field]."-01-01";
 				if(!isset($m->values[$accuracy_field])){
 					echo "ERROR: Cannot set the date for field [", $date_field, "] because no accuracy fields is matched to it. See file [",$m->file, "] at line [", $m->line, "]\n";

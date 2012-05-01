@@ -8,8 +8,9 @@ require_once("valueDomain.php");
 //UPDATE THIS TO POINT TO YOUR CONFIG
 
 //require_once("config.php");
-// require_once("../atim_tf_coeur/dataImporterConfig/config.php");
-require_once("C:/NicolasLucDir/LocalServer/ATiM/terry_fox_coeur/dataImporterConfig/config.php");
+require_once("../atim_tf_coeur/dataImporterConfig/config.php");
+// require_once("../atim_tf_prostate/dataImporterConfig/config.php");
+// require_once("../atim_chuq_ovaire/dataImporterConfig/config.php");
 
 //-----------------------------------
 
@@ -141,7 +142,7 @@ foreach(Config::$models as $ref_name => &$model){
 			die("The following key(s) for [$ref_name] were not found: [".implode("], [", $missing)."]\n");
 		}
 		
-		readLine($model, false);
+		readFileLine($model, false);
 		if(!empty($model->values)){
 			-- $model->line;
 		}
@@ -235,7 +236,10 @@ if($insert){
 		."#* Integration completed *\n"
 		."#*************************\n");
 }else{
-	echo("#Insertions cancelled. Make sure the split occured correctly. \\n within a line can break the split procedure. Also, make sure all ids are in ascending order.\n");
+	mysqli_rollback($connection);
+	echo "#~~~~~~~~~~~~~~Fail~~~~~~~~~~~~~~~~~~~~~~~\n"
+		."#~ Insertions cancelled due to error(s). ~\n"
+		."#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
 }
 
 
@@ -291,8 +295,12 @@ function buildValuesQuery(Model $model, array $fields, array $schema, $is_detail
 			$result .= $field_separator."'".str_replace("'", "\\'", substr($value, 1))."'";
 		}else if(strpos($value, "#") === 0){
 			$tmp = substr($value, 1);
-			if(isset($model->values[$tmp])){
-				$result .= $field_separator."'".str_replace("'", "\\'", $model->values[$tmp])."'";
+			if(array_key_exists($tmp, $model->values)){
+				if($model->values[$tmp] == null){
+					$result .= $field_separator.'NULL';
+				}else{
+					$result .= $field_separator."'".str_replace("'", "\\'", $model->values[$tmp])."'";
+				}
 			}else{
 				$result .= $field_separator."''";
 				echo "WARNING: custom value [",$tmp,"] is unmatched for field [",$field,"] in file [",$model->file,"] at line [".$model->line."]\n";
@@ -345,9 +353,11 @@ function isDbNumericType($field_type){
 //table_name -> ref_name
 //table -> Config::$models
 function insertTable($ref_name, $parent_model = null){
+	global $insert;
 	$connection = Config::$db_connection;
 	if(!isset(Config::$models[$ref_name])){
-		echo "WARNING: model [".$ref_name."] not found\n";
+		$insert = false;
+		echo "ERROR: model [".$ref_name."] not found\n";
 		return ;
 	}
 	$current_model = &Config::$models[$ref_name];
@@ -355,7 +365,7 @@ function insertTable($ref_name, $parent_model = null){
 	
 	if($current_model->first_read){
 		$current_model->first_read = false;
-		readLine($current_model);
+		readFileLine($current_model);
 	}
 	
 	$i = 0;
@@ -403,7 +413,7 @@ function insertTable($ref_name, $parent_model = null){
 		if(Config::$insert_revs){
 			//master revs
 			$query = formatQueryForRevs($current_model->query_insert_revs.$queryValues.", '".$current_model->last_id."')");
-			mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+			mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model->values)."\n");
 			if(Config::$print_queries){
 				echo $query.";\n";
 			}
@@ -419,7 +429,7 @@ function insertTable($ref_name, $parent_model = null){
 					
 					$queryValues = buildValuesQuery($current_model, $current_model->detail_fields[$key], $current_model->detail_schema, true);
 					$query = $current_model->query_detail_insert[$key].$queryValues.")";
-					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model->values)."\n");
 					$last_detail_id = mysqli_insert_id($connection);
 					if(Config::$print_queries){
 						echo $query.";\n";
@@ -428,7 +438,7 @@ function insertTable($ref_name, $parent_model = null){
 					if(Config::$insert_revs){
 						//detail revs
 						$query = formatQueryForRevs($current_model->query_detail_insert_revs[$key].$queryValues.", '".$last_detail_id."')");
-						mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+						mysqli_query($connection, $query) or die("query failed[".$ref_name."_revs][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model->values)."\n");
 						if(Config::$print_queries){
 							echo $query.";\n";
 						}
@@ -441,7 +451,7 @@ function insertTable($ref_name, $parent_model = null){
 				$current_model->detail_fields[$current_model->detail_master_fkey] = "@".$current_model->last_id;
 				$queryValues = buildValuesQuery($current_model, $current_model->detail_fields, $current_model->detail_schema, true);
 				$query = $current_model->query_detail_insert.$queryValues.")";
-				mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+				mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model->values)."\n");
 				$last_detail_id = mysqli_insert_id($connection);
 				if(Config::$print_queries){
 					echo $query.";\n";
@@ -450,7 +460,7 @@ function insertTable($ref_name, $parent_model = null){
 				if(Config::$insert_revs){
 					//detail revs
 					$query = formatQueryForRevs($current_model->query_detail_insert_revs.$queryValues.", '".$last_detail_id."')");
-					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");
+					mysqli_query($connection, $query) or die("query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model->values)."\n");
 					if(Config::$print_queries){
 						echo $query.";\n";
 					}
@@ -474,7 +484,7 @@ function insertTable($ref_name, $parent_model = null){
 			if(Config::$print_queries){
 				echo $query.";\n";
 			}
-			mysqli_query($connection, $query) or die("tmp id query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model)."\n");	
+			mysqli_query($connection, $query) or die("tmp id query failed[".$ref_name."][".$query."][".mysqli_errno($connection) . ": " . mysqli_error($connection)."]".print_r($current_model->values)."\n");	
 		}
 		
 		
@@ -485,11 +495,11 @@ function insertTable($ref_name, $parent_model = null){
 			}
 		}
 		flush();
-		readLine($current_model);
+		readFileLine($current_model);
 	}
 }
 
-function readLine(&$current_model, $do_post_read = true){
+function readFileLine(&$current_model, $do_post_read = true){
 	$end_of_file_eval = NULL;
 	if(IS_XLS){
 		$end_of_file_eval = 'return $current_model->line > $current_model->file_handler["numRows"];';
@@ -527,5 +537,3 @@ function readLine(&$current_model, $do_post_read = true){
 		}
 	}
 }
-
-
