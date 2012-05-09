@@ -972,9 +972,10 @@ class Spreadsheet_Excel_Reader
             $raw = $utcValue;
         } else {
             $raw = $numValue;
-            $hours = floor($numValue * 24);
-            $mins = floor($numValue * 24 * 60) - $hours * 60;
-            $secs = floor($numValue * SPREADSHEET_EXCEL_READER_MSINADAY) - $hours * 60 * 60 - $mins * 60;
+            //FM mod - changed floor to round. Otherwise excel dates as 10:25:00 are returned as 10:24:59
+            $hours = round($numValue * 24);
+            $mins = round($numValue * 24 * 60) - $hours * 60;
+            $secs = round($numValue * SPREADSHEET_EXCEL_READER_MSINADAY) - $hours * 60 * 60 - $mins * 60;
             $string = date ($this->curformat, mktime($hours, $mins, $secs));
         }
 
