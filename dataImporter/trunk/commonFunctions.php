@@ -148,13 +148,6 @@ function excelDateFix(Model $m){
 	global $insert;
 	foreach($m->custom_data['date_fields'] as $date_field => $accuracy_field){
 		
-		//hardcoded for OHRI
-		if($m->values[$date_field]){
-			$m->values[$date_field] = substr($m->values[$date_field], 6, 4).'-'.substr($m->values[$date_field], 3, 2).'-'.substr($m->values[$date_field], 0, 2);
-			$m->values[$accuracy_field] = 'c';
-		}
-		continue;
-		
 		if(!array_key_exists($date_field, $m->values)){
 			echo 'ERROR: excelDateFix index key not found ['.$date_field.'] for file ['.$m->file.'] on table ['.$m->table."]\n";
 			$insert = false;
@@ -220,6 +213,9 @@ function excelDateFix(Model $m){
 				$insert = false;
 				echo "ERROR ON DATE [",$m->values[$date_field],"] (D) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
 			}
+		}else{
+			//empty date, turn into null
+			$m->values[$date_field] = null;
 		}
 	}
 	
