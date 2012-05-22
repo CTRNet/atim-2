@@ -462,31 +462,65 @@
 	<td>Collection Template « ATiM</td>
 	<td></td>
 </tr>
-<!--Testing bottom flyover menus in participants search page-->
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='header']/div/ul[2]/li/a</td>
+	<td>//div[@id='header']/div/ul[2]/li/ul/li/a</td>
 	<td></td>
 </tr>
 <tr>
-	<td>mouseOver</td>
-	<td>link=New Search</td>
+	<td>verifyLocation</td>
+	<td>glob:*/ClinicalAnnotation/Participants/add</td>
 	<td></td>
 </tr>
 <tr>
-	<td>verifyVisible</td>
-	<td>link=Participants</td>
-	<td>Participants</td>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li/ul/li[2]/a</td>
+	<td></td>
 </tr>
 <tr>
-	<td>verifyVisible</td>
-	<td>link=Identifiers</td>
-	<td>Identifiers</td>
+	<td>verifyLocation</td>
+	<td>glob:*/ClinicalAnnotation/MiscIdentifiers/search/</td>
+	<td></td>
 </tr>
 <tr>
-	<td>verifyVisible</td>
-	<td>link=Participant messages</td>
-	<td>Participant messages</td>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li/ul/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyLocation</td>
+	<td>glob:*/ClinicalAnnotation/ParticipantMessages/search/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyLocation</td>
+	<td>glob:*/InventoryManagement/Collections/add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyLocation</td>
+	<td>glob:*/InventoryManagement/SampleMasters/search/</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyLocation</td>
+	<td>glob:*/InventoryManagement/AliquotMasters/search/</td>
+	<td></td>
 </tr>
 </tbody></table>
 </body>

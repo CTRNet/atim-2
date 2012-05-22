@@ -11,7 +11,6 @@
 <tr><td><a href="login">login</a></td></tr>
 <tr><td><a href="menus">menus</a></td></tr>
 <tr><td><a href="id hacking">id hacking</a></td></tr>
-<tr><td><a href="bottom_menus">bottom_menus</a></td></tr>
 <tr><td><a href="search">search</a></td></tr>
 <tr><td><a href="add forms">add forms</a></td></tr>
 <tr><td><a href="collection_links">collection links warnings</a></td></tr>
@@ -25,6 +24,7 @@
 <tr><td><a href="misc_identifiers">misc_identifiers</a></td></tr>
 <tr><td><a href="user_create">user_create</a></td></tr>
 <tr><td><a href="deletion">deletion</a></td></tr>
+<tr><td><a href="detail_icd">detail_icd</a></td></tr>
 </tbody></table>
 </body>
 </html>
