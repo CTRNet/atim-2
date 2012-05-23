@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8888/workspace/atim/" />
+<title>merge</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">merge</td></tr>
+</thead><tbody>
+<!--merge coll-->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][acquisition_label]</td>
+	<td>to_merge</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Blood</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=dp1336410865774</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Tube</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[30][0][AliquotMaster][barcode]</td>
+	<td>tuyau</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a[title=&quot;Path Review&quot;] &gt; span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.down</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Tissue</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Tube</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[32][0][AliquotMaster][barcode]</td>
+	<td>tiss_tube</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a[title=&quot;Path Review&quot;] &gt; span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Tissue - Breast Review (Simple)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenReviewMaster][review_code]</td>
+	<td>simple review to merge</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][acquisition_label]</td>
+	<td>merge_target</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.down</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Tissue</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=dp1336411205762</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=5</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Core</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[31][0][AliquotMaster][barcode]</td>
+	<td>core_dump</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[4]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a[title=&quot;Merge&quot;] &gt; span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.button</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Search Type: Collections</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=div.frame &gt; form &gt; div.submitBar &gt; div.flyOverSubmit &gt; div.bottom_button &gt; a.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>to_merge</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='fmlhDebug']/div/div/table/tbody/tr/td/table/tbody/tr[5]/td/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//a[contains(text(),'Search')])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Search Type: Collections</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=div.frame &gt; form &gt; div.submitBar &gt; div.flyOverSubmit &gt; div.bottom_button &gt; a.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>to_merge_target</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//div[@id='fmlhDebug']/div/div/table/tbody/tr/td/table/tbody/tr[6]/td/a)[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Merge complete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>merge_target</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>to_merge</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/div/div/table/tbody/tr/td/table/tbody/tr[5]/td/a</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

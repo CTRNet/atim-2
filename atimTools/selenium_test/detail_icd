@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8888/workspace/atim/" />
+<title>detail_icd</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">detail_icd</td></tr>
+</thead><tbody>
+<!--Tests if validation of icd codes works in detail models-->
+<tr>
+	<td>open</td>
+	<td>ClinicalAnnotation/EventMasters/add/1/50</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[EventDetail][icd10_code]</td>
+	<td>patate</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 1 - ICD validation-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Invalid disease code. (Disease Code)</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[EventDetail][icd10_code]</td>
+	<td>e669</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 2 - detail-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Your data has been updated.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Obesity, unspecified</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[3]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[9]/li[3]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='14-50']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 3 - Index view description-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>e669 - Obesity, unspecified </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[3]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[9]/li[3]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='14-50']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[EventDetail][icd10_code][]</td>
+	<td>obesity</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 4 - Search with keywords-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>e669 - Obesity, unspecified </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[3]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[9]/li[3]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='14-50']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[EventDetail][icd10_code][]</td>
+	<td>nonsense</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 5 - Search with bogus keywords-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>No data matches your search parameters!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=No data matches your search parameters!</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[3]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.jqDefaultLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//a[@id='actionsTarget']/div/div[2]/ul[9]/li[3]/span</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//span[@id='14-50']/span[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[EventDetail][icd10_code][]</td>
+	<td>e669</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 6 - Search with code-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>e669 - Obesity, unspecified </td>
+	<td></td>
+</tr>
+<!--Cleanup-->
+<tr>
+	<td>open</td>
+	<td>ClinicalAnnotation/EventMasters/listall/Clinical/1</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[2]/td/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+</tbody></table>
+</body>
+</html>

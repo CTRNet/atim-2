@@ -66,10 +66,53 @@
 	<td>link=Search</td>
 	<td></td>
 </tr>
+<!--Test 1-->
 <tr>
 	<td>waitForTextPresent</td>
 	<td>1-2 of 2</td>
 	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[0][empty_spaces_start]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[0][empty_spaces_end]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<!--No sorting-->
+<tr>
+	<td>waitForTextPresent</td>
+	<td>5 | 10 | 20 | 50</td>
+	<td></td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(78) != -1</td>
+	<td>true</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Empty Spaces</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>5 | 10 | 20 | 50</td>
+	<td></td>
+</tr>
+<!--Test 2 - sorting-->
+<tr>
+	<td>assertEval</td>
+	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(75) != -1</td>
+	<td>true</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -82,14 +125,9 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Empty Spaces</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForTextPresent</td>
-	<td>1-2 of 2</td>
-	<td></td>
+	<td>assertEval</td>
+	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(81) != -1</td>
+	<td>true</td>
 </tr>
 </tbody></table>
 </body>

@@ -22,11 +22,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -42,11 +37,6 @@
 	<td>identifiers test</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -56,7 +46,7 @@
 	<td>Your data has been saved.</td>
 	<td></td>
 </tr>
-<!--straight identifier-->
+<!--Test 1 - straight identifier-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Health insurance card</td>
@@ -66,11 +56,6 @@
 	<td>type</td>
 	<td>name=data[MiscIdentifier][identifier_value]</td>
 	<td>CHAJ123456</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -97,6 +82,7 @@
 	<td>link=Health insurance card</td>
 	<td></td>
 </tr>
+<!--Test 2 - Cannot create twice-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>This identifier has already been</td>
@@ -116,11 +102,6 @@
 	<td>type</td>
 	<td>name=data[MiscIdentifier][identifier_value]</td>
 	<td>hn12</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -153,15 +134,11 @@
 	<td>hn13</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 3 - Can recreate-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Your data has been saved.</td>
@@ -193,15 +170,11 @@
 	<td>hn13</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 4 - flag_unique-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>This field must be unique (Value)</td>
@@ -212,7 +185,7 @@
 	<td>link=Cancel</td>
 	<td></td>
 </tr>
-<!--format, no padding-->
+<!--Test 5 - format, no padding-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=ovary bank no lab</td>
@@ -233,7 +206,7 @@
 	<td>No-Labo-1350</td>
 	<td></td>
 </tr>
-<!--format and padding-->
+<!--Test 6 - format and padding-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=auto_inc_w_format_n_padding</td>
@@ -269,7 +242,7 @@
 	<td>Pad-001352</td>
 	<td></td>
 </tr>
-<!--no format, padding-->
+<!--Test 7 - no format, padding-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=auto_inc_no_format_padding</td>
@@ -290,6 +263,7 @@
 	<td>001353</td>
 	<td></td>
 </tr>
+<!--Test 8 - user input padding-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=not_inc_padding</td>
@@ -336,6 +310,52 @@
 	<td>877</td>
 </tr>
 <tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This field must be unique (Value)</td>
+	<td></td>
+</tr>
+<!--Test 9 - Reuse-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Cancel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>//div[@id='wrapper']/table[2]/tbody/tr/td/table/tbody/tr[4]/td/a[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=ovary bank no lab</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Deleted identifiers can be reused. </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Reuse</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>id=MiscIdentifier.selectedId11</td>
+	<td></td>
+</tr>
+<tr>
 	<td>click</td>
 	<td>link=Submit</td>
 	<td></td>
@@ -347,7 +367,174 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>This field must be unique (Value)</td>
+	<td>Your data has been saved.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>No-Labo-1350 </td>
+	<td></td>
+</tr>
+<!--Test 10 - Reuse / new-->
+<tr>
+	<td>click</td>
+	<td>//div[@id='wrapper']/table[2]/tbody/tr/td/table/tbody/tr[4]/td/a[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=ovary bank no lab</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Deleted identifiers can be reused. </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=New</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Your data has been saved.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>No-Labo-1354</td>
+	<td></td>
+</tr>
+<!--Cleanup-->
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.detail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.detail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=a.delete.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[4]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a[title=&quot;Permissions&quot;] &gt; span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>xpath=(//input[@name='data[Group][flag_show_confidential]'])[2]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=div.flyOverSubmit &gt; div.bottom_button &gt; a.submit &gt; span.icon16.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Your data has been updated.</td>
 	<td></td>
 </tr>
 </tbody></table>

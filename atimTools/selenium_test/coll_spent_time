@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8888/workspace/atim/" />
+<title>coll_spent_time</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">coll_spent_time</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>InventoryManagement/Collections/add</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][acquisition_label]</td>
+	<td>no_coll_date</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Blood</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][year]</td>
+	<td>2012</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][month]</td>
+	<td>05</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][day]</td>
+	<td>16</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][hour]</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][min]</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Collection date missing </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][year]</td>
+	<td>2012</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][month]</td>
+	<td>05</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][day]</td>
+	<td>15</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][hour]</td>
+	<td>23</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][min]</td>
+	<td>42</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.access_to_data.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>18 Minutes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][hour]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][min]</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][min]</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Spent time cannot be calculated on inaccurate dates </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][day]</td>
+	<td>15</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][hour]</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SpecimenDetail][reception_datetime][min]</td>
+	<td>0</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>The collection date is after the specimen reception date</td>
+	<td></td>
+</tr>
+<!--End of test, clean created data-->
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.detail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

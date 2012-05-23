@@ -23,11 +23,6 @@
 	<td>unlinked part no bank</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -46,11 +41,6 @@
 	<td>select</td>
 	<td>name=data[Collection][bank_id]</td>
 	<td>label=Ovary Bank</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -73,16 +63,11 @@
 	<td>label=Independent Collection</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
-<!--go to menu page to see if the warning is present-->
+<!--Test 1 - go to menu page to see if the warning is present-->
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[@id='header']/div/ul/li[2]/a</td>
@@ -93,7 +78,7 @@
 	<td>Unlinked participant collections (for all banks): 2. Click here to see them. </td>
 	<td></td>
 </tr>
-<!--testing search page-->
+<!--Test 2 - testing search page-->
 <tr>
 	<td>clickAndWait</td>
 	<td>id=goToUnlinkedColl</td>
@@ -126,11 +111,6 @@
 	<td>label=Ovary Bank</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -151,22 +131,17 @@
 	<td>user</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
-<!--go to menu page to see if the warning is present-->
+<!--Test 3 - go to menu page to see if the warning is present-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Unlinked participant collections (for your bank): 1. Click here to see them. </td>
 	<td></td>
 </tr>
-<!--testing search page-->
+<!--Test 4 - testing search page-->
 <tr>
 	<td>clickAndWait</td>
 	<td>id=goToUnlinkedColl</td>
@@ -182,7 +157,7 @@
 	<td>unlinked part ovary bank</td>
 	<td></td>
 </tr>
-<!--relogging administrator-->
+<!--clean up - relogging administrator-->
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[@id='header']/div/ul/li[4]/a</td>
@@ -208,7 +183,136 @@
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
-
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[4]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[3]/td/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[Group][bank_id]</td>
+	<td>label=</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ViewCollection][acquisition_label][]</td>
+	<td>unlinked part</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>unlinked part no bank </td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.detail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ViewCollection][acquisition_label][]</td>
+	<td>unlinked part</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.icon16.search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>unlinked part ovary bank</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=span.icon16.detail</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[ViewCollection][acquisition_label][]</td>
+	<td>independent</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>5 | 10 | 20 | 50</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>

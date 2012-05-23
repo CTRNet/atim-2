@@ -71,6 +71,7 @@
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 1 - full date-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>2012 Apr 01 </td>
@@ -141,6 +142,7 @@
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 2 - Day accuracy-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>2012 Apr</td>
@@ -151,6 +153,7 @@
 	<td>2012 Apr 1</td>
 	<td></td>
 </tr>
+<!--Test 3 - Month accuracy-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>2003</td>
@@ -161,6 +164,7 @@
 	<td>2012 Jan 1</td>
 	<td></td>
 </tr>
+<!--Test 4 - Year accuracy-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>±2011 </td>
@@ -176,7 +180,6 @@
 	<td>Cannot calculate on incomplete date</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

@@ -101,14 +101,10 @@
 	<td>link=Acquisition Label</td>
 	<td></td>
 </tr>
+<!--Test 2-->
 <tr>
-	<td>click</td>
-	<td>link=Acquisition Label</td>
-	<td></td>
-</tr>
-<tr>
-	<td>waitForElementPresent</td>
-	<td>link=Acquisition Label</td>
+	<td>verifyTextPresent</td>
+	<td>The results contain various data types, so the details are not displayed.</td>
 	<td></td>
 </tr>
 <tr>
@@ -121,11 +117,79 @@
 	<td>link=Acquisition Label</td>
 	<td></td>
 </tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>The results contain various data types, so the details are not displayed.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Acquisition Label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForElementPresent</td>
+	<td>link=Acquisition Label</td>
+	<td></td>
+</tr>
+<!--Test 3-->
 <tr>
 	<td>waitForTextPresent</td>
 	<td>TT.894</td>
 	<td></td>
 </tr>
+<!--Test 4 start-->
+<tr>
+	<td>click</td>
+	<td>link=5</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>1-5 of </td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=10</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>1-10 of</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Next</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>11-20 of </td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Previous</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>1-10 of</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>11-20 of</td>
+	<td></td>
+</tr>
+<!--Test 4 end-->
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li[3]/a</td>
@@ -139,6 +203,37 @@
 <tr>
 	<td>waitForElementPresent</td>
 	<td>link=Acquisition Label</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[ViewAliquot][aliquot_type][]</td>
+	<td>label=Tube</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[ViewAliquot][sample_control_id][]</td>
+	<td>label=Blood</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>pause</td>
+	<td>500</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Acquisition Label</td>
+	<td></td>
+</tr>
+<!--Test 5-->
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>The results contain various data types, so the details are not displayed.</td>
 	<td></td>
 </tr>
 <tr>

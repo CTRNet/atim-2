@@ -48,11 +48,6 @@
 	<td>01</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -93,11 +88,6 @@
 	<td>01</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -128,16 +118,11 @@
 	<td>01</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
-<!--see if the warning is present-->
+<!--Test 1 - See if the warning is present-->
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[@id='header']/div/ul/li[2]/a</td>
@@ -153,11 +138,16 @@
 	<td>id=goToNotDue</td>
 	<td></td>
 </tr>
-<!--testing search page-->
+<!--Test 2- Search page-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>1-1 of 1</td>
 	<td></td>
+</tr>
+<tr>
+	<td>assertEval</td>
+	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(3)&quot;).html().indexOf(&quot;expired date passed&quot;) != -1</td>
+	<td>true</td>
 </tr>
 </tbody></table>
 </body>

@@ -26,6 +26,7 @@
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 1-->
 <tr>
 	<td>verifyElementPresent</td>
 	<td>name=data[Participant][participant_identifier]</td>
@@ -62,13 +63,14 @@
 	<td>note field</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 2-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Your data has been saved.</td>
 	<td></td>
 </tr>
 <tr>
@@ -96,7 +98,7 @@
 	<td>LN</td>
 	<td></td>
 </tr>
-<!--Testing creation and modified fields-->
+<!--Test 3 - Testing creation and modified fields-->
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
@@ -108,16 +110,21 @@
 	<td>FN updated</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
-<!--Testing unique contraint-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Your data has been updated.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>FN updated </td>
+	<td></td>
+</tr>
+<!--Test 4 - Testing unique contraint-->
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[@id='header']/div/ul[2]/li/a</td>
@@ -134,11 +141,6 @@
 	<td>sel_part_id</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -148,7 +150,7 @@
 	<td>Error - Participant Identifier must be unique! (Participant Identifier)</td>
 	<td></td>
 </tr>
-<!--Verify autocomplete-->
+<!--Test 5 - Verify autocomplete-->
 <tr>
 	<td>focus</td>
 	<td>name=data[Participant][cod_icd10_code]</td>
@@ -184,6 +186,7 @@
 	<td>name=data[Participant][cod_icd10_code]</td>
 	<td>C100</td>
 </tr>
+<!--Test 6 - Tool-->
 <tr>
 	<td>click</td>
 	<td>css=a.tool_popup</td>
@@ -198,11 +201,6 @@
 	<td>type</td>
 	<td>name=data[0][term]</td>
 	<td>foot</td>
-</tr>
-<tr>
-	<td>type</td>
-	<td>name=data[Participant][cod_icd10_code]</td>
-	<td>c1</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -229,7 +227,7 @@
 	<td>name=data[Participant][cod_icd10_code]</td>
 	<td>M213</td>
 </tr>
-<!--Testing field numeral length validation-->
+<!--Test 7 - Field numeral length validation-->
 <tr>
 	<td>open</td>
 	<td>InventoryManagement/SampleMasters/add/1/2</td>
@@ -246,11 +244,6 @@
 	<td>12345678901234567890</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -265,7 +258,7 @@
 	<td>The value must be between -100000 and 100000</td>
 	<td></td>
 </tr>
-<!--Testing field string length-->
+<!--Test 8 - Field string length-->
 <tr>
 	<td>open</td>
 	<td>InventoryManagement/Collections/add</td>
@@ -277,11 +270,6 @@
 	<td>123456789012345678901234567890123456789012345678901</td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>css=span.icon16.submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -289,6 +277,42 @@
 <tr>
 	<td>verifyTextPresent</td>
 	<td>The string length must not exceed 50 characters!</td>
+	<td></td>
+</tr>
+<!--Cleaning up, deleting participant-->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Participant][participant_identifier][]</td>
+	<td>sel_part_id</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Participant Identifier</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
 	<td></td>
 </tr>
 </tbody></table>

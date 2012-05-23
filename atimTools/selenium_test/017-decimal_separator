@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8888/workspace/atim/" />
+<title>017-decimal_separator</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">017-decimal_separator</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>InventoryManagement/SampleMasters/add/1/2</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SampleDetail][collected_volume]</td>
+	<td>1.2</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 1 - normal-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>1.20000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SampleDetail][collected_volume]</td>
+	<td>3,45</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 2 - comma replaced-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>3.45000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SampleDetail][collected_volume]</td>
+	<td>.6</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 3 - 0 prepend-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>0.60000</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[SampleDetail][collected_volume]</td>
+	<td>,7</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 4 - 0 prepended comma-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>0.70000 - </td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>open</td>
+	<td>StorageLayout/StorageMasters/add/5</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[StorageMaster][short_label]</td>
+	<td>dec_te</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[StorageMaster][temperature]</td>
+	<td>-1.2</td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[StorageMaster][temp_unit]</td>
+	<td>label=°C</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 5 - normal negative-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>-1.20</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[StorageMaster][temperature]</td>
+	<td>-3,4</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 6 - comma negative-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>-3.40</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[StorageMaster][temperature]</td>
+	<td>-.50</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 7 - 0 prepended negative-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>-0.50</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[StorageMaster][temperature]</td>
+	<td>-,60</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>css=span.icon16.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<!--Test 8 - zero prepended negative comma-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>-0.60</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[Config][define_decimal_separator]</td>
+	<td>label=,</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[4]/ul/li[6]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[StorageMaster][short_label][]</td>
+	<td>dec_te</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Search</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>5 | 10 | 20 | 50</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<!--Test 9 - comma display-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>-0,60</td>
+	<td></td>
+</tr>
+<!--Cleanup-->
+<tr>
+	<td>click</td>
+	<td>css=span.icon16.delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul/li[3]/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[Config][define_decimal_separator]</td>
+	<td>label=.</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

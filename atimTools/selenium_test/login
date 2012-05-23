@@ -32,6 +32,7 @@
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 1-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>That username is disabled</td>
@@ -58,6 +59,7 @@
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 2-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Login failed. Invalid username or password.</td>
@@ -79,6 +81,7 @@
 	<td>css=input.submit</td>
 	<td></td>
 </tr>
+<!--Test 3-->
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Clinical Annotation</td>
