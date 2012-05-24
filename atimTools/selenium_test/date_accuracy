@@ -180,6 +180,17 @@
 	<td>Cannot calculate on incomplete date</td>
 	<td></td>
 </tr>
+<!--Cleanup-->
+<tr>
+	<td>click</td>
+	<td>css=span.icon16.delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>

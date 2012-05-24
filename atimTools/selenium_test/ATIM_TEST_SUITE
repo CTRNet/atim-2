@@ -8,23 +8,24 @@
 <body>
 <table id="suiteTable" cellpadding="1" cellspacing="1" border="1" class="selenium"><tbody>
 <tr><td><b>Test Suite</b></td></tr>
-<tr><td><a href="login">login</a></td></tr>
-<tr><td><a href="menus">menus</a></td></tr>
-<tr><td><a href="id hacking">id hacking</a></td></tr>
-<tr><td><a href="search">search</a></td></tr>
-<tr><td><a href="add forms">add forms</a></td></tr>
-<tr><td><a href="collection_links">collection links warnings</a></td></tr>
-<tr><td><a href="storage_empty_spaces">storage empty spaces</a></td></tr>
-<tr><td><a href="icd_codes_search">icd codes search</a></td></tr>
-<tr><td><a href="expired_messages_warning">expired messages warning</a></td></tr>
-<tr><td><a href="unlinked_collections">unlinked_collections</a></td></tr>
+<tr><td><a href="login">001-login</a></td></tr>
+<tr><td><a href="menus">002-menus</a></td></tr>
+<tr><td><a href="id hacking">003-id hacking</a></td></tr>
+<tr><td><a href="search">004-search</a></td></tr>
+<tr><td><a href="add forms">005-add forms</a></td></tr>
+<tr><td><a href="collection_links">006-collection links warnings</a></td></tr>
+<tr><td><a href="storage_empty_spaces">007-storage empty spaces</a></td></tr>
+<tr><td><a href="expired_messages_warning">008-expired messages warning</a></td></tr>
+<tr><td><a href="unlinked_collections">009-unlinked_collections</a></td></tr>
+<tr><td><a href="date_accuracy">010-date accuracy</a></td></tr>
+<tr><td><a href="administrators_permissions">011-administrators_permissions</a></td></tr>
+<tr><td><a href="misc_identifiers">012-misc_identifiers</a></td></tr>
+<tr><td><a href="user_create">013-user_create</a></td></tr>
+<tr><td><a href="deletion">014-deletion</a></td></tr>
+<tr><td><a href="inventory_deletion">015-inventory_deletion</a></td></tr>
+<tr><td><a href="detail_icd">016-detail_icd</a></td></tr>
+<tr><td><a href="017-decimal_separator">017-decimal_separator</a></td></tr>
 <tr><td><a href="databrowser">databrowser</a></td></tr>
-<tr><td><a href="date_accuracy">date accuracy</a></td></tr>
-<tr><td><a href="administrators_permissions">administrators_permissions</a></td></tr>
-<tr><td><a href="misc_identifiers">misc_identifiers</a></td></tr>
-<tr><td><a href="user_create">user_create</a></td></tr>
-<tr><td><a href="deletion">deletion</a></td></tr>
-<tr><td><a href="detail_icd">detail_icd</a></td></tr>
 </tbody></table>
 </body>
 </html>
