@@ -191,6 +191,146 @@
 	<td>link=Yes</td>
 	<td></td>
 </tr>
+<!--Test 5 - Date no time-->
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][year]</td>
+	<td>2012</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][month]</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][day]</td>
+	<td>1</td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][acquisition_label]</td>
+	<td>010_date</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>2012 Jan 01</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>2012 Jan 01 0</td>
+	<td></td>
+</tr>
+<!--Test 6 - Date no time-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][hour]</td>
+	<td>14</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>2012 Jan 01 14h </td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>2012 Jan 01 14h0</td>
+	<td></td>
+</tr>
+<!--Test 7 - Full da-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][min]</td>
+	<td>5</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>2012 Jan 01 14:05 </td>
+	<td></td>
+</tr>
+<!--Test 8 - Datetime no hour-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Edit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[Collection][collection_datetime][min]</td>
+	<td>12</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Invalid Datetime (Collection Date)</td>
+	<td></td>
+</tr>
+<!--Cleanup-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Cancel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Delete</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Yes</td>
+	<td></td>
+</tr>
 </tbody></table>
 </body>
 </html>

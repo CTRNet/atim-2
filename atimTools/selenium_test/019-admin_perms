@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head profile="http://selenium-ide.openqa.org/profiles/test-case">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link rel="selenium.base" href="http://localhost:8888/workspace/atim/" />
+<title>019-admin_perms</title>
+</head>
+<body>
+<table cellpadding="1" cellspacing="1" border="1">
+<thead>
+<tr><td rowspan="1" colspan="3">019-admin_perms</td></tr>
+</thead><tbody>
+<tr>
+	<td>open</td>
+	<td>/workspace/atim/Menus</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[4]/ul/li/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a[title=&quot;Permissions&quot;] &gt; span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=+</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[2][Aco][state]</td>
+	<td>label=Deny</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Your data has been updated.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Permissions were altered to grant group &quot;Administrators&quot; all administrative privileges.</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='header']/div/ul[2]/li[4]/ul/li/a</td>
+	<td></td>
+</tr>
+<!--Test 1 - cannot switch for admin-->
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Administrators</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Managers</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>Users</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[2]/td/a</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a[title=&quot;Permissions&quot;] &gt; span.menuLabel</td>
+	<td></td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=+</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[2][Aco][state]</td>
+	<td>label=Deny</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Your data has been updated.</td>
+	<td></td>
+</tr>
+<!--Test 2 - can switch for non admin-->
+<tr>
+	<td>verifyTextNotPresent</td>
+	<td>Permissions were altered to grant group &quot;Administrators&quot; all administrative privileges.</td>
+	<td></td>
+</tr>
+<!--Cleanup-->
+<tr>
+	<td>click</td>
+	<td>link=+</td>
+	<td></td>
+</tr>
+<tr>
+	<td>select</td>
+	<td>name=data[2][Aco][state]</td>
+	<td>label=</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Your data has been updated.</td>
+	<td></td>
+</tr>
+
+</tbody></table>
+</body>
+</html>

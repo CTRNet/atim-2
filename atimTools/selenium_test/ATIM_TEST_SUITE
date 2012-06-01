@@ -25,6 +25,9 @@
 <tr><td><a href="inventory_deletion">015-inventory_deletion</a></td></tr>
 <tr><td><a href="detail_icd">016-detail_icd</a></td></tr>
 <tr><td><a href="017-decimal_separator">017-decimal_separator</a></td></tr>
+<tr><td><a href="018-add to tmp batchset">018-add to tmp batchset</a></td></tr>
+<tr><td><a href="019-admin_perms">019-admin_perms</a></td></tr>
+<tr><td><a href="020-password">020-password</a></td></tr>
 <tr><td><a href="databrowser">databrowser</a></td></tr>
 </tbody></table>
 </body>
