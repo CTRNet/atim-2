@@ -411,7 +411,38 @@
 	<td>No-Labo-1354</td>
 	<td></td>
 </tr>
+<!--Test 11 - flag_unique (edit)-->
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.edit.icon16</td>
+	<td></td>
+</tr>
+<tr>
+	<td>type</td>
+	<td>name=data[MiscIdentifier][identifier_value]</td>
+	<td>AAA98293</td>
+</tr>
+<tr>
+	<td>click</td>
+	<td>link=Submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>verifyTextPresent</td>
+	<td>This field must be unique (Value)</td>
+	<td></td>
+</tr>
 <!--Cleanup-->
+<tr>
+	<td>clickAndWait</td>
+	<td>link=Cancel</td>
+	<td></td>
+</tr>
 <tr>
 	<td>click</td>
 	<td>css=a.delete.icon16</td>
