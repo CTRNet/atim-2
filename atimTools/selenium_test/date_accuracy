@@ -302,8 +302,8 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[Collection][collection_datetime][min]</td>
-	<td>12</td>
+	<td>name=data[Collection][collection_datetime][hour]</td>
+	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>

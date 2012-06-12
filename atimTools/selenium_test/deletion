@@ -239,7 +239,7 @@
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>Remission</td>
+	<td>Secondary - Undetailed</td>
 	<td></td>
 </tr>
 <tr>
@@ -273,11 +273,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -285,11 +280,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
 	<td></td>
 </tr>
 <tr>
@@ -383,11 +373,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -395,11 +380,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
 	<td></td>
 </tr>
 <tr>
@@ -478,11 +458,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -500,11 +475,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=General - Surgery</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
 	<td></td>
 </tr>
 <tr>
@@ -533,11 +503,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -545,11 +510,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
 	<td></td>
 </tr>
 <tr>
@@ -578,11 +538,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -590,11 +545,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>css=span.icon16.edit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
 	<td></td>
 </tr>
 <tr>
@@ -613,11 +563,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -625,11 +570,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
 	<td></td>
 </tr>
 <tr>
@@ -648,11 +588,6 @@
 	<td></td>
 </tr>
 <tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
-</tr>
-<tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
 	<td></td>
@@ -660,11 +595,6 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
 	<td></td>
 </tr>
 <tr>
@@ -696,11 +626,6 @@
 	<td>type</td>
 	<td>name=data[Collection][acquisition_label]</td>
 	<td>unlinked part ovary bank</td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>link=Submit</td>
-	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>

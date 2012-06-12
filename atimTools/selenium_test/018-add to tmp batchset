@@ -48,7 +48,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>css=span.icon16.batchset</td>
+	<td>css=a.icon16.batchset</td>
 	<td></td>
 </tr>
 <tr>
@@ -94,22 +94,12 @@
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>cd-873</td>
+	<td>32234324324</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='wrapper']/div[4]/div/table/tbody/tr/td/table/tbody/tr/td/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>css=span.icon16.batchset</td>
-	<td></td>
-</tr>
-<tr>
-	<td>click</td>
-	<td>css=td.content</td>
+	<td>css=a.icon16.batchset</td>
 	<td></td>
 </tr>
 <tr>
@@ -184,6 +174,11 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForTextPresent</td>
+	<td>5 | 10 | 20 | 50</td>
+	<td></td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>css=a.detail.icon16</td>
 	<td></td>
@@ -191,6 +186,11 @@
 <tr>
 	<td>click</td>
 	<td>link=+</td>
+	<td></td>
+</tr>
+<tr>
+	<td>waitForTextPresent</td>
+	<td>Blood Cells</td>
 	<td></td>
 </tr>
 <tr>
@@ -250,7 +250,6 @@
 	<td>link=Your data has been updated.</td>
 	<td></td>
 </tr>
-
 </tbody></table>
 </body>
 </html>

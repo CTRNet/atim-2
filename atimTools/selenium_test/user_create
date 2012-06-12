@@ -80,7 +80,7 @@
 <!--Test 2 - pwd miss match-->
 <tr>
 	<td>verifyTextPresent</td>
-	<td>passwords do not match</td>
+	<td>Passwords do not match.</td>
 	<td></td>
 </tr>
 <tr>
