@@ -9,7 +9,7 @@ class InvConf{
 		assoc.id AS control_id,
 		assoc.flag_active AS flag_active,
 		s.sample_type AS sample_type,
-		s.form_alias AS form_alias
+		s.detail_form_alias AS detail_form_alias
  		FROM parent_to_derivative_sample_controls AS assoc  
 		INNER JOIN sample_controls AS s ON assoc.derivative_sample_control_id=s.id 
 		WHERE assoc.parent_sample_control_id=?
@@ -35,7 +35,7 @@ class InvConf{
 				$disabled = $row['flag_active'] ? "" : " disabled ";
 				$json = '{ "id" : "'.$row['id'].'" }';
 				if(empty($disabled) || $display_disabled_options){
-					echo("<li class='aliquot aliquot_".$row['id']." ".$disabled." ".$json."'><div class='aliquot_cell'>".$row['aliquot_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
+					echo("<li class='aliquot aliquot_".$row['id']." ".$disabled." ".$json."'><div class='aliquot_cell'>".$row['aliquot_type'].($display_disabled_options ? "<br/><span class='small'>".$row['detail_form_alias']."</span>" : "")."</div>");
 				}
 				$stmt2->bind_param("i", $row['id']);
 				$stmt2->execute();
@@ -71,7 +71,7 @@ class InvConf{
 					$disabled = $row['flag_active'] ? "" : " disabled";
 					$json = '{ "id" : "'.$row['control_id'].'"}';
 					if(empty($disabled) || $display_disabled_options){
-						echo("<li class='sample sample_".$row['control_id']." derivative_".$row['derivative_sample_control_id'].$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
+						echo("<li class='sample sample_".$row['control_id']." derivative_".$row['derivative_sample_control_id'].$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type'].($display_disabled_options ? "<br/><span class='small'>".$row['detail_form_alias']."</span>" : "")."</div>");
 						if($row['derivative_sample_control_id'] == $row['parent_sample_control_id']){
 							array_push(InvConf::$printedSamples, $row['derivative_sample_control_id']);
 						} 
@@ -145,7 +145,7 @@ class InvConf{
 		$disabled = $row['flag_active'] ? "" : " disabled ";
 		$json = '{ "id" : "'.$row['mid'].'" }';
 		if(empty($disabled) || $display_disabled_options){
-			echo("<li class='sample sample_".$row['mid']." ".$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type'].($display_disabled_options ? "<br/><span class='small'>".$row['form_alias']."</span>" : "")."</div>");
+			echo("<li class='sample sample_".$row['mid']." ".$disabled." ".$json."'><div class='sample_node'><div class='sample_cell'>".$row['sample_type'].($display_disabled_options ? "<br/><span class='small'>".$row['detail_form_alias']."</span>" : "")."</div>");
 			InvConf::printInner($row['id'], 1, $display_disabled_options);
 		}
 		echo("</li>");
