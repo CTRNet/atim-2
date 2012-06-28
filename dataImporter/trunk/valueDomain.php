@@ -39,7 +39,7 @@ class ValueDomain{
 			foreach($values as $key => $val){
 				$lower_key = strtolower($key);
 				if(array_key_exists($lower_key, $this->values)){
-					echo "WARNING: ignoring value [".$val."] in value domain [".$domain_name."] because the case sentivity setting makes it conflict with [".$this->values[$lower_key]."]\n";
+					echo "WARNING: ignoring value [".$val."] in value domain [".$domain_name."] because the case sentivity setting makes it conflict with [".$this->values[$lower_key]."]".Config::$line_break_tag;
 				}else{
 					$this->values[strtolower($key)] = $val;
 				}
@@ -50,7 +50,7 @@ class ValueDomain{
 		
 		if($this->allow_blank){
 			if(array_key_exists("", $this->values)){
-				echo "WARNING: Blank was not added to value domain [".$domain_name."] because it already contains an association to it\n";
+				echo "WARNING: Blank was not added to value domain [".$domain_name."] because it already contains an association to it".Config::$line_break_tag;
 			}else{
 				$this->values[""] = "";
 			}

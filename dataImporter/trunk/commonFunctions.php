@@ -63,7 +63,7 @@ class Database{
 		if(!array_key_exists($table_name, self::$fields_cache)){
 			$query = 'DESC '.$table_name;
 			if(Config::$print_queries){
-				echo $query."\n";
+				echo $query.Config::$line_break_tag;
 			}
 			$result = mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
 			$rows = mysqli_fetch_all($result);
@@ -86,7 +86,7 @@ class Database{
 			$where = $pkey_val == null ? '' : ' WHERE '.$pkey_name.'="'.$pkey_val.'" ';
 			$query = 'INSERT INTO '.$source_table_name.'_revs ('.$fields.', version_created) (SELECT '.$fields.', NOW() FROM '.$source_table_name.' '.$where.' ORDER BY '.$pkey_name.' DESC LIMIT 1)';
 			if(Config::$print_queries){
-				echo $query."\n";
+				echo $query.Config::$line_break_tag;
 			}
 			mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
 		}
@@ -123,7 +123,7 @@ function clean($element){
 function associate($keys, &$values){
 	foreach($keys as $i => $v){
 		$values[$v] = isset($values[$i]) ? $values[$i] : "";
-//		echo($keys[$i]." -> ".$values[$i]."\n");
+//		echo($keys[$i]." -> ".$values[$i].Config::$line_break_tag);
 	}
 }
 
@@ -149,7 +149,7 @@ function excelDateFix(Model $m){
 	foreach($m->custom_data['date_fields'] as $date_field => $accuracy_field){
 		
 		if(!array_key_exists($date_field, $m->values)){
-			echo 'ERROR: excelDateFix index key not found ['.$date_field.'] for file ['.$m->file.'] on table ['.$m->table."]\n";
+			echo 'ERROR: excelDateFix index key not found ['.$date_field.'] for file ['.$m->file.'] on table ['.$m->table."]".Config::$line_break_tag;
 			$insert = false;
 			continue;
 		}
@@ -164,16 +164,16 @@ function excelDateFix(Model $m){
 			if(isset(MyTime::$months[strtolower($matches[1][0][0])])){
 				$m->values[$date_field] = $matches[4][0][0]."-".MyTime::$months[strtolower($matches[1][0][0])]."-".sprintf("%02d", $matches[2][0][0]);
 				if(strlen($m->values[$date_field]) != 10){
-					echo "WARNING ON DATE [",$old_val,"] (A.1) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+					echo "WARNING ON DATE [",$old_val,"] (A.1) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
 				}
 			}else{
-				echo "WARNING ON DATE: unknown month [",$matches[1][0][0],"] (A.2) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+				echo "WARNING ON DATE: unknown month [",$matches[1][0][0],"] (A.2) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
 			}
 		}else if(preg_match_all(MyTime::$short_date_pattern, $m->values[$date_field], $matches, PREG_OFFSET_CAPTURE) > 0){
 			$old_val = $m->values[$date_field];
 			$m->values[$date_field] = $matches[2][0][0]."-".MyTime::$months[strtolower($matches[1][0][0])]."-01";
 			if(strlen($m->values[$date_field]) != 10){
-				echo "WARNING ON DATE [",$old_val,"] month[".strtolower($matches[1][0][0])."](B) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+				echo "WARNING ON DATE [",$old_val,"] month[".strtolower($matches[1][0][0])."](B) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
 			}
 			if($accuracy_field != null && MyTime::$uncertainty_level[$m->values[$accuracy_field]] < MyTime::$uncertainty_level['m']){
 				$m->values[$accuracy_field] = 'm';
@@ -183,17 +183,17 @@ function excelDateFix(Model $m){
 				//only year
 				$m->values[$date_field] = $m->values[$date_field]."-01-01";
 				if(!isset($m->values[$accuracy_field])){
-					echo "ERROR: Cannot set the date for field [", $date_field, "] because no accuracy fields is matched to it. See file [",$m->file, "] at line [", $m->line, "]\n";
+					echo "ERROR: Cannot set the date for field [", $date_field, "] because no accuracy fields is matched to it. See file [",$m->file, "] at line [", $m->line, "]".Config::$line_break_tag;
 					global $insert;
 					$insert = false;
 				}
 				if($accuracy_field != null && MyTime::$uncertainty_level[$m->values[$accuracy_field]] < MyTime::$uncertainty_level['y']){
 					$m->values[$accuracy_field] = 'y';
 				}
-			}else{
+			}else{			
 				//excel date integer representation
 				$php_offset = 946746000;//2000-01-01 (12h00 to avoid daylight problems)
-				$xls_offset = 36526;//2000-01-01
+				$xls_offset = Config::$use_windows_xls_offset? 36526 : 35064; //2000-01-01 = 36526 for windows & 2000-01-01 = 36526 for mac 35064
 				$m->values[$date_field] = date("Y-m-d", $php_offset + (($m->values[$date_field] - $xls_offset) * 86400));
 			}
 			
@@ -206,12 +206,12 @@ function excelDateFix(Model $m){
 			if($accuracy_field = NULL){
 				$m->values[$accuracy_field] = "u";
 				if(strlen($m->values[$date_field]) != 10){
-					echo "WARNING ON DATE [",$m->values[$date_field],"] (C) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+					echo "WARNING ON DATE [",$m->values[$date_field],"] (C) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
 				}
 			}else{
 				global $insert;
 				$insert = false;
-				echo "ERROR ON DATE [",$m->values[$date_field],"] (D) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+				echo "ERROR ON DATE [",$m->values[$date_field],"] (D) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
 			}
 		}else{
 			//empty date, turn into null

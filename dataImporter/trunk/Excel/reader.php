@@ -443,7 +443,7 @@ class Spreadsheet_Excel_Reader
 
         $version = ord($this->data[$pos + 4]) | ord($this->data[$pos + 5])<<8;
         $substreamType = ord($this->data[$pos + 6]) | ord($this->data[$pos + 7])<<8;
-        //echo "Start parse code=".base_convert($code,10,16)." version=".base_convert($version,10,16)." substreamType=".base_convert($substreamType,10,16).""."\n";
+        //echo "Start parse code=".base_convert($code,10,16)." version=".base_convert($version,10,16)." substreamType=".base_convert($substreamType,10,16)."".Config::$line_break_tag;
 
         if (($version != SPREADSHEET_EXCEL_READER_BIFF8) &&
             ($version != SPREADSHEET_EXCEL_READER_BIFF7)) {
@@ -463,7 +463,7 @@ class Spreadsheet_Excel_Reader
         while ($code != SPREADSHEET_EXCEL_READER_TYPE_EOF) {
             switch ($code) {
                 case SPREADSHEET_EXCEL_READER_TYPE_SST:
-                    //echo "Type_SST\n";
+                    //echo "Type_SST".Config::$line_break_tag;
                      $spos = $pos + 4;
                      $limitpos = $spos + $length;
                      $uniqueStrings = $this->_GetInt4d($this->data, $spos+4);
@@ -552,14 +552,14 @@ class Spreadsheet_Excel_Reader
                                                                     $retstr .= substr($this->data, $spos, $len);
                                                                     $charsLeft -= $len/2;
                                                                     $asciiEncoding = false;
-                                                                        //echo "Izavrat\n";
+                                                                        //echo "Izavrat".Config::$line_break_tag;
                                                                   }
                                                           $spos += $len;
 
                                                          }
                                                 }
                                                 $retstr = ($asciiEncoding) ? $retstr : $this->_encodeUTF16($retstr);
-//                                              echo "Str $i = $retstr\n";
+//                                              echo "Str $i = $retstr".Config::$line_break_tag;
                                         if ($richString){
                                                   $spos += 4 * $formattingRuns;
                                                 }
@@ -569,7 +569,7 @@ class Spreadsheet_Excel_Reader
                                                   $spos += $extendedRunLength;
                                                 }
                                                         //if ($retstr == 'Derby'){
-                                                        //      echo "bb\n";
+                                                        //      echo "bb".Config::$line_break_tag;
                                                         //}
                                                 $this->sst[]=$retstr;
                                        }
@@ -577,18 +577,18 @@ class Spreadsheet_Excel_Reader
                     while ($this->getNextCode() == Type_CONTINUE) {
                         $continueRecords[] = &$this->nextRecord();
                     }
-                    //echo " 1 Type_SST\n";
+                    //echo " 1 Type_SST".Config::$line_break_tag;
                     $this->shareStrings = new SSTRecord($r, $continueRecords);
                     //print_r($this->shareStrings->strings);
                      */
-                     // echo 'SST read: '.($time_end-$time_start)."\n";
+                     // echo 'SST read: '.($time_end-$time_start).Config::$line_break_tag;
                     break;
 
                 case SPREADSHEET_EXCEL_READER_TYPE_FILEPASS:
                     return false;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_NAME:
-                    //echo "Type_NAME\n";
+                    //echo "Type_NAME".Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_FORMAT:
                         $indexCode = ord($this->data[$pos+4]) | ord($this->data[$pos+5]) << 8;
@@ -606,7 +606,7 @@ class Spreadsheet_Excel_Reader
                         }
 
                     $this->formatRecords[$indexCode] = $formatString;
-                   // echo "Type.FORMAT\n";
+                   // echo "Type.FORMAT".Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_XF:
                         //global $dateFormats, $numberFormats;
@@ -630,13 +630,13 @@ class Spreadsheet_Excel_Reader
                                 if (isset($this->formatRecords[$indexCode]))
                                     $formatstr = $this->formatRecords[$indexCode];
                                 //echo '.other.';
-                                //echo "\ndate-time=$formatstr=\n";
+                                //echo "\ndate-time=$formatstr=".Config::$line_break_tag;
                                 if ($formatstr)
                                 if (preg_match("/[^hmsday\/\-:\s]/i", $formatstr) == 0) { // found day and time format
                                     $isdate = TRUE;
                                     $formatstr = str_replace('mm', 'i', $formatstr);
                                     $formatstr = str_replace('h', 'H', $formatstr);
-                                    //echo "\ndate-time $formatstr \n";
+                                    //echo "\ndate-time $formatstr ".Config::$line_break_tag;
                                 }
                             }
 
@@ -653,14 +653,14 @@ class Spreadsheet_Excel_Reader
                                         );
                             }
                         }
-                        //echo "\n";
+                        //echo Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_NINETEENFOUR:
-                    //echo "Type.NINETEENFOUR\n";
+                    //echo "Type.NINETEENFOUR".Config::$line_break_tag;
                     $this->nineteenFour = (ord($this->data[$pos+4]) == 1);
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_BOUNDSHEET:
-                    //echo "Type.BOUNDSHEET\n";
+                    //echo "Type.BOUNDSHEET".Config::$line_break_tag;
                         $rec_offset = $this->_GetInt4d($this->data, $pos+4);
                         $rec_typeFlag = ord($this->data[$pos+8]);
                         $rec_visibilityFlag = ord($this->data[$pos+9]);
@@ -683,13 +683,13 @@ class Spreadsheet_Excel_Reader
 
             }
 
-            //echo "Code = ".base_convert($r['code'],10,16)."\n";
+            //echo "Code = ".base_convert($r['code'],10,16).Config::$line_break_tag;
             $pos += $length + 4;
             $code = ord($this->data[$pos]) | ord($this->data[$pos+1])<<8;
             $length = ord($this->data[$pos+2]) | ord($this->data[$pos+3])<<8;
 
             //$r = &$this->nextRecord();
-            //echo "1 Code = ".base_convert($r['code'],10,16)."\n";
+            //echo "1 Code = ".base_convert($r['code'],10,16).Config::$line_break_tag;
         }
 
         foreach ($this->boundsheets as $key=>$val){
@@ -724,12 +724,12 @@ class Spreadsheet_Excel_Reader
         if ($substreamType != SPREADSHEET_EXCEL_READER_WORKSHEET){
             return -2;
         }
-        //echo "Start parse code=".base_convert($code,10,16)." version=".base_convert($version,10,16)." substreamType=".base_convert($substreamType,10,16).""."\n";
+        //echo "Start parse code=".base_convert($code,10,16)." version=".base_convert($version,10,16)." substreamType=".base_convert($substreamType,10,16)."".Config::$line_break_tag;
         $spos += $length + 4;
         //var_dump($this->formatRecords);
     //echo "code $code $length";
         while($cont) {
-            //echo "mem= ".memory_get_usage()."\n";
+            //echo "mem= ".memory_get_usage().Config::$line_break_tag;
 //            $r = &$this->file->nextRecord();
             $lowcode = ord($this->data[$spos]);
             if ($lowcode == SPREADSHEET_EXCEL_READER_TYPE_EOF) break;
@@ -738,7 +738,7 @@ class Spreadsheet_Excel_Reader
             $spos += 4;
             $this->sheets[$this->sn]['maxrow'] = $this->_rowoffset - 1;
             $this->sheets[$this->sn]['maxcol'] = $this->_coloffset - 1;
-            //echo "Code=".base_convert($code,10,16)." $code\n";
+            //echo "Code=".base_convert($code,10,16)." $code".Config::$line_break_tag;
             unset($this->rectype);
             $this->multiplier = 1; // need for format with %
             switch ($code) {
@@ -753,7 +753,7 @@ class Spreadsheet_Excel_Reader
                             $this->sheets[$this->sn]['numCols'] = ord($this->data[$spos+10]) | ord($this->data[$spos+11]) << 8;
                         }
                     }
-                    //echo 'numRows '.$this->numRows.' '.$this->numCols."\n";
+                    //echo 'numRows '.$this->numRows.' '.$this->numCols.Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_MERGEDCELLS:
                     $cellRanges = ord($this->data[$spos]) | ord($this->data[$spos+1])<<8;
@@ -770,11 +770,11 @@ class Spreadsheet_Excel_Reader
                             $this->sheets[$this->sn]['cellsInfo'][$fr+1][$fc+1]['colspan'] = $lc - $fc + 1;
                         }
                     }
-                    //echo "Merged Cells $cellRanges $lr $fr $lc $fc\n";
+                    //echo "Merged Cells $cellRanges $lr $fr $lc $fc".Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_RK:
                 case SPREADSHEET_EXCEL_READER_TYPE_RK2:
-                    //echo 'SPREADSHEET_EXCEL_READER_TYPE_RK'."\n";
+                    //echo 'SPREADSHEET_EXCEL_READER_TYPE_RK'.Config::$line_break_tag;
                     $row = ord($this->data[$spos]) | ord($this->data[$spos+1])<<8;
                     $column = ord($this->data[$spos+2]) | ord($this->data[$spos+3])<<8;
                     $rknum = $this->_GetInt4d($this->data, $spos + 6);
@@ -791,7 +791,7 @@ class Spreadsheet_Excel_Reader
                         //$this->addcell(RKRecord($r));
                     }
                     $this->addcell($row, $column, $string, $raw);
-                    //echo "Type_RK $row $column $string $raw {$this->curformat}\n";
+                    //echo "Type_RK $row $column $string $raw {$this->curformat}".Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_LABELSST:
                         $row        = ord($this->data[$spos]) | ord($this->data[$spos+1])<<8;
@@ -800,7 +800,7 @@ class Spreadsheet_Excel_Reader
                         $index  = $this->_GetInt4d($this->data, $spos + 6);
             //var_dump($this->sst);
                         $this->addcell($row, $column, $this->sst[$index]);
-                        //echo "LabelSST $row $column $string\n";
+                        //echo "LabelSST $row $column $string".Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_MULRK:
                     $row        = ord($this->data[$spos]) | ord($this->data[$spos+1])<<8;
@@ -822,7 +822,7 @@ class Spreadsheet_Excel_Reader
                       //$rec['rknumbers'][$i]['xfindex'] = ord($rec['data'][$pos]) | ord($rec['data'][$pos+1]) << 8;
                       $tmppos += 6;
                       $this->addcell($row, $colFirst + $i, $string, $raw);
-                      //echo "MULRK $row ".($colFirst + $i)." $string\n";
+                      //echo "MULRK $row ".($colFirst + $i)." $string".Config::$line_break_tag;
                     }
                      //MulRKRecord($r);
                     // Get the individual cell records from the multiple record
@@ -847,7 +847,7 @@ class Spreadsheet_Excel_Reader
                      //   $this->addcell(NumberRecord($r));
                     }
                     $this->addcell($row, $column, $string, $raw);
-                    //echo "Number $row $column $string\n";
+                    //echo "Number $row $column $string".Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_FORMULA:
                 case SPREADSHEET_EXCEL_READER_TYPE_FORMULA2:
@@ -855,7 +855,7 @@ class Spreadsheet_Excel_Reader
                     $column = ord($this->data[$spos+2]) | ord($this->data[$spos+3])<<8;
                     if ((ord($this->data[$spos+6])==0) && (ord($this->data[$spos+12])==255) && (ord($this->data[$spos+13])==255)) {
                         //String formula. Result follows in a STRING record
-                        //echo "FORMULA $row $column Formula with a string<br>\n";
+                        //echo "FORMULA $row $column Formula with a string<br>".Config::$line_break_tag;
                     } elseif ((ord($this->data[$spos+6])==1) && (ord($this->data[$spos+12])==255) && (ord($this->data[$spos+13])==255)) {
                         //Boolean formula. Result is in +2; 0=false,1=true
                     } elseif ((ord($this->data[$spos+6])==2) && (ord($this->data[$spos+12])==255) && (ord($this->data[$spos+13])==255)) {
@@ -879,7 +879,7 @@ class Spreadsheet_Excel_Reader
                          //   $this->addcell(NumberRecord($r));
                         }
                         $this->addcell($row, $column, $string, $raw);
-                        //echo "Number $row $column $string\n";
+                        //echo "Number $row $column $string".Config::$line_break_tag;
                     }
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_BOOLERR:
@@ -887,7 +887,7 @@ class Spreadsheet_Excel_Reader
                     $column = ord($this->data[$spos+2]) | ord($this->data[$spos+3])<<8;
                     $string = ord($this->data[$spos+6]);
                     $this->addcell($row, $column, $string);
-                    //echo 'Type_BOOLERR '."\n";
+                    //echo 'Type_BOOLERR '.Config::$line_break_tag;
                     break;
                 case SPREADSHEET_EXCEL_READER_TYPE_ROW:
                 case SPREADSHEET_EXCEL_READER_TYPE_DBCELL:
@@ -905,7 +905,7 @@ class Spreadsheet_Excel_Reader
                     $cont = false;
                     break;
                 default:
-                    //echo ' unknown :'.base_convert($r['code'],10,16)."\n";
+                    //echo ' unknown :'.base_convert($r['code'],10,16).Config::$line_break_tag;
                     break;
 
             }
@@ -929,7 +929,7 @@ class Spreadsheet_Excel_Reader
     {
         //$xfindex = GetInt2d(, 4);
         $xfindex = ord($this->data[$spos+4]) | ord($this->data[$spos+5]) << 8;
-        //echo 'check is date '.$xfindex.' '.$this->formatRecords['xfrecords'][$xfindex]['type']."\n";
+        //echo 'check is date '.$xfindex.' '.$this->formatRecords['xfrecords'][$xfindex]['type'].Config::$line_break_tag;
         //var_dump($this->formatRecords['xfrecords'][$xfindex]);
         if ($this->formatRecords['xfrecords'][$xfindex]['type'] == 'date') {
             $this->curformat = $this->formatRecords['xfrecords'][$xfindex]['format'];
@@ -995,14 +995,14 @@ class Spreadsheet_Excel_Reader
         $value = $mantissa / pow( 2 , (20- ($exp - 1023)));
         if ($mantissalow1 != 0) $value += 1 / pow (2 , (21 - ($exp - 1023)));
         $value += $mantissalow2 / pow (2 , (52 - ($exp - 1023)));
-        //echo "Sign = $sign, Exp = $exp, mantissahighx = $mantissa, mantissalow1 = $mantissalow1, mantissalow2 = $mantissalow2<br>\n";
+        //echo "Sign = $sign, Exp = $exp, mantissahighx = $mantissa, mantissalow1 = $mantissalow1, mantissalow2 = $mantissalow2<br>".Config::$line_break_tag;
         if ($sign) {$value = -1 * $value;}
         return  $value;
     }
 
     function addcell($row, $col, $string, $raw = '')
     {
-        //echo "ADD cel $row-$col $string\n";
+        //echo "ADD cel $row-$col $string".Config::$line_break_tag;
         $this->sheets[$this->sn]['maxrow'] = max($this->sheets[$this->sn]['maxrow'], $row + $this->_rowoffset);
         $this->sheets[$this->sn]['maxcol'] = max($this->sheets[$this->sn]['maxcol'], $col + $this->_coloffset);
         $this->sheets[$this->sn]['cells'][$row + $this->_rowoffset][$col + $this->_coloffset] = $string;

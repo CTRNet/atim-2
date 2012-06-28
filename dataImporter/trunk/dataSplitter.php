@@ -61,8 +61,8 @@ $result = "";
 foreach($keys as $key){
 	$result .= '"'.$key.'";';
 }
-echo(substr($result, 0, strlen($result) - 1)."\n");
-fwrite($fh_out, substr($result, 0, strlen($result) - 1)."\n");
+echo(substr($result, 0, strlen($result) - 1).Config::$line_break_tag);
+fwrite($fh_out, substr($result, 0, strlen($result) - 1).Config::$line_break_tag);
 
 while(!feof($fh)){
 	$values = lineToArray(fgets($fh, 4096));
@@ -80,7 +80,7 @@ function printLine($values, $split_on){
 		foreach($split_unit['split'] as $split_col_name => $splitted_arr){
 			$split_unit['split'][$split_col_name] = getSplit($values[$split_col_name]);
 			$max_size = max($max_size, sizeOf($split_unit['split'][$split_col_name]));
-//			echo($split_col_name."\n");
+//			echo($split_col_name.Config::$line_break_tag);
 //			print_r($split_unit['split'][$split_col_name]);
 			//replace splitted values for the first line and add key
 			if(sizeOf($split_unit['split'][$split_col_name]) > 0){
@@ -105,8 +105,8 @@ function printLine($values, $split_on){
 	}
 	
 	//print first line
-	echo (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "")."\n";
-	fwrite($fh_out, (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "")."\n");
+	echo (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "").Config::$line_break_tag;
+	fwrite($fh_out, (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "").Config::$line_break_tag);
 	
 	//print additional lines
 	for($i = 1; $i < $max_size; ++ $i){
@@ -138,8 +138,8 @@ function printLine($values, $split_on){
 		}
 
 		//print the line
-		echo (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "")."\n";
-		fwrite($fh_out, (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "")."\n");
+		echo (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "").Config::$line_break_tag;
+		fwrite($fh_out, (strlen($result) > 0 ? substr($result, 0, strlen($result) - 1) : "").Config::$line_break_tag);
 	}
 }
 

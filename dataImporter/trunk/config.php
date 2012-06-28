@@ -17,6 +17,9 @@ class Config{
 	
 	static $input_type		= Config::INPUT_TYPE_XLS;
 	
+	//Date format
+	static $use_windows_xls_offset = true;
+	
 	//if reading excel file
 	static $xls_file_path	= "/Users/francois-michellheureux/Desktop/data.xls";//file to read
 	static $xls_header_rows = 1;
@@ -26,6 +29,10 @@ class Config{
 	
 	static $addon_function_start= null;//function to run at the start of the import process
 	static $addon_function_end	= null;//function to run at the end of the import process
+	
+	//for display
+	static $line_break_tag = '\n';
+	
 	//--------------------------------------
 	
 	
