@@ -49,6 +49,7 @@ class MyTime{
 	
 	public static $full_date_pattern 	= '/^([^ \t0-9]+)[ \t]*([0-9]{1,2})(th)?[ \t]*[\,| \t][ \t]*([0-9]{4})$/';
 	public static $short_date_pattern	= '/^([^ \t0-9\,]+)[ \t]*[\,]?[ \t]*([0-9]{4})$/';
+	public static $ymd_date_pattern	= '#^([\d]{4})[-/]([\d]{2})[-/]([\d]{2})$#';
 	
 	public static $uncertainty_level = array('c' => 0, 'd' => 1, 'm' => 2, 'y' => 3, 'u' => 4);
 }
@@ -66,9 +67,8 @@ class Database{
 				echo $query.Config::$line_break_tag;
 			}
 			$result = mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
-			$rows = mysqli_fetch_all($result);
 			$fields = array();
-			foreach($rows as $row){
+			while($row = mysqli_fetch_row($result)){
 				$fields[] = $row[0];
 			}
 			self::$fields_cache[$table_name] = $fields;
@@ -89,7 +89,7 @@ class Database{
 				echo $query.Config::$line_break_tag;
 			}
 			mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
-		}
+ 		}
 	}
 	
 	/**
@@ -123,7 +123,6 @@ function clean($element){
 function associate($keys, &$values){
 	foreach($keys as $i => $v){
 		$values[$v] = isset($values[$i]) ? $values[$i] : "";
-//		echo($keys[$i]." -> ".$values[$i].Config::$line_break_tag);
 	}
 }
 
@@ -213,8 +212,13 @@ function excelDateFix(Model $m){
 				$insert = false;
 				echo "ERROR ON DATE [",$m->values[$date_field],"] (D) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
 			}
+		}else if(preg_match(MyTime::$ymd_date_pattern, $m->values[$date_field], $matches) > 0){
+			//classic date
 		}else{
 			//empty date, turn into null
+			if($m->values[$date_field] != ''){
+				echo "WARNING ON DATE [",$m->values[$date_field],"] (E) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]\n";
+			}
 			$m->values[$date_field] = null;
 		}
 	}

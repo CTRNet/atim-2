@@ -278,7 +278,7 @@ function buildValuesQuery(Model $model, array $fields, array $schema, $is_detail
 	foreach($fields as $field => $value){
 		if(is_array($value)){
 			$possible_values = current($value);
-			$tmp = $model->values[key($value)];
+			$tmp = trim($model->values[key($value)]);
 			if(is_a($possible_values, 'ValueDomain')){
 				if(($val = $possible_values->isValidValue($tmp)) === null){
 					echo "WARNING: value [",$tmp,"] is unmatched for ValueDomain field [",$field,"] in file [",$model->file,"] at line [".$model->line."]".Config::$line_break_tag;
