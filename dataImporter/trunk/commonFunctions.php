@@ -59,14 +59,12 @@ class Database{
 	static private $fields_cache = array();
 	
 	static function getFields($table_name){
-		global $connection;
-		
 		if(!array_key_exists($table_name, self::$fields_cache)){
 			$query = 'DESC '.$table_name;
 			if(Config::$print_queries){
 				echo $query.Config::$line_break_tag;
 			}
-			$result = mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
+			$result = mysqli_query(Config::$db_connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error(Config::$db_connection));
 			$fields = array();
 			while($row = mysqli_fetch_row($result)){
 				$fields[] = $row[0];
@@ -79,7 +77,6 @@ class Database{
 	
 	static function insertRev($source_table_name, $pkey_val = null, $pkey_name = 'id'){
 		if(Config::$insert_revs){
-			global $connection;
 			$fields_org = self::getFields($source_table_name);
 			$fields_rev = self::getFields($source_table_name.'_revs');
 			$fields = implode(', ', array_intersect($fields_org, $fields_rev));
@@ -88,7 +85,7 @@ class Database{
 			if(Config::$print_queries){
 				echo $query.Config::$line_break_tag;
 			}
-			mysqli_query($connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error($connection));
+			mysqli_query(Config::$db_connection, $query) or die(__FUNCTION__." [".__LINE__."] qry failed [".$query."] ".mysqli_error(Config::$db_connection));
  		}
 	}
 	
