@@ -110,10 +110,16 @@ foreach($tables as $table => $foo){
 }
 $detail_tables = array_flip($detail_tables);
 
+$detail_tables['specimen_details'] = '-1';
+$detail_tables['derivative_details'] = '-1';
+$detail_tables['ad_bags'] = '-1';
+$detail_tables['ed_all_adverse_events_adverse_events'] = '-1';
+$detail_tables['ed_all_protocol_followups'] = '-1';
+
 echo "<h1>Corrections to do</h1>\n";
 $correction = false;
 $main_table_req_fields = array('created', 'created_by', 'modified', 'modified_by', 'deleted');
-$detail_table_req_fields = array('deleted');
+$detail_table_req_fields = array();
 $revs_table_ignore_fields = array_flip(array('created', 'created_by', 'modified', 'deleted'));
 foreach($tables as $tname => $foo){
 	if(isset($tables[$tname."_revs"])){
