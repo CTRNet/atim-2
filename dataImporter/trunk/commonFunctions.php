@@ -234,7 +234,7 @@ function getValueDomain($domain_name){
 	$query = 'SELECT source FROM structure_value_domains WHERE domain_name="'.$domain_name.'" AND source LIKE "StructurePermissibleValuesCustom::getCustomDropdown(\'%\')"';
 	$result = mysqli_query(Config::$db_connection, $query) or die("reading value domains failed 1");
 	if($row = $result->fetch_assoc()){
-		$control_name = substr($row['source'], 54, strlen($row['source'] -2));
+		$control_name = substr($row['source'], 53, (strlen($row['source']) -55));
 		mysqli_free_result($result);
 		$query = "SELECT value
 			FROM structure_permissible_values_customs AS spvc
