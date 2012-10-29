@@ -171,8 +171,12 @@ function excelDateFix(Model $m){
 			if(strlen($m->values[$date_field]) != 10){
 				echo "WARNING ON DATE [",$old_val,"] month[".strtolower($matches[1][0][0])."](B) on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
 			}
-			if($accuracy_field != null && MyTime::$uncertainty_level[$m->values[$accuracy_field]] < MyTime::$uncertainty_level['m']){
-				$m->values[$accuracy_field] = 'm';
+			if($accuracy_field != null) {
+				if(!isset(MyTime::$uncertainty_level[$m->values[$accuracy_field]])) {
+					echo "WARNING ON DATE ACCURACY: the accuracy looks like to be missing on sheet [".$m->file."] at line [".$m->line."] on field [".$date_field."]".Config::$line_break_tag;
+				} else if(MyTime::$uncertainty_level[$m->values[$accuracy_field]] <	MyTime::$uncertainty_level['m']){
+					$m->values[$accuracy_field] = 'm';
+				}
 			}
 		}else if(is_numeric($m->values[$date_field])){
 			if($m->values[$date_field] < 2500){
