@@ -336,6 +336,7 @@ function formatQueryForRevs($sql_statement){
 function isDbNumericType($field_type){
 	return strpos($field_type, "int(") === 0
 		|| strpos($field_type, "float") === 0
+		|| strpos($field_type, "decimal(") === 0
 		|| strpos($field_type, "tinyint(") === 0
 		|| strpos($field_type, "smallint(") === 0
 		|| strpos($field_type, "mediumint(") === 0
