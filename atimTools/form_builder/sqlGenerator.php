@@ -23,7 +23,7 @@ foreach($OVERRIDES_NAMES as $k => $v){
 	$tmp[] = $k;
 }
 global $STRUCTURE_FORMATS_FIELDS;
-$STRUCTURE_FORMATS_FIELDS = array_merge(array("display_column", "display_order", "language_heading"), $tmp, $STRUCTURE_FORMATS_FLAGS);
+$STRUCTURE_FORMATS_FIELDS = array_merge(array("display_column", "display_order", "language_heading", "margin"), $tmp, $STRUCTURE_FORMATS_FLAGS);
 
 if(isset($_GET['json'])){
 	$json = $_GET['json'];

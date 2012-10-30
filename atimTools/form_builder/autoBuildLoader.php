@@ -35,7 +35,7 @@ if($json->type == 'autoBuildData'){
 			."sfo.flag_batchedit AS sfo_flag_batchedit, sfo.flag_batchedit_readonly AS sfo_flag_batchedit_readonly, "
 			."sfo.flag_index AS sfo_flag_index, sfo.flag_detail AS sfo_flag_detail, sfo.flag_summary AS sfo_flag_summary, "
 			."sfo.flag_float AS sfo_flag_float, "
-			."svd.domain_name AS svd_domain_name, sfi.flag_confidential AS sfi_flag_confidential " 
+			."svd.domain_name AS svd_domain_name, sfi.flag_confidential AS sfi_flag_confidential , sfo.margin AS margin "
 		."FROM structures AS s "
 		."INNER JOIN structure_formats AS sfo ON s.id=sfo.structure_id "
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
@@ -77,6 +77,7 @@ if($json->type == 'autoBuildData'){
 			<td><?php printf($checbox, $row['sfo_flag_detail'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php printf($checbox, $row['sfo_flag_summary'] ? ' checked="checked"' : ""); ?></td>
 			<td><?php printf($checbox, $row['sfo_flag_float'] ? ' checked="checked"' : ""); ?></td>
+			<td><?php echo($row['margin']); ?></td>
 			<td><?php echo($row['sfi_id']); ?></td>
 			<td><?php echo($row['sfo_id']); ?></td>
 		</tr>
