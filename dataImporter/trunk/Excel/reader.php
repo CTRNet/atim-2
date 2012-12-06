@@ -627,6 +627,7 @@ class Spreadsheet_Excel_Reader
                         }else{
                             $isdate = FALSE;
                             if ($indexCode > 0){
+                            	$formatstr = null;
                                 if (isset($this->formatRecords[$indexCode]))
                                     $formatstr = $this->formatRecords[$indexCode];
                                 //echo '.other.';
