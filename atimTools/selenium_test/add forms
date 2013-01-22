@@ -162,7 +162,7 @@
 	<td></td>
 </tr>
 <tr>
-	<td>typeKeys</td>
+	<td>sendKeys</td>
 	<td>name=data[Participant][cod_icd10_code]</td>
 	<td>c1</td>
 </tr>
