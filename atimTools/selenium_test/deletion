@@ -264,7 +264,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=General - Comorbidity</td>
+	<td>link=Comorbidity - General</td>
 	<td></td>
 </tr>
 <tr>
@@ -334,7 +334,7 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=+</td>
+	<td>css=a.add.icon16</td>
 	<td></td>
 </tr>
 <tr>

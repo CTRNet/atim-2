@@ -179,22 +179,12 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>QR_AQ_1_Demo</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='header']/div/ul[2]/li[3]/ul/li[3]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
 	<td>My Batch Sets</td>
 	<td></td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='header']/div/ul[2]/li[3]/ul/li[4]/a</td>
+	<td>//div[@id='header']/div/ul[2]/li[3]/ul/li[3]/a</td>
 	<td></td>
 </tr>
 <tr>
@@ -215,21 +205,6 @@
 <tr>
 	<td>verifyTextPresent</td>
 	<td>Temporary browsing</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>//div[@id='header']/div/ul[2]/li[3]/a</td>
-	<td></td>
-</tr>
-<tr>
-	<td>clickAndWait</td>
-	<td>css=a[title=&quot;Custom Queries&quot;] &gt; div.row &gt; span.menuLabel.cell</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextPresent</td>
-	<td>All</td>
 	<td></td>
 </tr>
 <tr>
