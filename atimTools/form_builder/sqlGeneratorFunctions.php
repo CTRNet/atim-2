@@ -171,7 +171,14 @@ function getInsertIntoSfi($field){
 function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 	global $OVERRIDES_NAMES;
 	global $STRUCTURE_FORMATS_FLAGS;
-	$query = "((".$structure_id_query."), (".$structure_field['query_id']."), '".$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
+	$query = "((".$structure_id_query."), (".$structure_field['query_id']."), ";//.$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
+	
+	global $STRUCTURE_FORMATS_PRIMARY_FIELDS;
+	foreach($STRUCTURE_FORMATS_PRIMARY_FIELDS as $sfpf){
+	    $rp = new ReflectionProperty($field, $sfpf);
+	    $query .=  "'".$rp->getValue($field)."', ";
+	}
+	
 	//look to override properly
 	foreach($OVERRIDES_NAMES as $override_name => $override_flag){
 		if(!isset($structure_field['data'][$override_name]) || $structure_field['data'][$override_name] == $field->{$override_name}){
