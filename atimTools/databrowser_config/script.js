@@ -53,12 +53,43 @@ function genQueries(){
     $("fieldset div").html(queries);
 }
 
+var render = function(r, n) {
+    var wrapWidth = 15;
+    var set = r.set().push(
+        /* custom objects go here */
+        r.circle(n.point[0], n.point[1], 10)
+            .attr({"fill": "#fff", "stroke-width": 1, r : "9px"}))
+            
+    var pushToLine = function(part, line){
+        set.push(r.text(n.point[0], n.point[1] + 6 + line * 12, part)
+                .attr({"font-size":"12px"}));
+    }
+        var line = 1;
+        var currentLine = ""
+        $(n.label.split(" ")).each(function(i, v){
+            if((currentLine + " " + v).length > wrapWidth){
+                pushToLine(currentLine, line);
+                ++ line;
+                currentLine = "";
+            }else{
+                currentLine += " "
+            }
+            currentLine += v;
+        });
+        pushToLine(currentLine, line);
+        //.push(r.text(n.point[0], n.point[1] + 20, n.label)
+        //      .attr({"font-size":"20px"}));
+    /* custom tooltip attached to the set */
+    return set;
+};
+
+
 function drawGraph(data){
     var width = 800;
     var height = 600;
     g = new Graph();
     $.each(data["names"], function(key, value){
-        g.addNode(key, {label: value});
+        g.addNode(key, {label: value, render: render});
     });
     $.each(data["links"], function(index, value){
         var id = value[0] + "_" + value[1];
