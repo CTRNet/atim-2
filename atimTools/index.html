@@ -10,6 +10,7 @@ body{
 div.main{
 	margin: auto;
 	text-align: center;
+	border: 1px solid;
 }
 ul.menu{
 	list-style-type: none;
@@ -20,7 +21,6 @@ ul.menu{
 	display: inline-block;
 }
 ul.menu li{
-	display: inline-block;
 	margin: -3px;
 	padding: 12px 0 12px 0;
 	background: -moz-linear-gradient(top,  #BBB,  #666);
@@ -35,15 +35,14 @@ ul.menu li:hover{
 	background: -webkit-gradient(linear, left top, left bottom, from(#EEE), to(#3AF));
 }
 ul.menu li:first-child{
-	border-radius: 5px 0 0 5px;
+	border-radius: 5px 5px 0 0;
 }
 ul.menu li:last-child{
-	border-radius: 0 5px 5px 0;
+	border-radius: 0 0 5px 5px;
 }
 ul.menu li div{
 	float: left;
 	position: absolute;
-	top: 43px;
 	color: black;
 	text-shadow: none;
 	border: 2px solid black;
@@ -52,32 +51,37 @@ ul.menu li div{
 	-moz-border-radius: 5px;
 	-webkit-border-radius: 5px;
 	padding: 10px;
-	width: 1011px;
+	width: 600px;
 	text-align: left;
 	white-space: normal;
 	display: none;
+	left: 210px;
 }
 ul.menu li:hover div{
 	display: block;
+	top: 0px;
 }
 
 #box2{
-	left: -160px;
+    top: -40px;
 }
 #box3{
-	left: -302px;
+	top: -80px;
 }
 #box4{
-	left: -446px;
+	top: -120px;
 }
 #box5{
-	left: -556px;
+	top: -160px;
 }
 #box6{
-	left: -736px;
+	top: -200px;
 }
 #box7{
-	left: -893px;
+	top: -240px;
+}
+#box8{
+    top: -280px;
 }
 .red{
 	color: #F33;
@@ -87,58 +91,71 @@ a{
 	color: #FFF;
 	padding: 12px 10px 12px 10px;
 }
+#container{
+}
+#menu{
+    width: 180px;
+    padding: 5px;
+}
 </style>
 </head>
 <body>
-<div class="main">
-	<h1>ATiM 2 Tools</h1>
-	<ul class="menu">
-		<li><a href="db_validation/">Database Validation</a>
-		<div id="box1">
-			<p>Reads a database, compares base tables with revs tables and gives the difference between those.</p>
-			<p>Gives the list of tables without revs.</p>
- 			<p>Gives the list of non existing tables pointed by *_controls tables.</p>
- 			<p>Gives the list of dates without accuracy.</p>
- 			<p>Gives the list of structures with duplicate fields.</p>
- 			<p>Gives a list of strings without tranlsation.</p>
- 		</div>
-		</li>
-		<li><a href="#">Denominalisation</a>
-			<div id="box2">
-				<p>Clears nominal information found in standard ATiM fields. That is name, date of birth and identifiers.</p>
-				<p class="red">If nominal information exists in other fields (custom fields or in notes) it will not be cleared.</p>
-			</div>
-		</li>
-		<li><a href="#">Version comparer</a>
-			<div id="box3">
-				<p>Makes a 3 way compare between a version X, an upgraded version X + 1 and a custom version Xc and gives potential
-				problems that will be encoutered when upgrading Xc to Xc + 1.</p>
-			</div>
-		</li>
-		<li><a href="form_builder/">Form Builder</a>
-			<div id="box4">
-				<p>Allows to browse existing structures and tables to generate queries in order to build structures</p>
-			</div>
-		</li>
-		<li><a href="inventory_config/">Inventory configuration</a>
-			<div id="box5">
-				<p>Visual representation of inventory hierarchy in ATiM2. Clicking on the nodes disables/enables them. The
-				queries to alter the configuration are generated at the bottom of the page.</p>
-				<p>You can configure specimens, derivatives, aliquots and realiquotings.</p>
-			</div>
-		</li>
-		<li><a href="menu_config/">Menu configuration</a>
-			<div id="box6">
-				<p>Visual representation of menu hierarchy in ATiM2. Clicking on the nodes disables/enables them. The
-				queries to alter the configuration are generated at the bottom of the page.</p>
-			</div>
-		</li>
-		<li><a href="menu_config/">Collection merge</a>
-			<div id="box7">
-				<p>You provide a list of acquisition label from;to and it generates the queries to run.</p>
-			</div>
-		</li>
-	</ul>
+<h1>ATiM 2 Tools</h1>
+<div id="container">
+   <div id="menu">
+		<ul class="menu">
+			<li><a href="db_validation/">Database Validation</a>
+			<div id="box1">
+				<p>Reads a database, compares base tables with revs tables and gives the difference between those.</p>
+				<p>Gives the list of tables without revs.</p>
+	 			<p>Gives the list of non existing tables pointed by *_controls tables.</p>
+	 			<p>Gives the list of dates without accuracy.</p>
+	 			<p>Gives the list of structures with duplicate fields.</p>
+	 			<p>Gives a list of strings without tranlsation.</p>
+	 		</div>
+			</li>
+			<li><a href="#">Denominalisation</a>
+				<div id="box2">
+					<p>Clears nominal information found in standard ATiM fields. That is name, date of birth and identifiers.</p>
+					<p class="red">If nominal information exists in other fields (custom fields or in notes) it will not be cleared.</p>
+				</div>
+			</li>
+			<li><a href="#">Version comparer</a>
+				<div id="box3">
+					<p>Makes a 3 way compare between a version X, an upgraded version X + 1 and a custom version Xc and gives potential
+					problems that will be encoutered when upgrading Xc to Xc + 1.</p>
+				</div>
+			</li>
+			<li><a href="form_builder/">Form Builder</a>
+				<div id="box4">
+					<p>Allows to browse existing structures and tables to generate queries in order to build structures</p>
+				</div>
+			</li>
+			<li><a href="inventory_config/">Inventory configuration</a>
+				<div id="box5">
+					<p>Visual representation of inventory hierarchy in ATiM2. Clicking on the nodes disables/enables them. The
+					queries to alter the configuration are generated at the bottom of the page.</p>
+					<p>You can configure specimens, derivatives, aliquots and realiquotings.</p>
+				</div>
+			</li>
+			<li><a href="menu_config/">Menu configuration</a>
+				<div id="box6">
+					<p>Visual representation of menu hierarchy in ATiM2. Clicking on the nodes disables/enables them. The
+					queries to alter the configuration are generated at the bottom of the page.</p>
+				</div>
+			</li>
+			<li><a href="menu_config/">Collection merge</a>
+				<div id="box7">
+					<p>You provide a list of acquisition label from;to and it generates the queries to run.</p>
+				</div>
+			</li>
+			<li><a href="databrowser_config/">Databrowser configuration</a>
+                <div id="box8">
+                    <p>The name says it all.</p>
+                </div>
+            </li>
+		</ul>
+	</div>
 </div>
 </body>
 </html>
