@@ -7,17 +7,6 @@
  */
 require_once("../common/myFunctions.php");
 
-$tables_wo_revs = array("acos", "aliquot_controls", "aros", "aros_acos", "atim_information", "coding_icd10", "coding_icdo_3", "configs", 
-	"consent_controls", "diagnosis_controls", "event_controls", "groups", "i18n", "key_increments", "langs", "menus", "missing_translations",
-	"pages", "parent_to_derivative_sample_controls", "sample_to_aliquot_controls", 
-	"misc_identifier_controls", "protocol_controls", "realiquoting_controls", "sample_controls", "sop_controls" ,"storage_controls", 
-	"structures", "structure_fields", "structure_formats", "structure_permissible_values", "structure_permissible_values_custom_controls", 
-	"structure_validations", "structure_value_domains", "structure_value_domains_permissible_values", "tx_controls", "users", "user_logs",
-	"versions", "view_aliquots", "view_collections", "view_samples", "datamart_browsing_controls", 
-	"aliquot_review_controls", "coding_icd_o_3_topography", "datamart_adhoc", "specimen_review_controls",
-	"user_login_attempts", "view_structures");
-
-$tables_wo_revs = array_flip($tables_wo_revs);
 ?>
 <!DOCTYPE html>
 <html>
@@ -82,6 +71,9 @@ body{
 	</select>
 </div>
 <?php 
+
+// 1- GET TABLES
+
 $result = $db->query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA='".$_SESSION['db']."' ORDER BY TABLE_NAME") or die($db->error);
 $tables = array();
 while ($row = $result->fetch_assoc()) {
@@ -94,7 +86,77 @@ $result->free();
 $control_tables = array();
 $control_tables_to_ignore = array('datamart_browsing_controls', 'misc_identifier_controls', 'parent_to_derivative_sample_controls', 'realiquoting_controls', 'structure_permissible_values_custom_controls');
 $control_tables_to_ignore = array_flip($control_tables_to_ignore);
-$detail_tables = array();
+$system_tables = array(
+	'acos',
+	'aliquot_controls',
+	'aliquot_review_controls',
+	'announcements',
+	'aros',
+	'aros_acos',
+	'atim_information',
+	'cake_sessions',
+	'coding_icd10_ca',
+	'coding_icd10_who',
+	'coding_icd_o_2_morphology',
+	'coding_icd_o_3_morphology',
+	'coding_icd_o_3_topography',
+	'configs',
+	'consent_controls',
+	'datamart_batch_ids',
+	'datamart_batch_sets',
+	'datamart_browsing_controls',
+	'datamart_browsing_indexes',
+	'datamart_browsing_results',
+	'datamart_reports',
+	'datamart_saved_browsing_indexes',
+	'datamart_saved_browsing_steps',
+	'datamart_structure_functions',
+	'datamart_structures',
+	'diagnosis_controls',
+	'event_controls',
+	'external_links',
+	'groups',
+	'i18n',
+	'key_increments',
+	'lab_book_controls',
+	'langs',
+	'menus',
+	'misc_identifier_controls',
+	'missing_translations',
+	'pages',
+	'parent_to_derivative_sample_controls',
+	'protocol_controls',
+	'protocol_extend_controls',
+	'realiquoting_controls',
+	'sample_controls',
+	'sop_controls',
+	'specimen_review_controls',
+	'storage_controls',
+	'structure_fields',
+	'structure_formats',
+	'structure_permissible_values',
+	'structure_permissible_values_custom_controls',
+	'structure_validations',
+	'structure_value_domains',
+	'structure_value_domains_permissible_values',
+	'structures',
+	'system_vars',
+	'template_nodes',
+	'templates',
+	'treatment_controls',
+	'treatment_extend_controls',
+	'user_login_attempts',
+	'user_logs',
+	'users',
+	'versions',
+	'view_aliquot_uses',
+	'view_aliquots',
+	'view_collections',
+	'view_samples',
+	'view_storage_masters',
+	'view_structure_formats_simplified');
+$master_tables_from_controls = array();
+$detail_tables_from_controls = array();
 foreach($tables as $table => $foo){
 	if(array_key_exists($table, $control_tables_to_ignore)){
 		continue;
@@ -102,105 +164,295 @@ foreach($tables as $table => $foo){
 	$pos = strpos($table, "_controls");
 	if($pos !== false && $pos == strlen($table) - 9){
 		$control_tables[] = $table;
+		$master_tables_from_controls[str_replace('_controls', '_masters', $table)] = str_replace('_controls', '_control_id', $table);
 		$result = $db->query("SELECT detail_tablename FROM ".$table." GROUP BY detail_tablename") or die($table." ".$db->error);
 		while($row = $result->fetch_row()){
-			$detail_tables[] = $row[0];
+			$detail_tables_from_controls[$row[0]] = str_replace('_controls', '_master_id', $table);;
 		}
+		$result->free();
 	}
 }
-$detail_tables = array_flip($detail_tables);
+$detail_tables_from_controls['specimen_details'] = 'sample_master_id';
+$detail_tables_from_controls['derivative_details'] = 'sample_master_id';
+$detail_tables_from_controls['ad_bags'] = 'aliquot_master_id';
+$detail_tables_from_controls['ed_all_adverse_events_adverse_events'] = 'event_master_id';
+$detail_tables_from_controls['ed_all_protocol_followups'] = 'event_master_id';
+$detail_tables_from_controls['std_customs'] = 'storage_master_id';
 
-$detail_tables['specimen_details'] = '-1';
-$detail_tables['derivative_details'] = '-1';
-$detail_tables['ad_bags'] = '-1';
-$detail_tables['ed_all_adverse_events_adverse_events'] = '-1';
-$detail_tables['ed_all_protocol_followups'] = '-1';
+// 2- Specific Tables Fields Properties
 
-echo "<h1>Corrections to do</h1>\n";
-$correction = false;
-$main_table_req_fields = array('created', 'created_by', 'modified', 'modified_by', 'deleted');
-$detail_table_req_fields = array();
-$revs_table_ignore_fields = array_flip(array('created', 'created_by', 'modified', 'deleted'));
+$all_system_fields = array(
+		'id' => array(
+			'properties' => array(
+				'Type' => "int(11)",
+				'Null' => "NO",
+				'Key' => "PRI",
+				'Default' => "",
+				'Extra' => "auto_increment"),
+			'sql' => "id int(11) NOT NULL AUTO_INCREMENT"),
+		'created' => array(
+			'properties' => array(
+				'Type' => "datetime",
+				'Null' => "YES",
+				'Key' => "",
+				'Default' => "",
+				'Extra' => ""),
+			'sql' => "created datetime DEFAULT NULL"),
+		'created_by' => array(
+			'properties' => array(
+				'Type' => "int(10) unsigned",
+				'Null' => "NO",
+				'Key' => "",
+				'Default' => "",
+				'Extra' => ""),
+			'sql' => "created_by int(10) unsigned NOT NULL"),
+		'modified' => array(
+			'properties' => array(
+				'Type' => "datetime",
+				'Null' => "YES",
+				'Key' => "",
+				'Default' => "",
+				'Extra' => ""),
+			'sql' => "modified datetime DEFAULT NULL"),
+		'modified_by' => array(
+			'properties' => array(
+				'Type' => "int(10) unsigned",
+				'Null' => "NO",
+				'Key' => "",
+				'Default' => "",
+				'Extra' => ""),
+			'sql' => "modified_by int(10) unsigned NOT NULL"),
+		'deleted' => array(
+			'properties' => array(
+				'Type' => "tinyint(3) unsigned",
+				'Null' => "NO",
+				'Key' => "",
+				'Default' => "0",
+				'Extra' => ""),
+			'sql' => "deleted tinyint(3) unsigned NOT NULL DEFAULT '0'"),
+		'version_id' => array(
+			'properties' => array(
+				'Type' => "int(11)",
+				'Null' => "NO",
+				'Key' => "PRI",
+				'Default' => "",
+				'Extra' => "auto_increment"),
+			'sql' => "version_id int(11) NOT NULL AUTO_INCREMENT"),
+		'version_created' => array(
+			'properties' => array(
+				'Type' => "datetime",
+				'Null' => "NO",
+				'Key' => "",
+				'Default' => "",
+				'Extra' => ""),
+			'sql' => "version_created datetime NOT NULL"));
+$main_table_required_system_fields = array('id', 'created', 'created_by', 'modified', 'modified_by', 'deleted'); 	// _control_id field will be added dynamically (if required)
+$main_revs_table_required_system_fields = array('id', 'modified_by', 'version_id', 'version_created');				// _control_id field will be added dynamically (if required)
+$detail_table_required_system_fields = array();																		// _master_id field will be added dynamically
+$detail_revs_table_required_system_fields = array('version_id', 'version_created');									// _master_id field will be added dynamically
+
+// 3- Track Errors
+
+$errors = array('Main Tables' => array(), 'Revs Tables' => array());
 foreach($tables as $tname => $foo){
-	if(isset($tables[$tname."_revs"])){
-		$result = $db->query("DESCRIBE ".$tname) or die($db->error);
-		$primary_table = array();
-		while ($row = $result->fetch_assoc()) {
-			$primary_table[$row['Field']]['Type'] = $row['Type'];
-			$primary_table[$row['Field']]['Null'] = $row['Null'];
-			$primary_table[$row['Field']]['Key'] = $row['Key'];
-			$primary_table[$row['Field']]['Default'] = $row['Default'];
-			$primary_table[$row['Field']]['Extra'] = $row['Extra'];
-		}
-		$primary_table['version_id']['Type'] = "int(11)";
-		$primary_table['version_id']['Null'] = "NO";
-		$primary_table['version_id']['Key'] = "";
-		$primary_table['version_id']['Default'] = "";
-		$primary_table['version_id']['Extra'] = "auto_increment";
-		$primary_table['version_created']['Type'] = "datetime";
-		$primary_table['version_created']['Null'] = "NO";
-		$primary_table['version_created']['Key'] = "";
-		$primary_table['version_created']['Default'] = "";
-		$primary_table['version_created']['Extra'] = "";
-		$result->free();
-		
-		$loop_on = array_key_exists($tname, $detail_tables) ? $detail_table_req_fields : $main_table_req_fields;
-		foreach($loop_on as $main_table_req_field){
-			if(!array_key_exists($main_table_req_field, $primary_table)){
-				$correction = true;
-				echo("+ ".$tname.".".$main_table_req_field."<br/>\n");
-			}
-		}
-
-		$result = $db->query("DESCRIBE ".$tname."_revs") or die($db->error);
-		while ($row = $result->fetch_assoc()) {
-			if(!isset($primary_table[$row['Field']])){
-				if(in_array($row['Field'], $main_table_req_fields)){
-					continue;
-				}
-				echo("- ".$tname."_revs.".$row['Field']."<br/>");
-				$correction = true;
-			}elseif ($primary_table[$row['Field']]['Type'] != $row['Type']
-				|| $primary_table[$row['Field']]['Null'] != $row['Null']
-//				|| $primary_table[$row['Field']]['Key'] != $row['Key']
-				|| $primary_table[$row['Field']]['Default'] != $row['Default']
-//				|| $primary_table[$row['Field']]['Extra'] != $row['Extra']
-			){
-					$correction = true;
-					echo("c ".$tname.".".$row['Field']."<br/>\n");
-			}
-			unset($primary_table[$row['Field']]);
-		}
-
-		foreach($primary_table as $field => $foo){
-			if(!array_key_exists($field, $revs_table_ignore_fields)){
-				$correction = true;
-				echo "+ ".$tname."_revs.".$field."<br/>\n";
-			}
-		}
-		
-		$result->free();
+	if(in_array($tname, $system_tables)) {
 		unset($tables[$tname]);
-		unset($tables[$tname."_revs"]);
-	}
-}
-if(!$correction){
-	echo("None.\n");
-}
-
-echo("<h1>Tables without revs</h1>\n");
-if(count($tables) > 0){
-	echo("<ol>\n");
-	foreach($tables as $tname => $foo){
-		if(!isset($tables_wo_revs[$tname])){
-			echo("<li>".$tname."</li>\n");
-		}else{
-			unset($tables_wo_revs[$tname]);
+	} else {
+		if(!preg_match('/_revs$/', $tname)) {
+			unset($tables[$tname]);			
+			//New Table To Review
+			$all_system_fields_working_array = $all_system_fields;
+			$table_required_system_fields_working_array = $main_table_required_system_fields;
+			$revs_table_required_system_fields_working_array = $main_revs_table_required_system_fields;
+			$master_control_foreign_key = null;
+			$detail_table_foreign_key = null;
+			if(array_key_exists($tname, $master_tables_from_controls)) {
+				$master_control_foreign_key = $master_tables_from_controls[$tname];
+				$control_table_name = str_replace('_control_id', '_controls', $master_control_foreign_key);
+				$all_system_fields_working_array[$master_control_foreign_key] = array(
+					'properties' => array(
+						'Type' => "int(11)",
+						'Null' => "NO",
+						'Key' => "MUL",
+						'Default' => "0",
+						'Extra' => ""),
+					'sql' => "$master_control_foreign_key int(11) NOT NULL DEFAULT '0'",
+					'sql_fk' => "_$control_table_name FOREIGN KEY ($master_control_foreign_key) REFERENCES $control_table_name (id);");
+				$table_required_system_fields_working_array = $main_table_required_system_fields;
+				$table_required_system_fields_working_array[] = $master_control_foreign_key;
+				$revs_table_required_system_fields_working_array = $main_revs_table_required_system_fields;
+				$revs_table_required_system_fields_working_array[] = $master_control_foreign_key;
+				if(array_key_exists($tname, $detail_tables_from_controls)) die('ERR_001');
+			} else if(array_key_exists($tname, $detail_tables_from_controls)) {
+				$detail_table_foreign_key = $detail_tables_from_controls[$tname];
+				$master_table_name = str_replace('_master_id', '_masters', $detail_table_foreign_key);
+				$all_system_fields_working_array[$detail_table_foreign_key] = array(
+						'properties' => array(
+							'Type' => "int(11)",
+							'Null' => "NO",
+							'Key' => "MUL",
+							'Default' => "",
+							'Extra' => ""),
+						'sql' => "$detail_table_foreign_key int(11) NOT NULL",
+						'sql_fk' => "_$master_table_name FOREIGN KEY ($detail_table_foreign_key) REFERENCES $master_table_name (id);");
+				$table_required_system_fields_working_array = $detail_table_required_system_fields;
+				$table_required_system_fields_working_array[] = $detail_table_foreign_key;	
+				$revs_table_required_system_fields_working_array = $detail_revs_table_required_system_fields;	
+				$revs_table_required_system_fields_working_array[] = $detail_table_foreign_key;		
+			}
+			$table_required_system_fields_working_array = array_flip($table_required_system_fields_working_array);
+			$revs_table_required_system_fields_working_array = array_flip($revs_table_required_system_fields_working_array);
+			//Get Table Properties
+			$result = $db->query("DESCRIBE ".$tname) or die($db->error);
+			$specific_table_fields = array();	
+			while ($row = $result->fetch_assoc()) {		
+				$field_name = $row['Field'];
+				$field_properties = array('Type' => $row['Type'],'Null' => $row['Null'],'Key' => $row['Key'],'Default' => $row['Default'],'Extra' => $row['Extra']);	
+				if(array_key_exists($field_name, $all_system_fields_working_array)) {
+					//System Field
+					if(!array_key_exists($field_name, $table_required_system_fields_working_array)) {
+						$errors['Main Tables']['Un-required system field'][$tname]["Delete field [$field_name]"] = "ALTER TABLE $tname DROP COLUMN $field_name;";
+					} else if(array_diff_assoc($field_properties, $all_system_fields_working_array[$field_name]['properties']) || array_diff_assoc($all_system_fields_working_array[$field_name]['properties'], $field_properties)) {					
+						$msg = array();
+						$sqls = array("ALTER TABLE $tname MODIFY ".$all_system_fields_working_array[$field_name]['sql'].";");
+						foreach($all_system_fields_working_array[$field_name]['properties'] as $field_key => $expected_field_val) {
+							if($field_properties[$field_key] != $expected_field_val) {
+								$msg[] = "Change current '$field_key' value [".$field_properties[$field_key]."] to [$expected_field_val]";
+								if($field_key == 'Key' && $field_properties[$field_key] == 'MUL') $msg[] = 'Drop foreign key if exits';
+								if($field_key == 'Key') {
+									if($field_properties[$field_key] == 'MUL') {
+										$msg[] = 'Drop foreign key if exits';
+										$sqls[] = "ALTER TABLE $tname DROP CONSTRAINT/DROP INDEX ... ON ***TODO***;";
+									}
+									if($field_properties[$field_key] == 'PRI') {
+										$sqls[] = "ALTER TABLE $tname DROP PRIMARY KEY;";
+										$msg[] = 'Drop primary key constraints if exits';
+									}
+									if($expected_field_val == 'MUL') {
+										$ref_table_name = str_replace(array('_control_id', '_master_id'), array('_controls', '_masters'), $field_name);
+										$sqls[] = "ALTER TABLE $tname ADD CONSTRAINT FK_".$tname."_".$ref_table_name." FOREIGN KEY ($field_name) REFERENCES $ref_table_name (id);";
+										$msg[] = 'Create foreign key if required';
+									}
+								}
+							}
+						}
+						$msg = empty($msg)? '' : implode(' + ', $msg);
+						$errors['Main Tables']["Error on system field properties"][$tname][$field_name .': '. $msg] = implode("<br>", $sqls);
+						unset($table_required_system_fields_working_array[$field_name]);
+					} else {
+						unset($table_required_system_fields_working_array[$field_name]);
+					}
+				} else {
+					//Specific Field
+					$specific_table_fields[$field_name] = $field_properties;
+				}
+			}	
+			$result->free();
+			foreach($table_required_system_fields_working_array as $missing_system_field => $foo_2) {
+				$errors['Main Tables']['Missing system field'][$tname]["Create field $missing_system_field"] = "ALTER TABLE $tname ADD COLUMN ".$all_system_fields_working_array[$missing_system_field]['sql'].";";
+				if(isset($all_system_fields_working_array[$missing_system_field]['sql_fk'])) $errors['Error on system field - to modify'][$tname][$missing_system_field] .= " ALTER TABLE $tname ADD CONSTRAINT FK_".$tname.$all_system_fields_working_array[$missing_system_field]['sql_fk'].";";	
+			}
+			if(!isset($tables[$tname."_revs"])){
+				$errors['Revs Tables']['Missing revs table'][$tname."_revs"]['Create table '.$tname."_revs"] = 'CREATE TABLE '.$tname."_revs ... *** TODO ***;";
+			} else {
+				//Get Revs Table Properties
+				unset($tables[$tname."_revs"]);
+				$tname = $tname."_revs";
+				$all_system_fields_working_array['id']['properties']['Key'] = "";
+				$all_system_fields_working_array['id']['properties']['Extra'] = "";
+				$all_system_fields_working_array['id']['sql'] = "id int(11) NOT NULL";
+				if($master_control_foreign_key) $all_system_fields_working_array[$master_control_foreign_key]['properties']['Key'] = "";
+				if($detail_table_foreign_key) $all_system_fields_working_array[$detail_table_foreign_key]['properties']['Key'] = "";
+				$result = $db->query("DESCRIBE ".$tname) or die($db->error);
+				while ($row = $result->fetch_assoc()) {
+					$field_name = $row['Field'];				
+					$field_properties = array('Type' => $row['Type'],'Null' => $row['Null'],'Key' => $row['Key'],'Default' => $row['Default'],'Extra' => $row['Extra']);
+					if(array_key_exists($field_name, $all_system_fields_working_array)) {
+						//System Field
+						if(!array_key_exists($field_name, $revs_table_required_system_fields_working_array)) {
+							$errors['Revs Tables']['Un-required system field'][$tname]["Delete field [$field_name]"] = "ALTER TABLE $tname DROP COLUMN $field_name;";
+						} else {
+							if($field_properties['Type'] != $all_system_fields_working_array[$field_name]['properties']['Type']) {
+								$errors['Revs Tables']["Error on system field property"][$tname][$field_name .': '. "Change field 'Type' value [".$field_properties['Type']."] to [".$all_system_fields_working_array[$field_name]['properties']['Type']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}
+							if($field_properties['Null'] != $all_system_fields_working_array[$field_name]['properties']['Null']) {
+								$errors['Revs Tables']["Warning on system field property"][$tname][$field_name .': '. "Change field 'Null' value [".$field_properties['Null']."] to [".$all_system_fields_working_array[$field_name]['properties']['Null']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}
+							if($field_name != 'version_id') {
+								if($field_properties['Key'] == 'PRI') {
+									$errors['Revs Tables']["Error on system field property"][$tname][$field_name .': '. "Delete field 'Key' value [".$field_properties['Key']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+								} else if($field_properties['Key']) {
+									$errors['Revs Tables']["Message on system field property"][$tname][$field_name .': '. "Field 'Key' value [".$field_properties['Key']."] is not required"] = "ALTER TABLE $tname DROP CONSTRAINT/DROP INDEX ... ON ***TODO***;;";
+								}
+							} else {
+								if($field_properties['Key'] != 'PRI') {
+									$errors['Revs Tables']["Error on system field property"][$tname][$field_name .': '. "Add field 'Key' value [PRI]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+								}
+							}
+							if($field_properties['Default'] != $all_system_fields_working_array[$field_name]['properties']['Default']) {
+								$errors['Revs Tables']["Warning on system field property"][$tname][$field_name .': '. "Change field 'Default' value [".$field_properties['Default']."] to [".$all_system_fields_working_array[$field_name]['properties']['Default']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}
+							if($field_properties['Extra'] != $all_system_fields_working_array[$field_name]['properties']['Extra']) {
+								$errors['Revs Tables']["Error on system field property"][$tname][$field_name .': '. "Change field 'Default' value [".$field_properties['Extra']."] to [".$all_system_fields_working_array[$field_name]['properties']['Extra']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}
+							unset($revs_table_required_system_fields_working_array[$field_name]);
+						}
+					} else {
+						if(!isset($specific_table_fields[$field_name])) {
+							$errors['Revs Tables']['Field not existing in main table'][$tname]["Delete field [$field_name]"] = "ALTER TABLE $tname DROP COLUMN $field_name;";
+						} else {
+							if($field_properties['Type'] != $specific_table_fields[$field_name]['Type']) {
+								$errors['Revs Tables']["Error on table field property"][$tname][$field_name .': '. "Change field 'Type' value [".$field_properties['Type']."] to [".$specific_table_fields[$field_name]['Type']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}
+							if($field_properties['Null'] != $specific_table_fields[$field_name]['Null']) {
+								$errors['Revs Tables']["Warning on table field property"][$tname][$field_name .': '. "Change field 'Null' value [".$field_properties['Null']."] to [".$specific_table_fields[$field_name]['Null']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}								
+							if($field_properties['Key'] == 'PRI') {
+								$errors['Revs Tables']["Error on table field property"][$tname][$field_name .': '. "Delete field 'Key' value [".$field_properties['Key']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							} else if($field_properties['Key']) {
+								$errors['Revs Tables']["Message on table field property"][$tname][$field_name .': '. "Field 'Key' value [".$field_properties['Key']."] is not required"] = "ALTER TABLE $tname DROP CONSTRAINT/DROP INDEX ... ON ***TODO***;;";
+							}							
+							if($field_properties['Default'] != $specific_table_fields[$field_name]['Default']) {
+								$errors['Revs Tables']["Warning on table field property"][$tname][$field_name .': '. "Change field 'Default' value [".$field_properties['Default']."] to [".$specific_table_fields[$field_name]['Default']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}	
+							if($field_properties['Extra']) {
+								$errors['Revs Tables']["Error on table field property"][$tname][$field_name .': '. "Delete field 'Extra' value [".$field_properties['Extra']."]"] = "ALTER TABLE $tname MODIFY $field_name ... *** TODO ***;";
+							}
+							unset($specific_table_fields[$field_name]);
+						}
+					}
+				}
+				$result->free();
+				foreach($specific_table_fields as $missing_field => $foo_2) {
+					$errors['Revs Tables']['Missing main table field'][$tname]["Create field [$missing_field]"] = "ALTER TABLE $tname ADD COLUMN $missing_field ... *** TODO ***;";
+				}				
+				foreach($revs_table_required_system_fields_working_array as $missing_system_field => $foo_2) {
+					$errors['Revs Tables']['Missing system field'][$tname]["Create field [$missing_system_field]"] = "ALTER TABLE $tname ADD COLUMN ".$all_system_fields_working_array[$missing_system_field]['sql'].";";
+				}			
+			}
 		}
 	}
-	echo("</ol>\n");
-}else{
-	echo("None.\n");
+}
+foreach($tables as $alone_revs_table => $foo_3) $errors['Revs Tables']['Unlinked Revs table']["Delete revs table [$alone_revs_table]"]['-'] = "DROP TABLE $alone_revs_table;";
+// Display Errors
+foreach($errors as $tables_type => $errors_list) {
+	echo "<h1>Corrections to do on $tables_type</h1>\n";
+	if($errors_list) {
+		foreach($errors_list as $errors_title => $tables_precisions_and_sqls) {
+			echo "<h2>$errors_title</h2>\n";
+			$all_sqls_msg = '';
+			foreach($tables_precisions_and_sqls as $tables => $precisions_and_sqls) {
+				echo "<b>table $tables</b><br/>\n";
+				foreach($precisions_and_sqls as $precisions => $sql) {
+					echo " - $precisions<br/>\n";
+					$all_sqls_msg .= "$sql<br/>\n";
+				}
+			}
+			echo "<br/>\n$all_sqls_msg</i>";
+		}	
+	} else {
+		echo "None<br/>\n";
+	}
 }
 
 ?>
@@ -335,10 +587,10 @@ $result->free();
 
 $grouped_forms = array();
 foreach($control_tables as $control_table){
-	$query = "SELECT form_alias FROM ".$control_table;
+	$query = "SELECT detail_form_alias FROM ".$control_table;
 	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
 	while($row = $result->fetch_assoc()){
-		$grouped_forms[] = $row['form_alias'];
+		$grouped_forms[] = $row['detail_form_alias'];
 	}
 	$result->free();
 }
