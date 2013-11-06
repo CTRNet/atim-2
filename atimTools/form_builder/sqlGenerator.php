@@ -22,8 +22,10 @@ foreach($OVERRIDES_NAMES as $k => $v){
 	$tmp[] = $v;
 	$tmp[] = $k;
 }
+global $STRUCTURE_FORMATS_PRIMARY_FIELDS;
+$STRUCTURE_FORMATS_PRIMARY_FIELDS = array("display_column", "display_order", "language_heading", "margin");
 global $STRUCTURE_FORMATS_FIELDS;
-$STRUCTURE_FORMATS_FIELDS = array_merge(array("display_column", "display_order", "language_heading", "margin"), $tmp, $STRUCTURE_FORMATS_FLAGS);
+$STRUCTURE_FORMATS_FIELDS = array_merge($STRUCTURE_FORMATS_PRIMARY_FIELDS, $tmp, $STRUCTURE_FORMATS_FLAGS);
 
 if(isset($_GET['json'])){
 	$json = $_GET['json'];
