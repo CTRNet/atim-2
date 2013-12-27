@@ -278,6 +278,16 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForText</td>
+	<td>//div[@id='wrapper']/div/div/table/tbody/tr/td/table/tbody/tr/td[2]</td>
+	<td>Comorbidity - General</td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
+	<td></td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
 	<td>link=Edit</td>
 	<td></td>
@@ -334,12 +344,12 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>css=a.add.icon16</td>
+	<td>css=a.reveal.icon16</td>
 	<td></td>
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>General - Comorbidity </td>
+	<td>Comorbidity - General</td>
 	<td></td>
 </tr>
 <tr>
@@ -364,7 +374,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=General - Chemotherapy</td>
+	<td>link=Chemotherapy - General</td>
 	<td></td>
 </tr>
 <tr>
@@ -434,7 +444,7 @@
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>General - Chemotherapy</td>
+	<td>Chemotherapy - General</td>
 	<td></td>
 </tr>
 <tr>
@@ -454,7 +464,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=General - Radiation</td>
+	<td>link=Radiation - General</td>
 	<td></td>
 </tr>
 <tr>
@@ -474,7 +484,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=General - Surgery</td>
+	<td>link=Surgery - General</td>
 	<td></td>
 </tr>
 <tr>
@@ -505,6 +515,11 @@
 <tr>
 	<td>clickAndWait</td>
 	<td>css=input.submit</td>
+	<td></td>
+</tr>
+<tr>
+	<td>clickAndWait</td>
+	<td>css=a.detail.icon16</td>
 	<td></td>
 </tr>
 <tr>
@@ -774,7 +789,7 @@
 </tr>
 <tr>
 	<td>click</td>
-	<td>link=Delete</td>
+	<td>link=Delete (Link)</td>
 	<td></td>
 </tr>
 <tr>

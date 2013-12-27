@@ -40,7 +40,7 @@
 <tr>
 	<td>select</td>
 	<td>name=data[Collection][bank_id]</td>
-	<td>label=Ovary Bank</td>
+	<td>label=Breast</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -75,7 +75,7 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Unlinked participant collections (for all banks): 2. Click here to see them. </td>
+	<td>Unlinked participant collections (for all banks): 5. Click here to see them. </td>
 	<td></td>
 </tr>
 <!--Test 2 - testing search page-->
@@ -86,7 +86,7 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>1-2 of 2</td>
+	<td>1-5 of 5</td>
 	<td></td>
 </tr>
 <tr>
@@ -102,13 +102,13 @@
 <!--altering user group to test group based filter-->
 <tr>
 	<td>open</td>
-	<td>Administrate/Groups/edit/3</td>
+	<td>Administrate/Groups/edit/2</td>
 	<td></td>
 </tr>
 <tr>
 	<td>select</td>
 	<td>name=data[Group][bank_id]</td>
-	<td>label=Ovary Bank</td>
+	<td>label=Breast</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -123,12 +123,12 @@
 <tr>
 	<td>type</td>
 	<td>name=data[User][username]</td>
-	<td>user</td>
+	<td>manager</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>name=data[User][password]</td>
-	<td>user</td>
+	<td>manager</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -138,7 +138,7 @@
 <!--Test 3 - go to menu page to see if the warning is present-->
 <tr>
 	<td>verifyTextPresent</td>
-	<td>Unlinked participant collections (for your bank): 1. Click here to see them. </td>
+	<td>Unlinked participant collections (for your bank): 2. Click here to see them. </td>
 	<td></td>
 </tr>
 <!--Test 4 - testing search page-->
@@ -149,7 +149,7 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>1-1 of 1</td>
+	<td>1-2 of 2</td>
 	<td></td>
 </tr>
 <tr>
@@ -190,7 +190,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[3]/td/a</td>
+	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[2]/td/a</td>
 	<td></td>
 </tr>
 <tr>

@@ -74,22 +74,22 @@
 <!--Test 1 - full date-->
 <tr>
 	<td>verifyTextPresent</td>
-	<td>2012 Apr 01 </td>
+	<td>Apr 01 2012</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>2012 Jan 01</td>
+	<td>Jan 01 2012</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>2012 Mar 20 </td>
+	<td>Mar 20 2012</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>78 Days</td>
+	<td>79 Days</td>
 	<td></td>
 </tr>
 <tr>
@@ -145,12 +145,12 @@
 <!--Test 2 - Day accuracy-->
 <tr>
 	<td>verifyTextPresent</td>
-	<td>2012 Apr</td>
+	<td>Apr 2012</td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>2012 Apr 1</td>
+	<td>Apr 01 2012</td>
 	<td></td>
 </tr>
 <!--Test 3 - Month accuracy-->
@@ -161,7 +161,7 @@
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>2012 Jan 1</td>
+	<td>Jan 01 2012</td>
 	<td></td>
 </tr>
 <!--Test 4 - Year accuracy-->
@@ -172,7 +172,7 @@
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>2011 Jan 1</td>
+	<td>Jan 01 2012</td>
 	<td></td>
 </tr>
 <tr>
@@ -205,12 +205,12 @@
 <tr>
 	<td>type</td>
 	<td>name=data[Collection][collection_datetime][month]</td>
-	<td>1</td>
+	<td>01</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>name=data[Collection][collection_datetime][day]</td>
-	<td>1</td>
+	<td>01</td>
 </tr>
 <tr>
 	<td>type</td>
@@ -229,12 +229,7 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>2012 Jan 01</td>
-	<td></td>
-</tr>
-<tr>
-	<td>verifyTextNotPresent</td>
-	<td>2012 Jan 01 0</td>
+	<td>Jan 01 2012</td>
 	<td></td>
 </tr>
 <!--Test 6 - Date no time-->
@@ -260,12 +255,12 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>2012 Jan 01 14h </td>
+	<td>Jan 01 2012 14h </td>
 	<td></td>
 </tr>
 <tr>
 	<td>verifyTextNotPresent</td>
-	<td>2012 Jan 01 14h0</td>
+	<td>Jan 01 2012 14h0</td>
 	<td></td>
 </tr>
 <!--Test 7 - Full da-->
@@ -277,7 +272,7 @@
 <tr>
 	<td>type</td>
 	<td>name=data[Collection][collection_datetime][min]</td>
-	<td>5</td>
+	<td>05</td>
 </tr>
 <tr>
 	<td>click</td>
@@ -291,7 +286,7 @@
 </tr>
 <tr>
 	<td>verifyTextPresent</td>
-	<td>2012 Jan 01 14:05 </td>
+	<td>Jan 01 2012 14:05 </td>
 	<td></td>
 </tr>
 <!--Test 8 - Datetime no hour-->
