@@ -132,13 +132,7 @@
 	<td>link=Acquisition Label</td>
 	<td></td>
 </tr>
-<!--Test 3-->
-<tr>
-	<td>waitForTextPresent</td>
-	<td>TT.894</td>
-	<td></td>
-</tr>
-<!--Test 4 start-->
+<!--Test 3 start-->
 <tr>
 	<td>click</td>
 	<td>link=5</td>
@@ -166,7 +160,7 @@
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>11-20 of </td>
+	<td>11-15 of </td>
 	<td></td>
 </tr>
 <tr>
@@ -186,10 +180,10 @@
 </tr>
 <tr>
 	<td>waitForTextPresent</td>
-	<td>11-20 of</td>
+	<td>11-15 of</td>
 	<td></td>
 </tr>
-<!--Test 4 end-->
+<!--Test 3 end-->
 <tr>
 	<td>clickAndWait</td>
 	<td>//div[@id='header']/div/ul[2]/li[2]/ul/li[3]/a</td>
@@ -230,7 +224,7 @@
 	<td>Acquisition Label</td>
 	<td></td>
 </tr>
-<!--Test 5-->
+<!--Test 4-->
 <tr>
 	<td>verifyTextNotPresent</td>
 	<td>The results contain various data types, so the details are not displayed.</td>

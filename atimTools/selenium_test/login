@@ -20,12 +20,12 @@
 <tr>
 	<td>type</td>
 	<td>name=data[User][username]</td>
-	<td>disabled_usr_test</td>
+	<td>user</td>
 </tr>
 <tr>
 	<td>type</td>
 	<td>name=data[User][password]</td>
-	<td>whatever</td>
+	<td>user</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>

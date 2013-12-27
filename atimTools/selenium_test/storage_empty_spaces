@@ -33,7 +33,7 @@
 </tr>
 <tr>
 	<td>select</td>
-	<td>name=data[StorageMaster][storage_control_id][]</td>
+	<td>name=data[ViewStorageMaster][storage_control_id][]</td>
 	<td>label=Box81 1A-9I</td>
 </tr>
 <tr>
@@ -53,12 +53,12 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[0][empty_spaces_start]</td>
+	<td>name=data[ViewStorageMaster][empty_spaces_start]</td>
 	<td>75</td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[0][empty_spaces_end]</td>
+	<td>name=data[ViewStorageMaster][empty_spaces_end]</td>
 	<td>76</td>
 </tr>
 <tr>
@@ -69,17 +69,17 @@
 <!--Test 1-->
 <tr>
 	<td>waitForTextPresent</td>
-	<td>1-2 of 2</td>
+	<td>1-1 of 1</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[0][empty_spaces_start]</td>
+	<td>name=data[ViewStorageMaster][empty_spaces_start]</td>
 	<td></td>
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[0][empty_spaces_end]</td>
+	<td>name=data[ViewStorageMaster][empty_spaces_end]</td>
 	<td></td>
 </tr>
 <tr>
@@ -95,7 +95,7 @@
 </tr>
 <tr>
 	<td>assertEval</td>
-	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(78) != -1</td>
+	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(60) != -1</td>
 	<td>true</td>
 </tr>
 <tr>
@@ -111,7 +111,7 @@
 <!--Test 2 - sorting-->
 <tr>
 	<td>assertEval</td>
-	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(75) != -1</td>
+	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(60) != -1</td>
 	<td>true</td>
 </tr>
 <tr>
@@ -126,7 +126,7 @@
 </tr>
 <tr>
 	<td>assertEval</td>
-	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(81) != -1</td>
+	<td>this.browserbot.getUserWindow().jQuery(&quot;table.columns.index tbody tr:first td:nth-child(6)&quot;).html().indexOf(75) != -1</td>
 	<td>true</td>
 </tr>
 </tbody></table>
