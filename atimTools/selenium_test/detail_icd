@@ -19,7 +19,7 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[EventDetail][icd10_code]</td>
+	<td>name=data[0][EventDetail][icd10_code]</td>
 	<td>patate</td>
 </tr>
 <tr>
@@ -35,7 +35,7 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[EventDetail][icd10_code]</td>
+	<td>name=data[0][EventDetail][icd10_code]</td>
 	<td>e669</td>
 </tr>
 <tr>
@@ -96,9 +96,9 @@
 </tr>
 <!--Test 3 - Index view description-->
 <tr>
-	<td>verifyTextPresent</td>
-	<td>e669 - Obesity, unspecified </td>
-	<td></td>
+	<td>waitForText</td>
+	<td>//div[@id='wrapper']/form/table/tbody/tr/td/table/tbody/tr/td[6]</td>
+	<td>e669 - Obesity, unspecified</td>
 </tr>
 <tr>
 	<td>clickAndWait</td>
@@ -194,7 +194,7 @@
 </tr>
 <tr>
 	<td>clickAndWait</td>
-	<td>link=No data matches your search parameters!</td>
+	<td>css=i</td>
 	<td></td>
 </tr>
 <tr>
@@ -250,8 +250,13 @@
 	<td></td>
 </tr>
 <tr>
+	<td>waitForText</td>
+	<td>//div[@id='wrapper']/div/div/table/tbody/tr/td/table/tbody/tr[3]/td[2]</td>
+	<td>Comorbidity - General</td>
+</tr>
+<tr>
 	<td>clickAndWait</td>
-	<td>//div[@id='wrapper']/table/tbody/tr/td/table/tbody/tr[2]/td/a</td>
+	<td>//div[@id='wrapper']/div/div/table/tbody/tr/td/table/tbody/tr[3]/td/a</td>
 	<td></td>
 </tr>
 <tr>

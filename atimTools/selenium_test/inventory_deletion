@@ -89,7 +89,7 @@
 </tr>
 <tr>
 	<td>type</td>
-	<td>name=data[29][0][AliquotMaster][barcode]</td>
+	<td>name=data[16][0][AliquotMaster][barcode]</td>
 	<td>to_delete</td>
 </tr>
 <tr>
