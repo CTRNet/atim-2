@@ -588,7 +588,7 @@ $result->free();
 $grouped_forms = array();
 foreach($control_tables as $control_table){
 	$query = "SELECT detail_form_alias FROM ".$control_table;
-	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error." over table ".$control_table);
 	while($row = $result->fetch_assoc()){
 		$grouped_forms[] = $row['detail_form_alias'];
 	}
