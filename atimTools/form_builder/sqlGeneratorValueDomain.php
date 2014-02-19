@@ -87,7 +87,8 @@ if($to_delete){
 	while($row = $result->fetch_assoc()){
 		echo 'DELETE svdpv FROM structure_value_domains_permissible_values AS svdpv '
 			.'INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id '
-			.'WHERE spv.value="'.$row['value'].'" AND spv.language_alias="'.$row['language_alias'].'";'.NL;
+			.'INNER JOIN structure_value_domains AS svd ON svd.id = svdpv .structure_value_domain_id '	
+			.'WHERE svd.domain_name="'.$_POST['domain_name'].'" AND spv.value="'.$row['value'].'" AND spv.language_alias="'.$row['language_alias'].'";'.NL;
 		$to_delete[] = $row;
 	}
 	$result->free();
@@ -216,7 +217,7 @@ function echoDeleteSpv(array $value){
 	$query = "SELECT * FROM structure_permissible_values WHERE id='".$value['id']."'";
 	$result = $db->query($query) or die("Query failed at line ".__LINE__." ".$query." ".$db->error);
 	if($row = $result->fetch_assoc()){
-		echo 'DELETE FROM structure_permissible_values WHERE value="'.$value['value'].'" AND language_alias="'.$value['language_alias'].'";'.NL;
+		echo 'DELETE FROM structure_permissible_values WHERE value="'.$value['value'].'" AND language_alias="'.$value['language_alias'].'" AND id NOT IN (SELECT DISTINCT structure_permissible_value_id FROM structure_value_domains_permissible_values);'.NL;
 	}else{
 		print_r($value);
 		die('ERROR: Failed to delete based on id');
