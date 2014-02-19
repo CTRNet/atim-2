@@ -209,7 +209,7 @@ function getSpvIdQuery(array $value){
 }
 
 function echoInsertSpvQuery(array $value){
-	echo 'INSERT INTO structure_permissible_values (value, language_alias) VALUES("'.$value['value'].'", "'.$value['language_alias'].'");'.NL;
+	echo 'INSERT IGNORE INTO structure_permissible_values (value, language_alias) VALUES("'.$value['value'].'", "'.$value['language_alias'].'");'.NL;
 }
 
 function echoDeleteSpv(array $value){
