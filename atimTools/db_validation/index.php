@@ -155,6 +155,23 @@ $system_tables = array(
 	'view_samples',
 	'view_storage_masters',
 	'view_structure_formats_simplified');
+$main_or_master_table_with_field_names_like_master_id = array(
+	'aliquot_internal_uses',
+	'aliquot_masters',
+	'aliquot_review_masters',
+	'collections',
+	'event_masters',
+	'order_items',
+	'protocol_extend_masters',
+	'quality_ctrls',
+	'realiquotings',
+	'sample_masters',
+	'source_aliquots',
+	'specimen_review_masters',
+	'storage_coordinates',
+	'tma_slides',
+	'treatment_extend_masters',
+	'treatment_masters');
 $master_tables_from_controls = array();
 $detail_tables_from_controls = array();
 foreach($tables as $table => $foo){
@@ -172,12 +189,9 @@ foreach($tables as $table => $foo){
 		$result->free();
 	}
 }
+//Add additional tables that should be considered as detail table
 $detail_tables_from_controls['specimen_details'] = 'sample_master_id';
 $detail_tables_from_controls['derivative_details'] = 'sample_master_id';
-$detail_tables_from_controls['ad_bags'] = 'aliquot_master_id';
-$detail_tables_from_controls['ed_all_adverse_events_adverse_events'] = 'event_master_id';
-$detail_tables_from_controls['ed_all_protocol_followups'] = 'event_master_id';
-$detail_tables_from_controls['std_customs'] = 'storage_master_id';
 
 // 2- Specific Tables Fields Properties
 
@@ -253,7 +267,8 @@ $detail_revs_table_required_system_fields = array('version_id', 'version_created
 
 // 3- Track Errors
 
-$errors = array('Main Tables' => array(), 'Revs Tables' => array());
+$errors = array('Problematic Tables (To Confirm)' => array(), 'Main Tables' => array(), 'Revs Tables' => array());
+$problematic_tables = array();
 foreach($tables as $tname => $foo){
 	if(in_array($tname, $system_tables)) {
 		unset($tables[$tname]);
@@ -266,6 +281,7 @@ foreach($tables as $tname => $foo){
 			$revs_table_required_system_fields_working_array = $main_revs_table_required_system_fields;
 			$master_control_foreign_key = null;
 			$detail_table_foreign_key = null;
+			$detail_table = false;
 			if(array_key_exists($tname, $master_tables_from_controls)) {
 				$master_control_foreign_key = $master_tables_from_controls[$tname];
 				$control_table_name = str_replace('_control_id', '_controls', $master_control_foreign_key);
@@ -284,6 +300,7 @@ foreach($tables as $tname => $foo){
 				$revs_table_required_system_fields_working_array[] = $master_control_foreign_key;
 				if(array_key_exists($tname, $detail_tables_from_controls)) die('ERR_001');
 			} else if(array_key_exists($tname, $detail_tables_from_controls)) {
+				$detail_table = true;
 				$detail_table_foreign_key = $detail_tables_from_controls[$tname];
 				$master_table_name = str_replace('_master_id', '_masters', $detail_table_foreign_key);
 				$all_system_fields_working_array[$detail_table_foreign_key] = array(
@@ -307,6 +324,10 @@ foreach($tables as $tname => $foo){
 			$specific_table_fields = array();	
 			while ($row = $result->fetch_assoc()) {		
 				$field_name = $row['Field'];
+				if(!$detail_table && preg_match('/_master_id/', $field_name) && !in_array($tname, $main_or_master_table_with_field_names_like_master_id)) { 
+					$errors['Problematic Tables (To Confirm)']["<FONT COLOR='red'>Table not defined as detail table (in detail_tablename field of control tables)<br>Can be trunk detail tables<br>Please take care to these tables in this report (information in red)</FONT>"][$tname]["Detected problematic field: $field_name"] = "DROP TABLE $tname;";
+					$problematic_tables[] = $tname;
+				}				
 				$field_properties = array('Type' => $row['Type'],'Null' => $row['Null'],'Key' => $row['Key'],'Default' => $row['Default'],'Extra' => $row['Extra']);	
 				if(array_key_exists($field_name, $all_system_fields_working_array)) {
 					//System Field
@@ -442,10 +463,15 @@ foreach($errors as $tables_type => $errors_list) {
 			echo "<h2>$errors_title</h2>\n";
 			$all_sqls_msg = '';
 			foreach($tables_precisions_and_sqls as $tables => $precisions_and_sqls) {
-				echo "<b>table $tables</b><br/>\n";
+				$font_start = $font_end = "";
+				if(in_array($tables, $problematic_tables) || in_array(str_replace('_revs', '', $tables), $problematic_tables)) {
+					$font_start = "<FONT COLOR='red'>";
+					$font_end = "</FONT>";
+				}
+				echo $font_start."<b>table $tables</b><br/>\n".$font_end;
 				foreach($precisions_and_sqls as $precisions => $sql) {
 					echo " - $precisions<br/>\n";
-					$all_sqls_msg .= "$sql<br/>\n";
+					$all_sqls_msg .= $font_start."$sql<br/>\n".$font_end;
 				}
 			}
 			echo "<br/>\n$all_sqls_msg</i>";
