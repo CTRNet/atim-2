@@ -530,6 +530,140 @@ if(empty($missing_details)){
 }
 ?>
 
+<h1>Databrowser Relations Links Summary</h1>
+<table>
+	<thead>
+		<tr>
+			<th>Model 1</th>
+			<th>Model 2</th>
+			<th>Used Field</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	$query = "
+		SELECT str1.model AS model_1, str2.model AS model_2, use_field, 'active' AS 'status'
+		FROM datamart_browsing_controls ctrl, datamart_structures str1, datamart_structures str2 
+		WHERE str1.id = ctrl.id1 AND str2.id = ctrl.id2 AND (ctrl.flag_active_1_to_2 = 1 OR ctrl.flag_active_2_to_1 = 1)
+		UNION ALL
+		SELECT str1.model AS model_1, str2.model AS model_2, use_field, 'disable' AS 'status'
+		FROM datamart_browsing_controls ctrl, datamart_structures str1, datamart_structures str2 
+		WHERE str1.id = ctrl.id1 AND str2.id = ctrl.id2 AND (ctrl.flag_active_1_to_2 = 0 OR ctrl.flag_active_2_to_1 = 0)";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['model_1'], $row['model_2'], $row['use_field'], $row['status']);
+	}
+	$result->free();
+	?>
+	</tbody>
+</table>
+
+<h1>Structure Functions Summary</h1>
+<table>
+	<thead>
+		<tr>
+			<th>Model</th>
+			<th>Function</th>
+			<th>Used Field</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	$query = "
+		SELECT str.model, label, 'active' as status FROM datamart_structure_functions fct, datamart_structures str
+		WHERE fct.datamart_structure_id = str.id AND fct.flag_active = 1
+		UNION ALL
+		SELECT str.model, label, 'disable' as status FROM datamart_structure_functions fct, datamart_structures str
+		WHERE fct.datamart_structure_id = str.id AND fct.flag_active = 0;";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['model'], $row['label'], $row['status']);
+	}
+	$result->free();
+	?>
+	</tbody>
+</table>
+
+<h1>Strings requiring HTML code</h1>
+<table>
+	<thead>
+		<tr>
+			<th>structure</th>
+			<th>Model</th>
+			<th>Field</th>
+			<th>Used Label</th>
+			<th>i18n id</th>
+			<th>i18n en</th>
+			<th>i18n fr</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	$query = "
+ 		SELECT alias as structure, model, field, 'structure_fields.language_label' AS 'structure_field', i18n.id AS i18n_id, en, fr 
+		FROM i18n 
+		INNER JOIN structure_fields ON structure_fields.language_label = i18n.id
+		INNER JOIN structure_formats ON structure_fields.id = structure_formats.structure_field_id
+		INNER JOIN structures ON structures.id = structure_formats.structure_id
+		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
+		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
+		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
+		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
+		AND structure_formats.flag_override_label != 1
+		UNION ALL
+		SELECT alias as structure, model, field, 'structure_fields.language_tag' AS 'structure_field', i18n.id AS i18n_id, en, fr 
+		FROM i18n 
+		INNER JOIN structure_fields ON structure_fields.language_tag = i18n.id
+		INNER JOIN structure_formats ON structure_fields.id = structure_formats.structure_field_id
+		INNER JOIN structures ON structures.id = structure_formats.structure_id
+		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
+		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
+		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
+		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
+		AND structure_formats.flag_override_tag != 1
+		UNION ALL
+		SELECT alias as structure, model, field, 'structure_formats.language_label' AS 'structure_field', i18n.id AS i18n_id, en, fr 
+		FROM i18n 
+		INNER JOIN structure_formats ON structure_formats.language_label = i18n.id
+		INNER JOIN structure_fields ON structure_fields.id = structure_formats.structure_field_id
+		INNER JOIN structures ON structures.id = structure_formats.structure_id
+		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
+		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
+		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
+		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
+		AND structure_formats.flag_override_label = 1
+		UNION ALL
+		SELECT alias as structure, model, field, 'structure_formats.language_tag' AS 'structure_field', i18n.id AS i18n_id, en, fr 
+		FROM i18n 
+		INNER JOIN structure_formats ON structure_formats.language_tag = i18n.id
+		INNER JOIN structure_fields ON structure_fields.id = structure_formats.structure_field_id
+		INNER JOIN structures ON structures.id = structure_formats.structure_id
+		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
+		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
+		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
+		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
+		AND structure_formats.flag_override_tag = 1
+		UNION ALL
+		SELECT alias as structure, model, field, 'structure_formats.language_heading' AS 'structure_field', i18n.id AS i18n_id, en, fr 
+		FROM i18n 
+		INNER JOIN structure_formats ON structure_formats.language_heading = i18n.id
+		INNER JOIN structure_fields ON structure_fields.id = structure_formats.structure_field_id
+		INNER JOIN structures ON structures.id = structure_formats.structure_id
+		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
+		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
+		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
+		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1);";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['structure'], $row['model'], $row['field'], $row['structure_field'], $row['i18n_id'], $row['en'], $row['fr']);
+	}
+	$result->free();
+	?>
+	</tbody>
+</table>
+
 <h1>Dates without accuracy</h1>
 <?php
 //cannot be done in a single query because of the permissions on information_schema 
@@ -657,84 +791,6 @@ foreach($grouped_forms as $grouped_form){
 	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
 	while($row = $result->fetch_assoc()){
 		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['id'], $row['model'], $row['field'], $row['tablename']);
-	}
-	$result->free();
-	?>
-	</tbody>
-</table>
-
-<h1>Strings requiring HTML code</h1>
-<table>
-	<thead>
-		<tr>
-			<th>structure</th>
-			<th>Model</th>
-			<th>Field</th>
-			<th>Used Label</th>
-			<th>i18n id</th>
-			<th>i18n en</th>
-			<th>i18n fr</th>
-		</tr>
-	</thead>
-	<tbody>
-	<?php
-	$query = "
- 		SELECT alias as structure, model, field, 'structure_fields.language_label' AS 'structure_field', i18n.id AS i18n_id, en, fr 
-		FROM i18n 
-		INNER JOIN structure_fields ON structure_fields.language_label = i18n.id
-		INNER JOIN structure_formats ON structure_fields.id = structure_formats.structure_field_id
-		INNER JOIN structures ON structures.id = structure_formats.structure_id
-		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
-		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
-		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
-		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
-		AND structure_formats.flag_override_label != 1
-		UNION ALL
-		SELECT alias as structure, model, field, 'structure_fields.language_tag' AS 'structure_field', i18n.id AS i18n_id, en, fr 
-		FROM i18n 
-		INNER JOIN structure_fields ON structure_fields.language_tag = i18n.id
-		INNER JOIN structure_formats ON structure_fields.id = structure_formats.structure_field_id
-		INNER JOIN structures ON structures.id = structure_formats.structure_id
-		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
-		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
-		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
-		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
-		AND structure_formats.flag_override_tag != 1
-		UNION ALL
-		SELECT alias as structure, model, field, 'structure_formats.language_label' AS 'structure_field', i18n.id AS i18n_id, en, fr 
-		FROM i18n 
-		INNER JOIN structure_formats ON structure_formats.language_label = i18n.id
-		INNER JOIN structure_fields ON structure_fields.id = structure_formats.structure_field_id
-		INNER JOIN structures ON structures.id = structure_formats.structure_id
-		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
-		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
-		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
-		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
-		AND structure_formats.flag_override_label = 1
-		UNION ALL
-		SELECT alias as structure, model, field, 'structure_formats.language_tag' AS 'structure_field', i18n.id AS i18n_id, en, fr 
-		FROM i18n 
-		INNER JOIN structure_formats ON structure_formats.language_tag = i18n.id
-		INNER JOIN structure_fields ON structure_fields.id = structure_formats.structure_field_id
-		INNER JOIN structures ON structures.id = structure_formats.structure_id
-		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
-		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
-		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
-		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1)
-		AND structure_formats.flag_override_tag = 1
-		UNION ALL
-		SELECT alias as structure, model, field, 'structure_formats.language_heading' AS 'structure_field', i18n.id AS i18n_id, en, fr 
-		FROM i18n 
-		INNER JOIN structure_formats ON structure_formats.language_heading = i18n.id
-		INNER JOIN structure_fields ON structure_fields.id = structure_formats.structure_field_id
-		INNER JOIN structures ON structures.id = structure_formats.structure_id
-		WHERE ((fr LIKE '' OR en LIKE '') AND (i18n.id REGEXP '[<>]' OR (i18n.id REGEXP '%' AND i18n.id NOT REGEXP '%[a-zA-Z1-9\_]')))
-		OR (en REGEXP '[<>]' OR (en REGEXP '%' AND en NOT REGEXP '%[a-zA-Z1-9\_]'))
-		OR (fr REGEXP '[<>]' OR (fr REGEXP '%' AND fr NOT REGEXP '%[a-zA-Z1-9\_]'))
-		AND (structure_formats.flag_detail = 1 OR structure_formats.flag_index = 1);";
-	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
-	while($row = $result->fetch_assoc()){
-		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['structure'], $row['model'], $row['field'], $row['structure_field'], $row['i18n_id'], $row['en'], $row['fr']);
 	}
 	$result->free();
 	?>
