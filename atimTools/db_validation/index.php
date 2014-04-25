@@ -710,6 +710,157 @@ while($row = $result->fetch_row()){
 	</li>
 </ul>
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h1>ICD10 Codes Control (CA vs WHO)</h1>
+<h2>Structure Fields Summary</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Field Id</th>
+			<th>Field</th>
+			<th>Setting</th>
+			<th>Validation Rule</th>
+			<th>Validation Message</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+	$query = "
+		select distinct
+		sfi.id AS structure_field_id,
+		CONCAT(sfi.tablename,'.', sfi.field) AS field,
+		if((sfo.flag_override_setting = '1'),sfo.setting,sfi.setting) AS setting,
+		sval.rule,
+		sval.language_message
+		from (((structure_formats sfo join structure_fields sfi on((sfo.structure_field_id = sfi.id))) 
+		join structures str on((str.id = sfo.structure_id))))
+		left join structure_validations sval on((sval.structure_field_id = sfi.id))
+		WHERE (sfo.setting LIKE '%odingIcd/CodingIcd10s%' OR sfi.setting LIKE '%odingIcd/CodingIcd10s%');";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', 
+			$row['structure_field_id'], $row['field'], $row['setting'], $row['rule'], $row['language_message']);
+	}
+	$result->free();
+?>
+	</tbody>
+</table>
+<h2>Analysis</h2>
+
+<?php
+	$query = "
+		select distinct
+		if((sfo.flag_override_setting = '1'),sfo.setting,sfi.setting) AS setting
+		from (((structure_formats sfo join structure_fields sfi on((sfo.structure_field_id = sfi.id))) 
+		join structures str on((str.id = sfo.structure_id))))
+		left join structure_validations sval on((sval.structure_field_id = sfi.id))
+		WHERE (sfo.setting LIKE '%odingIcd/CodingIcd10s%' OR sfi.setting LIKE '%odingIcd/CodingIcd10s%');";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	$used_classifications = array();
+	while($row = $result->fetch_assoc()){
+		if(preg_match('/\/ca/',$row['setting'])) $used_classifications['CA'] = 'CA';
+		if(preg_match('/\/who/',$row['setting'])) $used_classifications['WHO'] = 'WHO';
+	}
+	$used_classifications_msg = 'No classification used.';
+	if(sizeof($used_classifications) == 1) {
+		$used_classifications_msg = array_shift($used_classifications);
+	} if(sizeof($used_classifications) > 1) {
+		$used_classifications_msg = 'ERROR : More than one icd10 classifications is used : '.implode(', ',$used_classifications);
+	}
+	$result->free();
+	
+	$query = "
+		SELECT structure_field_id
+		FROM (
+			select distinct
+			sfi.id AS structure_field_id,
+			CONCAT(sfi.tablename,'.', sfi.field) AS field,
+			if((sfo.flag_override_setting = '1'),sfo.setting,sfi.setting) AS setting,
+			sval.rule,
+			sval.language_message
+			from (((structure_formats sfo join structure_fields sfi on((sfo.structure_field_id = sfi.id)))
+			join structures str on((str.id = sfo.structure_id))))
+			left join structure_validations sval on((sval.structure_field_id = sfi.id))
+			WHERE (sfo.setting LIKE '%odingIcd/CodingIcd10s%who%' OR sfi.setting LIKE '%odingIcd/CodingIcd10s%who%')
+		) AS res WHERE res.rule IS NULL OR res.rule != 'validateIcd10WhoCode';";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	$structure_field_ids_error = array();
+	while($row = $result->fetch_assoc()){
+		$structure_field_ids_error[$row['structure_field_id']] = $row['structure_field_id'];
+	}
+	$query = "
+		SELECT structure_field_id
+		FROM (
+			select distinct
+			sfi.id AS structure_field_id,
+			CONCAT(sfi.tablename,'.', sfi.field) AS field,
+			if((sfo.flag_override_setting = '1'),sfo.setting,sfi.setting) AS setting,
+			sval.rule,
+			sval.language_message
+			from (((structure_formats sfo join structure_fields sfi on((sfo.structure_field_id = sfi.id))) 
+			join structures str on((str.id = sfo.structure_id))))
+			left join structure_validations sval on((sval.structure_field_id = sfi.id))
+			WHERE (sfo.setting LIKE '%odingIcd/CodingIcd10s%ca%' OR sfi.setting LIKE '%odingIcd/CodingIcd10s%ca%')
+		) AS res WHERE res.rule IS NULL OR res.rule != 'validateIcd10CaCode';";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		$structure_field_ids_error[$row['structure_field_id']] = $row['structure_field_id'];
+	}
+	$code_validation_error_msg = 'All is ok!';
+	if(!empty($structure_field_ids_error)) $code_validation_error_msg = 'Following structure_field_ids are either not linked to an ICD10 code structure validation or a wrong one :'.implode(', ',$structure_field_ids_error);
+	
+?>
+	</tbody>
+</table>
+	
+	
+	
+<ul>
+	<li>Used Classifications
+		<ul>
+			<li>
+				<?php 
+					echo $used_classifications_msg;
+				?>
+			</li>
+		</ul>
+	</li>
+	<li>ICD10 Code Valdiations
+		<ul>
+			<li>
+				<?php 
+				 echo $code_validation_error_msg;
+				?>
+			</li>
+		</ul>
+	</li>
+</ul>
+	
+
 <h1>Structures with duplicate fields</h1>
 <?php 
 $query = "SELECT COUNT(*) AS c, s.alias, sfi.plugin, sfi.tablename, sfi.field 
@@ -739,7 +890,7 @@ $result->free();
 			<th>Structure(s)</th>
 			<th>Field</th>
 			<th>Count</th>
-			<td>Sfo id(s)</th>
+			<th>Sfo id(s)</th>
 		</tr>
 	</thead>
 	<tbody>
