@@ -12,6 +12,11 @@ div.inner{
 	margin: auto;	
 }
 
+H1  { 
+	font-size: xxx-large;
+	color: black;
+}
+
 ul.installLinks{
 	list-style: none;
 	padding: 0px;
@@ -51,8 +56,9 @@ ul.installLinks li a{
 	display: inline-block;
 }
 
-img.ctrnetLogo{
-	margin-top: 50px;	
+img.Logo{
+	margin-top: 20px;
+	margin-bottom: 20px;	
 }
 
 div.usefullLinks{

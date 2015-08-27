@@ -17,7 +17,7 @@ if(!empty($matches)){
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="shortcut icon" href="favicon.ico"/>
+		<link rel="shortcut icon" href="./images/favicon.ico"/>
 		<link rel="stylesheet" type="text/css" href="style.css" />		
 		<title>Portail ATiM</title>
 	</head>
@@ -25,12 +25,14 @@ if(!empty($matches)){
 		<div class='outer'>
 			<div class='inner'>
 				<?php 
-				$template = '<img src="%s" alt="%s"/>';
+				$template = '<img src="./images/%s" alt="%s"  class="Logo"/>';
 				foreach($main_logos as $main_logo){
+					if($main_logo['url']) printf('<a href="%s">', $main_logo['url']);
 					printf($template, $main_logo['src'], $main_logo['alt']);
+					if($main_logo['url']) printf('</a>');
 				} 
 				?>
-				<h1>Portail ATiM</h1>
+				<h1>ATiM Portal / Portail ATiM</h1>
 				<?php 
 				if($is_old_ie){
 					$template = '<a href="%s">%s</a>';
@@ -52,21 +54,29 @@ if(!empty($matches)){
 				<?php 
 				}
 				?>
-				<img src="ctrnet_logo.png" alt="CTRNet logo" class="ctrnetLogo"/>
 				<div class="usefullLinks">
-					<h2>Liens utiles</h2>
+					<h2>Information and Links / Information et liens</h2>
 					<ul>
 					<?php 
 					$template = '<li><a href="%s">%s</a></li>';
-					foreach($usefull_links as $name => $url){
-						if(is_array($url)){
-							echo "<li><h3>",$name,"</h3><ul>";
-							foreach($url as $inner_name => $inner_url){
-								printf($template, $inner_url, $inner_name);
+					foreach($usefull_links_and_data as $section_title => $url_and_data){
+						if(is_array($url_and_data)){
+							echo "<li><h3>",$section_title,"</h3><ul>";
+							foreach($url_and_data as $sub_section_title => $inner_url_or_data){
+								if(is_array($inner_url_or_data)) {
+									echo "<li><h4>",$sub_section_title,"</h4><ul>";
+									foreach($inner_url_or_data as $tile => $data) {
+										printf("<li><b>%s: </b>%s</li>", $tile, $data);
+									}
+									echo "</ul></li>";
+
+								} else {
+									printf($template, $inner_url_or_data, $sub_section_title);
+								}
 							}
 							echo "</ul></li>";
 						}else{
-							printf($template, $url, $name);
+							printf($template, $url_and_data, $section_title);
 						}
 					}	
 					?>
