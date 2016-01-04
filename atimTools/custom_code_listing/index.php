@@ -70,7 +70,7 @@ body{
 			<th>Plugin</th>
 			<th>File Type</th>
 			<th>File Name</th>
-			<th>xxx</th>
+			<th>Details</th>
 		</tr>
 	</thead>
 	<tbody>
