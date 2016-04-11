@@ -373,7 +373,8 @@ function customInsertRecord($tables_data) {
 		//--1-- Check data
 		switch(sizeof($tables_data)) {
 			case '1':
-				$table_name = array_shift(array_keys($tables_data));
+				$tables_data_keys = array_keys($tables_data);
+				$table_name = array_shift($tables_data_keys);
 				if(preg_match('/_masters$/', $table_name)) migrationDie("ERR_FUNCTION_customInsertRecord(): Detail table is missing to record data into $table_name");
 				$main_table_data = array('name' => $table_name, 'data' => $tables_data[$table_name]);
 				break;
@@ -552,9 +553,34 @@ function addToModifiedDatabaseTablesList($main_table_name, $detail_table_name) {
 function insertIntoRevsBasedOnModifiedValues($main_tablename = null, $detail_tablename = null) {
 	global $import_date;
 	global $imported_by;
+	global $atim_controls;
 	global $modified_database_tables_list;
 	
-	$tables_sets_to_update = is_null($main_tablename)? $modified_database_tables_list : array(array($main_tablename, $detail_tablename));
+	$tables_sets_to_update = $modified_database_tables_list;
+	if(!is_null($main_tablename)) {
+		$key = $main_tablename.'-'.(is_null($detail_tablename)? '' : $detail_tablename);
+		$tables_sets_to_update = array($key => array($main_tablename, $detail_tablename));
+	}
+	
+	//Check masters model alone
+	$initial_tables_sets_to_update = $tables_sets_to_update;
+	foreach($initial_tables_sets_to_update as $key => $tmp) {
+		if(preg_match('/^([a-z]+_masters)\-$/', $key, $matches)) {
+			$master_table_name = $matches[1];
+			$control_table_name = str_replace('_masters', '_controls', $master_table_name);
+			if(!isset($atim_controls[$control_table_name])) migrationDie("ERR 778894003 #$master_table_name.$control_table_name");
+			foreach($atim_controls[$control_table_name] as $control_data) {
+				if(is_array($control_data) && isset($control_data['detail_tablename'])) {
+					$detail_table_name = $control_data['detail_tablename'];
+					$new_key = "$master_table_name-$detail_table_name";
+					if(!isset($tables_sets_to_update[$new_key])) $tables_sets_to_update[$new_key] = array("$master_table_name", "$detail_table_name");
+				}
+			}
+			unset($tables_sets_to_update[$key]);
+		}
+	}
+	
+	//Insert Into Revs
 	$insert_queries = array();
 	$set_key_done = array();
 	foreach($tables_sets_to_update as $new_tables_set) {
@@ -750,7 +776,8 @@ function validateAndGetDatetimeAndAccuracy($date, $time, $summary_section_title,
 	$date = str_replace(' ', '', $date);
 	$time = str_replace(' ', '', $time);
 	//** Get Date **
-	$tmp_date_and_accuracy = validateAndGetDateAndAccuracy($date, $summary_section_title, $summary_title_add_in, $summary_details_add_in);
+	$tmp_date_and_accuracy = array();
+	list($tmp_date_and_accuracy['date'], $tmp_date_and_accuracy['accuracy']) = validateAndGetDateAndAccuracy($date, $summary_section_title, $summary_title_add_in, $summary_details_add_in);
 	if(!$tmp_date_and_accuracy['date']) {
 		if(!empty($time) && !in_array(strtolower($time), $empty_date_time_values)) {
 			recordErrorAndMessage($summary_section_title, '@@ERROR@@', 'DateTime Format Error: Date Is Missing'.(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in), "Format of the datetime '$date $time' is not supported! The datetime will be erased.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]"));
@@ -955,7 +982,8 @@ function getNextExcelLineData($excel_file_name, $worksheet_name, $header_lines_n
 		} else {
 			$studied_excel_file_name_properties['worksheet_name'] = $worksheet_name;
 			$studied_excel_file_name_properties['headers'] = array();
-			$studied_excel_file_name_properties['last_worksheet_line_counter'] = end(array_keys($XlsReader->sheets[$studied_excel_file_name_properties['file_worksheets'][$worksheet_name]]['cells']));
+			$tmp_worksheet_line_counters = array_keys($XlsReader->sheets[$studied_excel_file_name_properties['file_worksheets'][$worksheet_name]]['cells']);
+			$studied_excel_file_name_properties['last_worksheet_line_counter'] = end($tmp_worksheet_line_counters);
 			$studied_excel_file_name_properties['last_studied_line_counter'] = '0';
 		}
 	}

@@ -558,6 +558,29 @@ if(empty($missing_details)){
 	?>
 	</tbody>
 </table>
+<?php
+$reports = array();
+?>
+<h1>Reports</h1>
+<table>
+	<thead>
+		<tr>
+			<th>Report</th>
+			<th>Status</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+	$query = "SELECT datamart_reports.id, name, en,  flag_active FROM datamart_reports LEFT JOIN i18n ON name = i18n.id ORDER BY flag_active DESC, en, name;";
+	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
+	while($row = $result->fetch_assoc()){
+		$reports[$row['id']] = array('flag_active' => $row['flag_active'], 'name' => (strlen($row['en'])? $row['en'] : $row['name']));
+		printf('<tr><td>%s</td><td>%s</td></tr>', (strlen($row['en'])? $row['en'] : $row['name']), ($row['flag_active']? 'active' : 'disable'));
+	}
+	$result->free();
+	?>
+	</tbody>
+</table>
 
 <h1>Structure Functions Summary</h1>
 <table>
@@ -572,14 +595,25 @@ if(empty($missing_details)){
 	<tbody>
 	<?php
 	$query = "
-		SELECT str.model, label, 'active' as status FROM datamart_structure_functions fct, datamart_structures str
+		SELECT str.model, label, link, 'active' as status FROM datamart_structure_functions fct, datamart_structures str
 		WHERE fct.datamart_structure_id = str.id AND fct.flag_active = 1
 		UNION ALL
-		SELECT str.model, label, 'disable' as status FROM datamart_structure_functions fct, datamart_structures str
+		SELECT str.model, label, link, 'disable' as status FROM datamart_structure_functions fct, datamart_structures str
 		WHERE fct.datamart_structure_id = str.id AND fct.flag_active = 0;";
 	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
 	while($row = $result->fetch_assoc()){
-		printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['model'], $row['label'], $row['status']);
+		$report_msg = '';
+		if(preg_match('/^\/Datamart\/Reports\/manageReport\/([0-9]+)$/', $row['link'], $matches)) {
+			$report_id = $matches[1];
+			if(!array_key_exists($report_id, $reports)) {
+				$report_msg = "<FONT COLOR='red'>(Unknown Report)</FONT>";
+			} else if(!$reports[$report_id]['flag_active'] && $row['status'] == 'active') {
+				$report_msg = "<FONT COLOR='red'>(Disabled Report '".$reports[$report_id]['name']."')</FONT>";
+			} else {
+				$report_msg = "(Report '".$reports[$report_id]['name']."')";
+			}			
+		}
+		printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['model'], ($row['label']." <b>$report_msg</b>"), $row['status']);
 	}
 	$result->free();
 	?>
