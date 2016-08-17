@@ -173,10 +173,13 @@ function getInsertIntoSfo($field, $structure_id_query, $structure_field){
 	global $STRUCTURE_FORMATS_FLAGS;
 	$query = "((".$structure_id_query."), (".$structure_field['query_id']."), ";//.$field->display_column."', '".$field->display_order."', '".$field->language_heading."', ";
 	
+	global $STRUCTURE_FORMATS_PRIMARY_FIELDS_DEFAULT_VALUE;
 	global $STRUCTURE_FORMATS_PRIMARY_FIELDS;
 	foreach($STRUCTURE_FORMATS_PRIMARY_FIELDS as $sfpf){
 	    $rp = new ReflectionProperty($field, $sfpf);
-	    $query .=  "'".$rp->getValue($field)."', ";
+	    $field_value = $rp->getValue($field);
+	    if(!strlen($field_value) && array_key_exists($sfpf, $STRUCTURE_FORMATS_PRIMARY_FIELDS_DEFAULT_VALUE)) $field_value = $STRUCTURE_FORMATS_PRIMARY_FIELDS_DEFAULT_VALUE[$sfpf];
+	    $query .=  "'$field_value', ";
 	}
 	
 	//look to override properly

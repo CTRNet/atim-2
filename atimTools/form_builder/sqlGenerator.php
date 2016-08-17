@@ -26,6 +26,9 @@ global $STRUCTURE_FORMATS_PRIMARY_FIELDS;
 $STRUCTURE_FORMATS_PRIMARY_FIELDS = array("display_column", "display_order", "language_heading", "margin");
 global $STRUCTURE_FORMATS_FIELDS;
 $STRUCTURE_FORMATS_FIELDS = array_merge($STRUCTURE_FORMATS_PRIMARY_FIELDS, $tmp, $STRUCTURE_FORMATS_FLAGS);
+//Empty value generated bug with empty value on a MYSQL SGBD installed on a windows server 2012 in the JGH hospital
+global $STRUCTURE_FORMATS_PRIMARY_FIELDS_DEFAULT_VALUE;	
+$STRUCTURE_FORMATS_PRIMARY_FIELDS_DEFAULT_VALUE = array("margin" => '0');
 
 if(isset($_GET['json'])){
 	$json = $_GET['json'];
