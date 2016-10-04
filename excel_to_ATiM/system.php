@@ -242,12 +242,12 @@ function recordErrorAndMessage($summary_section_title, $summary_type, $summary_t
  * 
  * @param boolean $commit Commit all sql statements.
  */
-function dislayErrorAndMessage($commit = false) {
+function dislayErrorAndMessage($commit = false, $title = 'Migration Summary') {
 	global $import_summary;
 	global $db_connection;
 	echo "<br><FONT COLOR=\"blue\">
 		=====================================================================<br>
-		<b>Migration Summary</b><br>
+		<b>$title</b><br>
 		=====================================================================</FONT><br>";
 	$err_counter = 0;
 	foreach($import_summary as $summary_section_title => $data1) {
@@ -295,7 +295,7 @@ function dislayErrorAndMessage($commit = false) {
 	}
 	echo "<br><FONT COLOR=\"blue\">
 		=====================================================================<br>
-		<b>Migration Done $ccl</b><br>
+		<b>$title Done $ccl</b><br>
 		=====================================================================</FONT><br>";
 }
 
@@ -368,19 +368,26 @@ function customInsertRecord($tables_data) {
 	$record_id = null;
 	$main_table_data = array();
 	$details_tables_data = array();
-//TODO: Add control on detail table based on _control_id	
+//TODO: Add control on detail table based on _control_id
 	if($tables_data) {
+		$tables_data_keys = array_keys($tables_data);
+		//Flush empty field
+		foreach($tables_data as $table_name => $table_fields_and_data) {
+			foreach($table_fields_and_data as $field => $data) {
+				if(!strlen($data)) unset($tables_data[$table_name][$field]);
+			}
+		}
 		//--1-- Check data
 		switch(sizeof($tables_data)) {
 			case '1':
-				$tables_data_keys = array_keys($tables_data);
-				$table_name = array_shift($tables_data_keys);
+				$tmp_tables_data_keys = $tables_data_keys;
+				$table_name = array_shift($tmp_tables_data_keys);
 				if(preg_match('/_masters$/', $table_name)) migrationDie("ERR_FUNCTION_customInsertRecord(): Detail table is missing to record data into $table_name");
 				$main_table_data = array('name' => $table_name, 'data' => $tables_data[$table_name]);
 				break;
 			case '3':
 				$details_table_name = '';
-				foreach(array_keys($tables_data) as $table_name) {
+				foreach($tables_data_keys as $table_name) {
 					if(in_array($table_name, array('specimen_details', 'derivative_details'))) {
 						$details_tables_data[] = array('name' => $table_name, 'data' => $tables_data[$table_name]);
 						unset($tables_data[$table_name]);
@@ -391,16 +398,16 @@ function customInsertRecord($tables_data) {
 						$details_table_name = $table_name;
 					}
 				}
-				if(empty($main_table_data)) migrationDie("ERR_FUNCTION_customInsertRecord(): Table sample_masters is missing (See table names: ".implode(' & ', array_keys($tables_data)).")");
-				if(empty($details_tables_data)) migrationDie("ERR_FUNCTION_customInsertRecord(): Table 'specimen_details' or 'derivative_details' is missing (See table names: ".implode(' & ', array_keys($tables_data)).")");
-				if(sizeof($tables_data) != 1) migrationDie("ERR_FUNCTION_customInsertRecord(): Wrong 3 tables names for a new sample (See table names: ".implode(' & ', array_keys($tables_data)).")");
+				if(empty($main_table_data)) migrationDie("ERR_FUNCTION_customInsertRecord(): Table sample_masters is missing (See table names: ".implode(' & ', $tables_data_keys).")");
+				if(empty($details_tables_data)) migrationDie("ERR_FUNCTION_customInsertRecord(): Table 'specimen_details' or 'derivative_details' is missing (See table names: ".implode(' & ', $tables_data_keys).")");
+				if(sizeof($tables_data) != 1) migrationDie("ERR_FUNCTION_customInsertRecord(): Wrong 3 tables names for a new sample (See table names: ".implode(' & ', $tables_data_keys).")");
 				$details_tables_data[] = array('name' => $details_table_name, 'data' => $tables_data[$details_table_name]);
 				break;
 			case '2':
 				$details_table_name = '';
-				foreach(array_keys($tables_data) as $table_name) {
+				foreach($tables_data_keys as $table_name) {
 					if(in_array($table_name, array('specimen_details', 'derivative_details', 'sample_masters'))) {
-						migrationDie("ERR_FUNCTION_customInsertRecord(): Table 'sample_masters', 'specimen_details' or 'derivative_details' defined for a record different than Sample or wrong tables definition for a sample creation (See table names: ".implode(' & ', array_keys($tables_data)).")");
+						migrationDie("ERR_FUNCTION_customInsertRecord(): Table 'sample_masters', 'specimen_details' or 'derivative_details' defined for a record different than Sample or wrong tables definition for a sample creation (See table names: ".implode(' & ', $tables_data_keys).")");
 						exit;
 					} else if(preg_match('/_masters$/', $table_name)) {
 						$main_table_data = array('name' => $table_name, 'data' => $tables_data[$table_name]);
@@ -409,12 +416,12 @@ function customInsertRecord($tables_data) {
 						$details_table_name = $table_name;
 					}
 				}
-				if(empty($main_table_data)) migrationDie("ERR_FUNCTION_customInsertRecord(): Table %%_masters is missing (See table names: ".implode(' & ', array_keys($tables_data)).")");
-				if(sizeof($tables_data) != 1) migrationDie("ERR_FUNCTION_customInsertRecord(): Wrong 2 tables names for a master/detail model record (See table names: ".implode(' & ', array_keys($tables_data)).")");
+				if(empty($main_table_data)) migrationDie("ERR_FUNCTION_customInsertRecord(): Table %%_masters is missing (See table names: ".implode(' & ', $tables_data_keys).")");
+				if(sizeof($tables_data) != 1) migrationDie("ERR_FUNCTION_customInsertRecord(): Wrong 2 tables names for a master/detail model record (See table names: ".implode(' & ', $tables_data_keys).")");
 				$details_tables_data[] = array('name' => $details_table_name, 'data' => $tables_data[$details_table_name]);
 				break;
 			default:
-				migrationDie("ERR_FUNCTION_customInsertRecord(): Too many tables passed in arguments: ".implode(', ',array_keys($tables_data)).".");
+				migrationDie("ERR_FUNCTION_customInsertRecord(): Too many tables passed in arguments: ".implode(', ',$tables_data_keys).".");
 		}
 		//-- 2 -- Main or master table record
 		if(isset($main_table_data['data']['sample_control_id'])) {
@@ -455,9 +462,9 @@ function customInsertRecord($tables_data) {
 		}			
 		//-- 3 -- Details tables record
 		if(isset($main_table_data['data']['sample_control_id'])) {
-			if(sizeof($details_tables_data) != 2) migrationDie("ERR_FUNCTION_customInsertRecord(): Table 'specimen_details', 'derivative_details' or 'SampleDetail' is missing (See table names: ".implode(' & ', array_keys($tables_data)).")");
+			if(sizeof($details_tables_data) != 2) migrationDie("ERR_FUNCTION_customInsertRecord(): Table 'specimen_details', 'derivative_details' or 'SampleDetail' is missing (See table names: ".implode(' & ', $tables_data_keys).")");
 		} else {
-			if(sizeof($details_tables_data) > 2) migrationDie("ERR_FUNCTION_customInsertRecord(): Too many tables are declared (>2) (See table names: ".implode(' & ', array_keys($tables_data)).")");
+			if(sizeof($details_tables_data) > 2) migrationDie("ERR_FUNCTION_customInsertRecord(): Too many tables are declared (>2) (See table names: ".implode(' & ', $tables_data_keys).")");
 		}
 		$tmp_detail_tablename = null;
 		if($details_tables_data) {
@@ -485,27 +492,35 @@ function updateTableData($id, $tables_data) {
 	global $import_date;
 	global $imported_by;
 	if($tables_data) {
+		$tables_data_keys = array_keys($tables_data);
 		$to_update = false;
+		//Flush empty field
+		foreach($tables_data as $table_name => $table_fields_and_data) {
+			foreach($table_fields_and_data as $field => $data) {
+				if(!strlen($data)) unset($tables_data[$table_name][$field]);
+			}
+		}
 		//Check data passed in args
 		$main_or_master_tablename = null;
 		switch(sizeof($tables_data)) {
 			case '1':
-				$main_or_master_tablename = array_shift(array_keys($tables_data));
+				$tmp_tables_data_keys = $tables_data_keys;
+				$main_or_master_tablename = array_shift($tmp_tables_data_keys);
 				if(!empty($tables_data[$main_or_master_tablename])) $to_update = true;
 				break;
 			case '2':
 			case '3':
-				foreach(array_keys($tables_data) as $table_name) {
+				foreach($tables_data_keys as $table_name) {
 					if(preg_match('/_masters$/', $table_name)) {
-						if(!is_null($main_or_master_tablename)) migrationDie("ERR_FUNCTION_updateTableData(): 2 Master tables passed in arguments: ".implode(', ',array_keys($tables_data)).".");
+						if(!is_null($main_or_master_tablename)) migrationDie("ERR_FUNCTION_updateTableData(): 2 Master tables passed in arguments: ".implode(', ',$tables_data_keys).".");
 						$main_or_master_tablename = $table_name;
 					}
 					if(!empty($tables_data[$table_name])) $to_update = true;
 				}
-				if(is_null($main_or_master_tablename)) migrationDie("ERR_FUNCTION_updateTableData(): Master table not passed in arguments: ".implode(', ',array_keys($tables_data)).".");
+				if(is_null($main_or_master_tablename)) migrationDie("ERR_FUNCTION_updateTableData(): Master table not passed in arguments: ".implode(', ',$tables_data_keys).".");
 				break;
 			default:
-				migrationDie("ERR_FUNCTION_updateTableData(): Too many tables passed in arguments: ".implode(', ',array_keys($tables_data)).".");
+				migrationDie("ERR_FUNCTION_updateTableData(): Too many tables passed in arguments: ".implode(', ',$tables_data_keys).".");
 		}
 		if($to_update) {
 			//Master/Main Table Update
@@ -708,7 +723,8 @@ function validateAndGetExcelValueFromList($value, $values_matches, $str_to_lower
 		if(array_key_exists($value, $values_matches)) {
 			$value = $values_matches[$value];
 		} else {
-			recordErrorAndMessage($summary_section_title, '@@ERROR@@', "Wrong Excel Value".(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in), "Value '$value' is not a supported eexcel value. The value will be erased.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]")); 
+			recordErrorAndMessage($summary_section_title, '@@ERROR@@', "Wrong Excel Value".(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in), "Value '$value' is not a supported excel value. The value will be erased.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]")); 
+			$value = '';
 		}
 	}
 	return $value;
@@ -776,8 +792,7 @@ function validateAndGetDatetimeAndAccuracy($date, $time, $summary_section_title,
 	$date = str_replace(' ', '', $date);
 	$time = str_replace(' ', '', $time);
 	//** Get Date **
-	$tmp_date_and_accuracy = array();
-	list($tmp_date_and_accuracy['date'], $tmp_date_and_accuracy['accuracy']) = validateAndGetDateAndAccuracy($date, $summary_section_title, $summary_title_add_in, $summary_details_add_in);
+	$tmp_date_and_accuracy = validateAndGetDateAndAccuracy($date, $summary_section_title, $summary_title_add_in, $summary_details_add_in);
 	if(!$tmp_date_and_accuracy['date']) {
 		if(!empty($time) && !in_array(strtolower($time), $empty_date_time_values)) {
 			recordErrorAndMessage($summary_section_title, '@@ERROR@@', 'DateTime Format Error: Date Is Missing'.(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in), "Format of the datetime '$date $time' is not supported! The datetime will be erased.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]"));
