@@ -7,8 +7,19 @@ require_once("valueDomain.php");
 
 //UPDATE THIS TO POINT TO YOUR CONFIG
 
+if(!isset($_GET['project'])) {
+	die('http://localhost/dataImporter/dataImporter.php?project=xxx&step=xxx with xxx being folder name');
+} else {
+	$project_name = $_GET['project'];
+}
+
+$step_name = '';
+if(isset($_GET['step'])) {
+	$step_name .= '/'.$_GET['step'];
+}
+
 //require_once("config.php");
-require_once("../atim_tf_coeur/dataImporterConfig/config.php");
+require_once("C:/_NicolasLuc/Server/www/$project_name/dataImporterConfig$step_name/config.php");
 // require_once("../atim_tf_prostate/dataImporterConfig/config.php");
 // require_once("../atim_chuq_ovaire/dataImporterConfig/config.php");
 
@@ -121,7 +132,7 @@ foreach(Config::$models as $ref_name => &$model){
 		if(is_a($model, "MasterDetailModel")){
 			$tmp_fields = array_merge($tmp_fields, $model->detail_fields);
 		}
-
+		
 		foreach($tmp_fields as $key => $val){
 			if(is_array($val)){
 				if(!in_array(key($val), $model->keys)){
@@ -136,9 +147,18 @@ foreach(Config::$models as $ref_name => &$model){
 		}
 		
 		if(!empty($missing)){
-			//print_r($tmp_fields);
-			//print_r($model->keys);
-			die("The following key(s) for [$ref_name] were not found: [".implode("], [", $missing)."]".Config::$line_break_tag);
+			pr("The following key(s) for [$ref_name] were not found into the ".($model->file - 1)."th worksheet: [".implode("], [", $missing)."]".Config::$line_break_tag);
+			pr('=================================================================================================================='.Config::$line_break_tag);
+			pr('- Model Fields (Model in tablesMapping directory) -------------------------------------------------------------'.Config::$line_break_tag);
+			pr($tmp_fields);
+			pr('- CSV worksheet key -------------------------------------------------------------'.Config::$line_break_tag);
+			pr($model->file);
+			pr('- CSV fields -------------------------------------------------------------'.Config::$line_break_tag);
+			pr($model->keys);
+			pr('- CSV primary key field-------------------------------------------------------------'.Config::$line_break_tag);
+			pr($model->csv_pkey);
+			pr('--------------------------------------------------------------').Config::$line_break_tag;
+			die();
 		}
 		
 		readFileLine($model, false);
@@ -203,12 +223,12 @@ foreach(Config::$parent_models as $model_name){
 foreach(Config::$models as $ref_name => &$model){
 	if(IS_XLS){
 		if(isset($model->file_handler) && $model->line <= $model->file_handler["numRows"]){
-			echo("ERROR: Data was not all fetched from [".$ref_name."] - Stopped at line [".$model->line."]".Config::$line_break_tag);
+			echo("ERROR1: Data was not all fetched from [".$ref_name."] - Stopped at line [".$model->line." <= ".$model->file_handler["numRows"]."]".Config::$line_break_tag);
 			$insert = false;
 		}
 	}else if(strlen($model->file) > 0){
 		if(!feof($model->file_handler)){
-			echo("ERROR: Data was not all fetched from [".$ref_name."] - Stopped at line [".$model->line."]".Config::$line_break_tag);
+			echo("ERROR2: Data was not all fetched from [".$ref_name."] - Stopped at line [".$model->line."]".Config::$line_break_tag);
 			$insert = false;
 		}
 	}

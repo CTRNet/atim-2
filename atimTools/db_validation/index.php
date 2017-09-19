@@ -531,6 +531,7 @@ if(empty($missing_details)){
 ?>
 
 <h1>Databrowser Relations Links Summary</h1>
+
 <table>
 	<thead>
 		<tr>
@@ -538,6 +539,7 @@ if(empty($missing_details)){
 			<th>Model 2</th>
 			<th>Used Field</th>
 			<th>Status</th>
+			<th>Query to change status</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -552,7 +554,15 @@ if(empty($missing_details)){
 		WHERE str1.id = ctrl.id1 AND str2.id = ctrl.id2 AND (ctrl.flag_active_1_to_2 = 0 OR ctrl.flag_active_2_to_1 = 0)";
 	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
 	while($row = $result->fetch_assoc()){
-		printf('<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>', $row['model_1'], $row['model_2'], $row['use_field'], $row['status']);
+		printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>UPDATE datamart_browsing_controls SET flag_active_1_to_2 = '%s', flag_active_2_to_1 = '%s' WHERE id1 = (SELECT id FROM datamart_structures WHERE model = '%s') AND id2 = (SELECT id FROM datamart_structures WHERE model = '%s');</td></tr>", 
+			$row['model_1'], 
+			$row['model_2'], 
+			$row['use_field'], 
+			"<FONT COLOR='".(($row['status'] == 'active')? 'green': 'red')."'>".$row['status']."</FONT>",
+			(($row['status'] == 'active')? '0': '1'),
+			(($row['status'] == 'active')? '0': '1'),
+			$row['model_1'], 
+			$row['model_2']);
 	}
 	$result->free();
 	?>
@@ -567,6 +577,7 @@ $reports = array();
 		<tr>
 			<th>Report</th>
 			<th>Status</th>
+			<th>Query to change status</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -575,7 +586,11 @@ $reports = array();
 	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
 	while($row = $result->fetch_assoc()){
 		$reports[$row['id']] = array('flag_active' => $row['flag_active'], 'name' => (strlen($row['en'])? $row['en'] : $row['name']));
-		printf('<tr><td>%s</td><td>%s</td></tr>', (strlen($row['en'])? $row['en'] : $row['name']), ($row['flag_active']? 'active' : 'disable'));
+		printf("<tr><td>%s</td><td>%s</td><td>UPDATE datamart_reports SET flag_active = '%s' WHERE name = '%s';</td></tr>",
+			(strlen($row['en'])? $row['en'] : $row['name']), 
+			"<FONT COLOR=".($row['flag_active']? "'green'>active" : "'red'>disable")."</FONT>", 
+			($row['flag_active']? '0' : '1'),
+			$row['name']);
 	}
 	$result->free();
 	?>
@@ -588,8 +603,8 @@ $reports = array();
 		<tr>
 			<th>Model</th>
 			<th>Function</th>
-			<th>Used Field</th>
 			<th>Status</th>
+			<th>Query to change status</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -613,7 +628,13 @@ $reports = array();
 				$report_msg = "(Report '".$reports[$report_id]['name']."')";
 			}			
 		}
-		printf('<tr><td>%s</td><td>%s</td><td>%s</td></tr>', $row['model'], ($row['label']." <b>$report_msg</b>"), $row['status']);
+		printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>UPDATE datamart_structure_functions fct, datamart_structures str SET fct.flag_active = '%s' WHERE fct.datamart_structure_id = str.id AND str.model = '%s' AND label = '%s';</td></tr>", 
+			$row['model'], 
+			($row['label']." <b>$report_msg</b>"), 
+			"<FONT COLOR='".(($row['status'] == 'active')? 'green': 'red')."'>".$row['status']."</FONT>",
+			(($row['status'] == 'active')? '0': '1'),
+			$row['model'],
+			$row['label']);
 	}
 	$result->free();
 	?>

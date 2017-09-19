@@ -5,8 +5,8 @@ if($json->type == 'autoBuildData'){
 	$query = "SELECT count(*) AS c, sfi.field AS field FROM structure_formats AS sfo "
 		."INNER JOIN structures AS s ON s.id=sfo.structure_id "
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
-		."WHERE s.alias='".$json->val."' GROUP BY sfo.structure_field_id HAVING c > 1";
-	$result = $db->query($query) or die("<tr><td>Query failed ".$db->error."</td></tr>");
+		."WHERE s.alias='".$json->val."' GROUP BY sfo.structure_field_id, sfi.field HAVING count(*) > 1";
+	$result = $db->query($query) or die("<tr><td>Query failed #1 : ".$db->error."</td></tr>");
 	if($result->num_rows > 0){
 		echo ("Duplicate fields detected on: ");
 		$fields = "";
@@ -41,7 +41,7 @@ if($json->type == 'autoBuildData'){
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
 		."LEFT JOIN structure_value_domains AS svd ON sfi.structure_value_domain=svd.id "
 		."WHERE s.alias='".$json->val."'";
-	$result = $db->query($query) or die("<tr><td>Query failed ".$db->error."</td></tr>");
+	$result = $db->query($query) or die("<tr><td>Query failed #2".$db->error."</td></tr>");
 	$checbox = '<input type="checkbox"%s/>';
 	while($row = $result->fetch_assoc()){
 		?>

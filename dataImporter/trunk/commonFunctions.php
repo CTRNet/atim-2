@@ -187,6 +187,8 @@ function excelDateFix(Model $m){
 					global $insert;
 					$insert = false;
 				}
+				if(!isset($m->values[$accuracy_field])) pr($date_field.' ACCURACY IS MISSING');
+				if(!isset(MyTime::$uncertainty_level[$m->values[$accuracy_field]])) pr($date_field.' ACCURACY IS MISSING 2');
 				if($accuracy_field != null && MyTime::$uncertainty_level[$m->values[$accuracy_field]] < MyTime::$uncertainty_level['y']){
 					$m->values[$accuracy_field] = 'y';
 				}
@@ -236,7 +238,7 @@ function getValueDomain($domain_name){
 	$tmp = array();
 	
 	$query = 'SELECT source FROM structure_value_domains WHERE domain_name="'.$domain_name.'" AND source LIKE "StructurePermissibleValuesCustom::getCustomDropdown(\'%\')"';
-	$result = mysqli_query(Config::$db_connection, $query) or die("reading value domains failed 1");
+	$result = mysqli_query(Config::$db_connection, $query) or die("reading value domains failed 1 ".$domain_name);
 	if($row = $result->fetch_assoc()){
 		$control_name = substr($row['source'], 53, (strlen($row['source']) -55));
 		mysqli_free_result($result);

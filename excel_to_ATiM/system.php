@@ -16,8 +16,8 @@ $db_charset		= "";
 
 $migration_user_id = null;
 
-global $files_path;
-$files_path = "";
+global $excel_files_paths;
+$excel_files_paths = "";
 global $excel_files_names;
 $excel_files_names = array();
 
@@ -201,8 +201,8 @@ function displayMigrationTitle($title, $display_file_names = false) {
 		<b><FONT COLOR=\"blue\">Date : </FONT>$import_date</b><br>
 		<FONT COLOR=\"blue\">=====================================================================</FONT><br>";
 	if($display_file_names && !empty($excel_files_paths)) {
-		foreach($excel_files_paths as $file_data) {
-			echo "<FONT COLOR=\"blue\" >File : </FONT>".$file_data['file_name']."<br>";		
+		foreach($display_file_names as $file_name) {
+			echo "<FONT COLOR=\"blue\" >File : </FONT>".$file_name."<br>";		
 		}
 		echo "<FONT COLOR=\"blue\" >=====================================================================</FONT><br>";
 	}
@@ -755,16 +755,19 @@ function validateAndGetDateAndAccuracy($date, $summary_section_title, $summary_t
 	} else if(preg_match('/^([0-9]+)$/', $date, $matches)) {
 		//format excel date integer representation
 		$php_offset = 946746000;//2000-01-01 (12h00 to avoid daylight problems)
-		$date = date("Y-m-d", $php_offset + (($date - $xls_offset) * 86400));
-		return array($date, 'c');
+		$formated_date = date("Y-m-d", $php_offset + (($date - $xls_offset) * 86400));
+		if(preg_match('/^(19|20)([0-9]{2})$/',$date)) {
+			recordErrorAndMessage($summary_section_title, '@@WARNING@@', 'Date Format Warning'.(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in), "The excel date value '$date' is considered by the migration process as an Excel formated date 'xxxx-xx-xx' but please validate it's not just the four digits of a year. Migrated date will be '$formated_date'.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]"));
+		}
+		return array($formated_date, 'c');
 	} else if(preg_match('/^(19|20)([0-9]{2})\-([01][0-9])\-([0-3][0-9])$/',$date,$matches)) {
 		return array($date, 'c');
 	} else if(preg_match('/^(19|20)([0-9]{2})\-([01][0-9])$/',$date,$matches)) {
 		return array($date.'-01', 'd');
-	} else if(preg_match('/^((19|20)([0-9]{2})\-([01][0-9]))\-unk$/',$date,$matches)) {
+	} else if(preg_match('/^((19|20)([0-9]{2})\-([01][0-9]))\-((xx)|(unk))$/',$date,$matches)) {
 		return array($matches[1].'-01', 'd');
-	} else if(preg_match('/^(19|20)([0-9]{2})$/',$date,$matches)) {
-		return array($date.'-01-01', 'm');
+	} else if(preg_match('/^((19|20)([0-9]{2}))\-((xx)|(unk))\-((xx)|(unk))$/',$date,$matches)) {
+		return array($matches[1].'-01-01', 'm');
 	} else if(preg_match('/^([0-3][0-9])\/([01][0-9])\/(19|20)([0-9]{2})$/',$date,$matches)) {
 		return array($matches[3].$matches[4].'-'.$matches[2].'-'.$matches[1], 'c');
 	} else if(preg_match('/^([0-3][0-9])\-([01][0-9])\-(19|20)([0-9]{2})$/',$date,$matches)) {
@@ -792,15 +795,13 @@ function validateAndGetDatetimeAndAccuracy($date, $time, $summary_section_title,
 	$date = str_replace(' ', '', $date);
 	$time = str_replace(' ', '', $time);
 	//** Get Date **
-	$tmp_date_and_accuracy = validateAndGetDateAndAccuracy($date, $summary_section_title, $summary_title_add_in, $summary_details_add_in);
-	if(!$tmp_date_and_accuracy['date']) {
+	list($formatted_date, $formatted_date_accuracy) = validateAndGetDateAndAccuracy($date, $summary_section_title, $summary_title_add_in, $summary_details_add_in);
+	if(!$formatted_date) {
 		if(!empty($time) && !in_array(strtolower($time), $empty_date_time_values)) {
 			recordErrorAndMessage($summary_section_title, '@@ERROR@@', 'DateTime Format Error: Date Is Missing'.(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in), "Format of the datetime '$date $time' is not supported! The datetime will be erased.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]"));
 		}
 		return array('', '');
 	} else {
-		$formatted_date = $tmp_date_and_accuracy['date'];
-		$formatted_date_accuracy = $tmp_date_and_accuracy['accuracy'];
 		//Combine date and time
 		if(empty($time) || in_array(strtolower($time), $empty_date_time_values)) {
 			return array($formatted_date.' 00:00', str_replace('c', 'h', $formatted_date_accuracy));
@@ -934,15 +935,15 @@ function validateAndGetInteger($integer_value, $summary_section_title, $summary_
  */
 function testExcelFile($file_names) {
 	global $import_summary;
-	global $files_path;
+	global $excel_files_paths;
 	$validated = true;
 	foreach($file_names as $excel_file_name) {	
-		if(!file_exists($files_path.$excel_file_name)) {
-			recordErrorAndMessage('Excel Data Reading', '@@ERROR@@', "Non-Existent File", "File '$excel_file_name' in directory ($files_path) does not exist. File won't be parsed.", $excel_file_name);
+		if(!file_exists($excel_files_paths.$excel_file_name)) {
+			recordErrorAndMessage('Excel Data Reading', '@@ERROR@@', "Non-Existent File", "File '$excel_file_name' in directory ($excel_files_paths) does not exist. File won't be parsed.", $excel_file_name);
 			$validated = false;
 		}
 		if(!preg_match('/\.xls$/', $excel_file_name)) {
-			recordErrorAndMessage('Excel Data Reading', '@@ERROR@@', "Wrong File Extension", "File '$excel_file_name' in directory ($files_path) is not a '.xls' file. File won't be parsed.", $excel_file_name);
+			recordErrorAndMessage('Excel Data Reading', '@@ERROR@@', "Wrong File Extension", "File '$excel_file_name' in directory ($excel_files_paths) is not a '.xls' file. File won't be parsed.", $excel_file_name);
 			$validated = false;
 		}
 	}
@@ -966,7 +967,7 @@ function testExcelFile($file_names) {
 function getNextExcelLineData($excel_file_name, $worksheet_name, $header_lines_nbr = 1, $file_xls_offset = '36526') {
 	global $import_summary;
 	global $XlsReader;
-	global $files_path;
+	global $excel_files_paths;
 	global $studied_excel_file_name_properties;
 	global $xls_offset;
 	
@@ -978,7 +979,7 @@ function getNextExcelLineData($excel_file_name, $worksheet_name, $header_lines_n
 		if(!testExcelFile(array($excel_file_name))) return false;
 		//Load Excel Data
 		$XlsReader = new Spreadsheet_Excel_Reader();	
-		$XlsReader->read($files_path.$excel_file_name);
+		$XlsReader->read($excel_files_paths.$excel_file_name);
 		//Set studied_excel_file_name_properties
 		$studied_excel_file_name_properties = array('file_name' => $excel_file_name, 'file_worksheets' => array());
 		foreach($XlsReader->boundsheets as $key => $tmp) $studied_excel_file_name_properties['file_worksheets'][$tmp['name']] = $key;
@@ -1065,7 +1066,7 @@ function getNextExcelLineData($excel_file_name, $worksheet_name, $header_lines_n
 			$data_found = false;
 			foreach($studied_excel_file_name_properties['headers'] as $key => $field) {
 				if(isset($new_excel_line_data[$key])) {
-					$formatted_new_line_data[trim(utf8_encode($field))] = trim(utf8_encode($new_excel_line_data[$key]));
+					$formatted_new_line_data[trim(utf8_encode($field))] = trim(utf8_encode(str_replace('"', "'", $new_excel_line_data[$key])));
 					$data_found = true;
 				} else {
 					$formatted_new_line_data[trim(utf8_encode($field))] = '';
