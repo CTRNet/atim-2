@@ -1,6 +1,6 @@
 <?php
 require_once("../common/myFunctions.php");
-$json = null;
+$json = new \stdClass();
 if($_POST){
 	foreach($_POST as $key => $val){
 		$json->$key = $val;
