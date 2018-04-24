@@ -17,11 +17,11 @@ function getConnection(){
 	global $db_schema;
 	global $config;
 	$db = @new mysqli($config['mysql_host'], $config['mysql_user'], $config['mysql_pwd']);
-	
+        
 	if ($db->connect_errno) {
 	    die('Connect Error: ' . $db->connect_errno.": ".$db->connect_error."<br/>You need to configure the database connection in myFunctions.php");
 	}
-	if(!$db->set_charset("latin1")){
+	if(!$db->set_charset("utf8")){
 		die("We failed");
 	}
 	
