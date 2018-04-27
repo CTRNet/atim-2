@@ -41,7 +41,7 @@ function createQuery() {
         json.push(
                 '{' +
                 '"id" : "' + $(this).attr("id") +
-                '", "flag_active" : "' + $(this).hasClass("disabled") +
+                '", "flag_active" : "' + !$(this).hasClass("disabled") +
                 '", "display_order" : "' + displayOrder +
                 '" }'
                 );

@@ -1,0 +1,124 @@
+@CHARSET "UTF-8";
+body{
+	font-family: arial;	
+	font-size: 85%;
+	line-height: 84%;
+}
+
+#top{
+	clear: both;	
+}
+#specimens{
+	border: black solid 1px;
+	float: left;
+	width: 200px;
+	margin-right: 5px;
+}
+
+#derivatives{
+	border: black solid 1px;
+	margin-left: 205px;
+}
+
+ul{
+	list-style-type: none;
+	white-space: nowrap;
+}
+li.sample{
+	margin: 0 5px 10px -20px;
+}
+div.sample_cell{
+	border: black solid 1px;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	width: 200px;
+	cursor: pointer;
+}
+
+span.small{
+	margin-left: 10px;	
+}
+.small{
+	font-size: 70%;
+	font-variant: normal;
+	text-transform: none;
+}
+
+ul.aliquots{
+	width: 160px;	
+}
+li.aliquot div{
+	border: black solid 1px;
+	margin: 0 0 0 -20px;
+	padding-left: 4px;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	cursor: pointer;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+}
+li.derivative:last-child{
+	padding-bottom: 20px;
+}
+
+ul.line li{
+	display: inline-block;
+	vertical-align: middle;
+}
+ul.row li{
+	display: block;	
+}
+ul.samples{
+	display: inline-block; 
+	vertical-align: middle; 
+}
+div.sample_node{
+	display: inline-block;
+	vertical-align: middle;	
+}
+.disabled div.sample_cell, .disabled li.aliquot div, li.aliquot.disabled div, .disabled ul.realiquots li, ul.realiquots li.disabled, div.derivative.disabled{
+	/* disabled */
+	font-style: italic;
+	background-color: grey;	
+}
+.disabled div.sample_cell:hover, .disabled li.aliquot div:hover, li.aliquot.disabled div:hover, .disabled ul.realiquots li:hover, ul.realiquots li.disabled:hover, div.derivative.disabled:hover{
+	/* disabled hover*/
+	background-color: #CCC;
+}
+div.sample_cell:hover, li.aliquot div:hover, ul.realiquots li:hover, div.derivative:hover{
+	/* active hover */
+	background-color: #FFC;
+}
+ul.realiquots li{
+	border: black solid 1px;
+	margin: 0 0 0 -20px;
+	padding-left: 4px;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	cursor: pointer;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+}
+
+#out{
+	line-height: normal;
+	font-family: courier;
+	height: 100px;	
+}
+#diagram{
+	margin-left: -25px;	
+}
+
+div.sample_cell, div.aliquot_cell, li.realiquot{
+	min-height: 20px;	
+}
+
+div.derivative{
+	display: inline-block;
+	border: black dotted 1px;
+	margin: 2px 0 2px -20px;
+	padding: 4px;
+	font-variant: small-caps;
+	text-transform: capitalize;
+	cursor: pointer;
+}

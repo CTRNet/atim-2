@@ -17,9 +17,9 @@ foreach ($json as $node) {
     $res = $stmt->get_result();
     $row = $res->fetch_assoc();
     if (!empty($row)) {
-        if ($row['flag_active'] && $node->flag_active == "true") {
+        if (!$row['flag_active'] && $node->flag_active == "true") {
             $toDisable[] = $node->id;
-        } else if (!$row['flag_active'] && $node->flag_active == "false") {
+        } else if ($row['flag_active'] && $node->flag_active == "false") {
             $toEnable[] = $node->id;
         }
         if ($row['display_order'] != $node->display_order) {

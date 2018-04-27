@@ -25,7 +25,7 @@
         </script>
 
     </head>
-    <body>
+    <body id = "tools-menu">
         <div id="top">
             Current database: 
             <?php

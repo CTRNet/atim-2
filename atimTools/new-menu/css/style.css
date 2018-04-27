@@ -1,41 +1,43 @@
 @CHARSET "UTF-8";
-body{
+
+#tools-menu body{
     font-family: arial;	
 }
 
-li div{
+#tools-menu li div{
     border: solid black 1px;
     display: inline-block;	
     padding: 1px;
     cursor: pointer;
+    background-color: white;
 }
 
-.disabled div{
+#tools-menu .disabled div{
     background-color: #CCC;
 }
 
-#menus{
+#tools-menu #menus{
     display: flex;
     direction: row;
     justify-content: space-around;
 }
 
-.unchangable div{
+#tools-menu .unchangable div{
     background-color: #fafafa;
     background-image: url('../images/background.gif');
     background-attachment: fixed;
 }
 
-.unchangable div:hover{
+#tools-menu .unchangable div:hover{
     cursor: not-allowed;
 }
 
-textarea{
+#tools-menu textarea{
     width: 100%;
     height: 250px;
 }
 
-span.plus, span.minus, span.empty{
+#tools-menu span.plus, span.minus, span.empty{
     cursor: pointer;
     display: inline-block;
     width: 7px;
