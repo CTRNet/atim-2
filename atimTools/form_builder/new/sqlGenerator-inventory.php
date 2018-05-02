@@ -1,5 +1,5 @@
 <?php
-require_once("../common/myFunctions.php");
+require_once("../../common/myFunctions.php");
 $json = $_POST['json'];
 //$json = '[{'id': 169, 'parent_id': 121, 'children_id': 119, 'flag_active': false}]';
 
