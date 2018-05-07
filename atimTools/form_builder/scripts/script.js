@@ -115,7 +115,7 @@ $(function () {
             if ($(this).hasClass("autoBuildIncrement")) {
                 css += " autoBuildIncrement ";
             }
-            var inputTypeNValueNSize = $(this).hasClass("checkbox") ? 'type="checkbox" value="1"' : 'type="text" size="13"';
+            var inputTypeNValueNSize = $(this).hasClass("checkbox") ? 'type="checkbox" value="1" checked' : 'type="text" size="13"';
             result += '<td><input id="' + prefix + "_" + $(this).html() + '" ' + inputTypeNValueNSize + ' class="' + css + '" ' + readonly + '/>' + autoincrement + '</td>';
         });
         result += "</tr>";
@@ -126,9 +126,9 @@ $(function () {
     $("#piton4 table:first a").each(function () {
         $($(this).find("span")[0]).removeClass("ui-icon-plus").addClass("ui-icon-arrowthickstop-1-s");
         $($(this).find("span")[1]).html("Load value domain");
-        $("#piton4 table:nth-child(4)").find("input:first, input:last").prop("type", "hidden");
-        $($("#piton4 table:nth-child(4) tfoot tr:first input")[4]).prop("checked", true);
-        $("#piton4 table:nth-child(4) tfoot tr:nth-child(2) td").append(' <a href="#no" id="addFromPopup" class="ui-state-default ui-corner-all button_link"><span class="button_icon ui-icon ui-icon-newwin"></span><span>Add from text area</span></a>');
+        $("#piton4 table:eq(1)").find("input:first, input:last").prop("type", "hidden");
+        $($("#piton4 table:eq(1) tfoot tr:first input")[4]).prop("checked", true);
+        $("#piton4 table:eq(1) tfoot tr:nth-child(2) td").append(' <a href="#no" id="addFromPopup" class="ui-state-default ui-corner-all button_link"><span class="button_icon ui-icon ui-icon-newwin"></span><span>Add from text area</span></a>');
         $("#addFromPopup").click(function () {
             $("#addFromTextAreaDialog").dialog('open').find("textarea").focus();
         });
@@ -150,13 +150,13 @@ $(function () {
                         line.flag_active = '<input type="checkbox" ' + (line.flag_active == 0 ? "" : 'checked="checked"') + '/>';
                         html += "<tr><td>" + deleteLine + "</td>" + mTd + line.value + "</td>" + mTd + line.language_alias + "</td>" + mTd + line.display_order + "</td><td>" + line.flag_active + "</td><td>" + line.structure_permissible_value_id + "</td></tr>";
                     }
-                    $("#piton4 table:nth-child(4) tbody").html(html);
+                    $("#piton4 table:eq(1) tbody").html(html);
                 }
             });
         });
-        $("#piton4 table:nth-child(4) a.add").click(function () {
+        $("#piton4 table:eq(1) a.add").click(function () {
             var html = "<tr><td>" + deleteLine + "</td>";
-            $("#piton4 table:nth-child(4) tfoot tr:first input").each(function () {
+            $("#piton4 table:eq(1) tfoot tr:first input").each(function () {
                 if ($(this).attr("type") == "checkbox") {
                     html += '<td><input type="checkbox" ' + ($(this).prop("checked") ? 'checked="checked"' : "") + "/></td>";
                 } else if ($(this).attr("type") != "hidden") {
@@ -165,14 +165,92 @@ $(function () {
                 }
             });
             html += "<td></td></tr>";
-            $("#piton4 table:nth-child(4) tbody").append(html);
+            $("#piton4 table:eq(1) tbody").append(html);
             return false;
         });
 
         $("#clearAutoBuildTableValueDomain").click(function () {
-            $("#piton4 table:nth-child(4) tbody").html("");
+            $("#piton4 table:eq(1) tbody").html("");
         });
-        $("#generateSQLValueDomain").click(function () {
+    });
+
+    $("#piton4 table:eq(2) a").each(function () {
+        $($(this).find("span")[0]).removeClass("ui-icon-plus").addClass("ui-icon-arrowthickstop-1-s");
+        $($(this).find("span")[1]).html("Load value domain");
+        $("#piton4 table:eq(3)").find("input:first, input:last").prop("type", "hidden");
+        $(this).click(function () {
+            //load value domain
+            var command = {type: "value_domains_variable", as: "json", val: $("#structure_value_domains_variable_domain_name").val()};
+            $.post("loader.php", command, function (data) {
+                data = $.parseJSON(data);
+                if (data.length == 0) {
+                    $("#noDataValueDomainDialog").dialog('open');
+                } else {
+                    $("#structure_value_domains_variable_name").val(data[0].name);
+                    $("#structure_value_domains_variable_category").val(data[0].category);
+                    $("#structure_value_domains_variable_values_max_length").val(data[0].values_max_length);
+                    $("#generateSQLValueDomain").attr("data-control_id", data[0].control_id);
+                    var html = "";
+                    var mTd = '<td class="clickable editable">';
+                    for (var i = 0; i < data.length; ++i) {
+                        var line = data[i];
+                        line.use_as_input = '<input type="checkbox" ' + (line.use_as_input == 0 ? "" : 'checked="checked"') + '/>';
+                        html += "<tr><td>" + deleteLine + "</td>" + mTd + line.value + "</td>" + mTd + line.en + "</td>" + mTd + line.fr + "</td>" + mTd + line.display_order + "</td><td>" + line.use_as_input + "</td><td>" + line.id + "</td></tr>";
+                    }
+                    $("#piton4 table:eq(3) tbody").html(html);
+                }
+            });
+        });
+        $("#piton4 table:eq(3) a.add").click(function () {
+            var html = "<tr><td>" + deleteLine + "</td>";
+            $("#piton4 table:eq(3) tfoot tr:first input").each(function () {
+                if ($(this).attr("type") == "checkbox") {
+                    html += '<td><input type="checkbox" ' + ($(this).prop("checked") ? 'checked="checked"' : "") + "/></td>";
+                } else if ($(this).attr("type") != "hidden") {
+                    html += '<td class="clickable editable">' + $(this).val() + "</td>";
+
+                }
+            });
+            html += "<td></td></tr>";
+            $("#piton4 table:eq(3) tbody").append(html);
+            return false;
+        });
+
+        $("#clearAutoBuildTableValueDomain").click(function () {
+            $("#piton4 table:eq(3) tbody").html("");
+        });
+    });
+
+    $("#piton4 table:eq(4) a").each(function () {
+        $($(this).find("span")[0]).removeClass("ui-icon-plus").addClass("ui-icon-arrowthickstop-1-s");
+        $($(this).find("span")[1]).html("Load value domain");
+        $(this).click(function () {
+            //load value domain
+            var command = {type: "value_domains_function", as: "json", val: $("#structure_value_domains_function_domain_name").val()};
+            $.post("loader.php", command, function (data) {
+                data = $.parseJSON(data);
+                if (data.length == 0) {
+                    $("#noDataValueDomainDialog").dialog('open');
+                } else {
+                    $("#structure_value_domains_function_override").val(data[0].override);
+                    $("#structure_value_domains_function_category").val(data[0].category);
+                    $("#structure_value_domains_function_source").val(data[0].source);
+                    var source = data[0].source.replace(".", "::");
+                    var plugin = source.split("::")[0];
+                    var model = source.split("::")[1];
+                    var func = source.split("::")[2];
+                    $("#structure_value_domains_function_plugin").val(plugin);
+                    $("#structure_value_domains_function_model").val(model);
+                    $("#structure_value_domains_function_function").val(func);
+                }
+            });
+        });
+    });
+
+
+    $("#generateSQLValueDomain").click(function () {
+        selectedMenu = $("#select-value-domain").val();
+        if (selectedMenu == "1") {
             if ($("#structure_value_domains_domain_name").val().length == 0) {
                 flashColor($("#structure_value_domains_domain_name"), "#f00");
             } else {
@@ -180,10 +258,10 @@ $(function () {
                 toSend.domain_name = $("#structure_value_domains_domain_name").val();
                 toSend.override = $("#structure_value_domains_override").val();
                 toSend.category = $("#structure_value_domains_category").val();
-                toSend.source = $("#structure_value_domains_source").val();
+                toSend.source = "";
                 toSend.rows = new Array();
                 //as of jQuery 1.7.1, if the "tr" part is within the original call, some browsers return nothing
-                $("#piton4 table:nth-child(4) tbody").find("tr").each(function () {
+                $("#piton4 table:eq(1) tbody").find("tr").each(function () {
                     var tds = $(this).find("td");
                     var currentRow = new Object();
                     currentRow.value = $(tds[1]).html();
@@ -197,8 +275,51 @@ $(function () {
                     $("#resultZone").val($("#resultZone").val() + data + "\n");
                 });
             }
-            return false;
-        });
+        } else if (selectedMenu == "2") {
+            if ($("#structure_value_domains_variable_domain_name").val().length == 0) {
+                flashColor($("#structure_value_domains_variable_domain_name"), "#f00");
+            } else {
+                var toSend = new Object();
+                toSend.domain_name = $("#structure_value_domains_variable_domain_name").val();
+                toSend.name = $("#structure_value_domains_variable_name").val();
+                toSend.category = $("#structure_value_domains_variable_category").val();
+                toSend.flag_active = $("#structure_value_domains_variable_flag_active").val();
+                toSend.values_max_length = $("#structure_value_domains_variable_values_max_length").val();
+                toSend.control_id = $("#generateSQLValueDomain").attr("data-control_id");
+                toSend.rows = new Array();
+                $("#piton4 table:eq(3) tbody").find("tr").each(function () {
+                    var tds = $(this).find("td");
+                    var currentRow = new Object();
+                    currentRow.control_id = $("#generateSQLValueDomain").attr("data-control_id");
+                    currentRow.value = $(tds[1]).html();
+                    currentRow.en = $(tds[2]).html();
+                    currentRow.fr = $(tds[3]).html();
+                    currentRow.display_order = $(tds[4]).html();
+                    currentRow.use_as_input = $(tds[5]).find("input").prop("checked") ? 1 : 0;
+                    currentRow.id = $(tds[6]).html();
+                    toSend.rows.push(currentRow);
+                });
+                $.post("sqlGeneratorValueDomainVariable.php", toSend, function (data) {
+                    $("#resultZone").val($("#resultZone").val() + data + "\n");
+                });
+
+            }
+        } else if (selectedMenu == "3") {
+            if ($("#structure_value_domains_function_domain_name").val().length == 0) {
+                flashColor($("#structure_value_domains_function_domain_name"), "#f00");
+            } else {
+                var toSend = new Object();
+                toSend.domain_name = $("#structure_value_domains_function_domain_name").val();
+                toSend.override = $("#structure_value_domains_function_override").val();
+                toSend.category = $("#structure_value_domains_function_category").val();
+                toSend.source = $("#structure_value_domains_function_plugin").val() + "." + $("#structure_value_domains_function_model").val() + "::" + $("#structure_value_domains_function_function").val();
+                $.post("sqlGeneratorValueDomainFunction.php", toSend, function (data) {
+                    $("#resultZone").val($("#resultZone").val() + data + "\n");
+                });
+
+            }
+        }
+        return false;
     });
 
 
@@ -328,7 +449,7 @@ $(function () {
                             $("#struct_val_domain_language_alias").val(txt[i]);
                             $("#struct_val_domain_display_order").val(0);
                             $("#struct_val_domain_flag_active").prop("checked", true);
-                            $("#piton4 table:nth-child(4) a.add").click();
+                            $("#piton4 table:nth-child(1) a.add").click();
                         }
                     } else {
                         for (var i = 0; i < txt.length; ++i) {
@@ -539,6 +660,21 @@ $(function () {
     });
 
     calculateAutoBuild2LeftMargin();
+
+    $$("#select-value-domain").selectmenu({
+        width: 200,
+        change: function (event, ui) {
+            options = $$("#select-value-domain option");
+            for (var i = 0; i < options.length; i++) {
+                var val = options[i].value;
+
+                if (val == ui.item.value) {
+                    $(".select-value-domain" + val).show();
+                } else {
+                    $(".select-value-domain" + val).hide();
+                }
+            }
+        }});
 
     $(document).delegate("#createAll", "click", function () {
         var toIgnore = ["id", "created", "created_by", "modified", "modified_by", "deleted"];
@@ -792,7 +928,10 @@ function fieldToggle(field) {
 
 function autoCompelete() {
     ids = [
-        {id: "#structure_value_domains_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", button: "#piton4 table:first a"},
+        {id: "#structure_value_domains_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "source is NULL"},
+        {id: "#structure_value_domains_variable_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "source LIKE '%(%)%'"},
+        {id: "#structure_value_domains_function_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "source IS NOT NULL AND source NOT LIKE '%(%)%'"},
+        {id: "#structure_value_domains_function_plugin", table: "acos", field: "alias", order: "alias", where: "parent_id='1'"},
         {id: "#autoBuild1_alias", table: "structures", field: "alias", order: "alias"}
     ];
     ids.forEach(function (item) {
@@ -801,6 +940,7 @@ function autoCompelete() {
                 try {
                     data = JSON.parse(data);
                     $$(this.val.id).autocomplete({
+                        autoFocus: true,
                         source: data,
                         select: function (event, ui) {
                             $(this).val(ui.item.value);
@@ -814,5 +954,4 @@ function autoCompelete() {
 
     });
 }
-
 

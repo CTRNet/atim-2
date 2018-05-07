@@ -83,14 +83,18 @@ require_once("../common/myFunctions.php");
                 <li><a href="#custom-drop-down">Custom drop-down list</a></li>
             </ul>
             <div id="piton4" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
-                <h3>Create structure value domains</h3>
-                <table class="insert">
+                <select id='select-value-domain'>
+                    <option value = '1' selected>Value Domain (Fix)</option>
+                    <option value = '2'>Value Domain (Variable)</option>
+                    <option value = '3'>functional Value Domain</option>
+                </select>
+                <h3 class = "select-value-domain1">Create Fixed structure value domains</h3>
+                <table class="insert select-value-domain1">
                     <thead class="structure_value_domains">
                         <tr>
                             <th class="notEmpty">domain_name</th>
                             <th>override</th>
                             <th>category</th>
-                            <th class="notEmpty">source</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -98,8 +102,8 @@ require_once("../common/myFunctions.php");
                     <tfoot>
                     </tfoot>
                 </table>
-                <h3>Create structure value domain permissible values</h3>
-                <table class="insert">
+                <h3 class="select-value-domain1">Create structure value domain permissible values</h3>
+                <table class="insert select-value-domain1">
                     <thead class="custom struct_val_domain">
                         <tr>
                             <th></th><!-- delete button -->
@@ -108,6 +112,60 @@ require_once("../common/myFunctions.php");
                             <th>display_order</th>
                             <th class="checkbox">flag_active</th>
                             <th>structure_permissible_value_id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+
+
+                <h3 class="select-value-domain2">Create Variable structure value domains</h3>
+                <table class="insert select-value-domain2">
+                    <thead class="structure_value_domains_variable">
+                        <tr>
+                            <th class="notEmpty">domain_name</th>
+                            <th>name</th>
+                            <th>category</th>
+                            <th>values_max_length</th>
+                            <th class ="checkbox">flag_active</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+                <h3 class="select-value-domain2">Create structure value domain permissible values</h3>
+                <table class="insert select-value-domain2">
+                    <thead class="custom structure_value_domains_variable">
+                        <tr>
+                            <th></th><!-- delete button -->
+                            <th>value</th>
+                            <th>English</th>
+                            <th>Français</th>
+                            <th>display_order</th>
+                            <th class="checkbox">use_as_input</th>
+                            <th>id</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <tfoot>
+                    </tfoot>
+                </table>
+                
+                <h3 class="select-value-domain3">Create Function structure value domains</h3>
+                <table class="insert select-value-domain3">
+                    <thead class="structure_value_domains_function">
+                        <tr>
+                            <th class="notEmpty">domain_name</th>
+                            <th>override</th>
+                            <th>category</th>
+                            <th>plugin</th>
+                            <th>model</th>
+                            <th>function</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -179,7 +237,7 @@ require_once("../common/myFunctions.php");
                 <a href="#" id="clearAutoBuildTable" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
             </div>
             <div id="tools-menu" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
-                
+
 
                 <div id = "menus">
                     <div id = "left-menu">
@@ -246,7 +304,7 @@ require_once("../common/myFunctions.php");
             </div>
 
             <div id="custom-drop-down" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
-                
+
             </div>
 
 

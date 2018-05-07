@@ -63,15 +63,15 @@
     cursor: pointer;
 }
 
-#tools-inventory .display-block{
+.display-block{
     display: block;
 }
 
-#tools-inventory .display-none{
+.display-none{
     display: none;
 }
 
-#tools-inventory .display-inline-block{
+.display-inline-block{
     display: inline-block;
 }
 
@@ -119,3 +119,19 @@
     display: inline-block;
 }
 
+.select-value-domain2, .select-value-domain3{
+    display: none;
+}
+
+#piton4 table td{
+    white-space: nowrap;
+    width: 1%;
+}
+
+#piton4 table input{
+    width: 100%;
+}
+
+.hidden{
+    display: none;
+}

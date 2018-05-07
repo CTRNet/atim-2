@@ -3,7 +3,7 @@
 require_once("../common/myFunctions.php");
 $data = json_decode($_POST["data"]);
 
-$query = "SELECT " . $data->field . " value FROM " . $data->table . " ORDER BY " . $data->order;
+$query = "SELECT " . $data->field . " as value FROM " . $data->table .(isset($data->where)?" where ".$data->where:"") ." ORDER BY " . $data->order;
 $db = getConnection();
 $stmt = $db->prepare($query) or die("Select a database;");
 $stmt->execute();
