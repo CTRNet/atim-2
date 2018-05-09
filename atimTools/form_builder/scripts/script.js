@@ -188,6 +188,7 @@ $(function () {
                 } else {
                     $("#structure_value_domains_variable_name").val(data[0].name);
                     $("#structure_value_domains_variable_category").val(data[0].category);
+                    $("#structure_value_domains_variable_override").val(data[0].override);
                     $("#structure_value_domains_variable_values_max_length").val(data[0].values_max_length);
                     $("#generateSQLValueDomain").attr("data-control_id", data[0].control_id);
                     var html = "";
@@ -586,7 +587,7 @@ $(function () {
     $("#autoBuild2_type").jsonSuggest(structureTypes);
 
 
-    bottomMenu = ['yes', 'yes', 'no'];
+    bottomMenu = ['yes', 'yes', 'no', 'no', 'yes'];
     $("#queryBuilder").tabs({
         selected: 1,
         select: function (event, ui) {
@@ -596,6 +597,11 @@ $(function () {
             } else {
                 $("#databaseExplorer").show();
                 $("#resultZone").show();
+            }
+            if (ui.index == 4) {
+                if ($$("#data-mart svg").length == 0) {
+                    dataBrowser();
+                }
             }
         }});
     $("#databaseExplorer").tabs();
@@ -694,8 +700,285 @@ $(function () {
         event.stopPropagation();
         return false;
     });
+
+    $$('#structure_value_domains_override').closest("td").html(
+            '<select name="override" id="structure_value_domains_override">      <option selected="selected"></option>      <option>open</option>      <option>extend</option>      <option>locked</option></select>'
+            );
+
+    $$('#structure_value_domains_function_override').closest("td").html(
+            '<select name="override" id="structure_value_domains_function_override">      <option selected="selected"></option>      <option>open</option>      <option>extend</option>      <option>locked</option></select>'
+            );
+
+
     autoCompelete();
 });
+var dmbc = [];
+var dms = [];
+
+function dataBrowser() {
+    idModel = [
+        {id: 1, model: 'ViewAliquot'},
+        {id: 2, model: 'ViewCollection'},
+        {id: 3, model: 'NonTmaBlockStorage'},
+        {id: 4, model: 'Participant'},
+        {id: 5, model: 'ViewSample'},
+        {id: 6, model: 'MiscIdentifier'},
+        {id: 7, model: 'ViewAliquotUse'},
+        {id: 8, model: 'ConsentMaster'},
+        {id: 9, model: 'DiagnosisMaster'},
+        {id: 10, model: 'TreatmentMaster'},
+        {id: 11, model: 'FamilyHistory'},
+        {id: 12, model: 'ParticipantMessage'},
+        {id: 13, model: 'QualityCtrl'},
+        {id: 14, model: 'EventMaster'},
+        {id: 15, model: 'SpecimenReviewMaster'},
+        {id: 16, model: 'OrderItem'},
+        {id: 17, model: 'Shipment'},
+        {id: 18, model: 'ParticipantContact'},
+        {id: 19, model: 'ReproductiveHistory'},
+        {id: 20, model: 'TreatmentExtendMaster'},
+        {id: 21, model: 'AliquotReviewMaster'},
+        {id: 22, model: 'Order'},
+        {id: 23, model: 'TmaSlide'},
+        {id: 24, model: 'TmaBlock'},
+        {id: 25, model: 'StudySummary'},
+        {id: 26, model: 'OrderLine'},
+        {id: 27, model: 'TmaSlideUse'}
+    ];
+
+    $$.ajax({url: "idModel.php", type: "POST", success: function (data) {
+            try {
+                data = JSON.parse(data);
+                a = JSON.stringify(idModel);
+                b = JSON.stringify(data['idModel']);
+                dms = data['dms'];
+                addPosition(dms);
+                dmbc = data['dmbc'];
+                if (a != b) {
+                    alert("The datamart_structures table is not correspond to the default and so the result of data browsing is not guarantied.");
+                }
+                drawDataMartDiagram(dms, dmbc);
+            } catch (err) {
+
+            }
+        }});
+}
+
+function addPosition(dms) {
+    dms[0]['position'] = [2, 3];
+    dms[1]['position'] = [2, 6];
+    dms[2]['position'] = [2, 2];
+    dms[3]['position'] = [2, 7];
+    dms[4]['position'] = [1, 5];
+    dms[5]['position'] = [0, 8];
+    dms[6]['position'] = [0, 2];
+    dms[7]['position'] = [0, 7];
+    dms[8]['position'] = [4, 7];
+    dms[9]['position'] = [4, 6];
+    dms[10]['position'] = [2, 9];
+    dms[11]['position'] = [1, 9];
+    dms[12]['position'] = [4, 4];
+    dms[13]['position'] = [4, 8];
+    dms[14]['position'] = [0, 5];
+    dms[15]['position'] = [3, 2];
+    dms[16]['position'] = [4, 2];
+    dms[17]['position'] = [4, 9];
+    dms[18]['position'] = [3, 9];
+    dms[19]['position'] = [4, 5];
+    dms[20]['position'] = [0, 3];
+    dms[21]['position'] = [4, 1];
+    dms[22]['position'] = [1, 1];
+    dms[23]['position'] = [1, 2];
+    dms[24]['position'] = {'exception': [[0, 1], [4, 0], [1, 4], [0, 6], [0, 9]]};
+    dms[25]['position'] = [3, 1];
+    dms[26]['position'] = [1, 0];
+}
+
+function makeExceptions() {
+    exception = [];
+    exception['25-27'] = [0, 1];
+    exception['25-23'] = [0, 1];
+    exception['25-7'] = [0, 1];
+    exception['25-26'] = [4, 0];
+    exception['25-22'] = [4, 0];
+    exception['25-1'] = [1, 4];
+    exception['25-8'] = [0, 6];
+    exception['25-6'] = [0, 9];
+
+    return exception;
+}
+
+function drawDataMartDiagram(dms, dmbc) {
+    var exceptions = makeExceptions();
+    var div = $$("#data-mart");
+    div.html("");
+    div.append("<table id='data-mart-table'>");
+    div.append("<svg>");
+    var table = $$(div.find("table"));
+    var svg = $$(div.find("svg"));
+    var i, j;
+    for (i = 0; i < 5; i++) {
+        table.append("<tr id = 'dm-row-" + i + "'></tr>");
+        for (j = 0; j < 10; j++) {
+            td = "<td id = 'dm-cell-" + i + "-" + j + "'></td>";
+            table.find("tr").eq(i).append(td);
+        }
+    }
+    svg.attr("id", "data-mart-svg");
+    svg.css("top", "-502px");
+    svg.attr("height", "502");
+    svg.attr("width", "1042");
+
+    generateQuery = '<a href="#" id="generateSQLDataMart" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>';
+    div.append(generateQuery);
+
+    for (i in dmbc) {
+        var id1 = dmbc[i][0];
+        var id2 = dmbc[i][1];
+        var active = dmbc[i][2];
+        if (typeof exceptions[id1 + "-" + id2] === 'undefined' && typeof exceptions[id2 + "-" + id1] === 'undefined') {
+            dmsTemp1 = dms.find(function (item) {
+                return item.id == id1
+            });
+            dmsTemp2 = dms.find(function (item) {
+                return item.id == id2
+            });
+            x1 = dmsTemp1.position[0];
+            y1 = dmsTemp1.position[1];
+            x2 = dmsTemp2.position[0];
+            y2 = dmsTemp2.position[1];
+        } else if (typeof exceptions[id1 + "-" + id2] !== 'undefined') {
+            x1 = exceptions[id1 + "-" + id2][0];
+            y1 = exceptions[id1 + "-" + id2][1];
+            dmsTemp2 = dms.find(function (item) {
+                return item.id == id2
+            });
+            x2 = dmsTemp2.position[0];
+            y2 = dmsTemp2.position[1];
+        } else if (typeof exceptions[id2 + "-" + id1] !== 'undefined') {
+            x1 = exceptions[id2 + "-" + id1][0];
+            y1 = exceptions[id2 + "-" + id1][1];
+            dmsTemp1 = dms.find(function (item) {
+                return item.id == id1
+            });
+            x2 = dmsTemp1.position[0];
+            y2 = dmsTemp1.position[1];
+        }
+
+        activeClass = (active) ? "data-mart-active" : "data-mart-passive";
+        td1 = table.find("#dm-cell-" + x1 + "-" + y1);
+        td2 = table.find("#dm-cell-" + x2 + "-" + y2);
+
+        x1 = Math.floor(td1.position().left + 50);
+        y1 = Math.floor(td1.position().top + 50);
+        x2 = Math.floor(td2.position().left + 50);
+        y2 = Math.floor(td2.position().top + 50);
+
+        distance = 16;
+        if (x1 < x2) {
+            x1 += distance;
+            x2 -= distance;
+        } else if (x2 < x1) {
+            x1 -= distance;
+            x2 += distance;
+        }
+
+        if (y1 < y2) {
+            y1 += distance;
+            y2 -= distance;
+        } else if (y2 < y1) {
+            y1 -= distance;
+            y2 += distance;
+        }
+
+        if (id1 != id2) {
+            var line2 = $$(document.createElementNS('http://www.w3.org/2000/svg', 'line')).attr({id: 'line-' + i, x1: x1, y1: y1, x2: x2, y2: y2, class: activeClass, "data-from": id1, "data-to": id2, "data-active": active})
+                    .css("stroke-width", "10").click(function () {
+                createDataBartQuery(this);
+            });
+
+            svg.append(line2);
+        } else {
+            var circle2 = $$(document.createElementNS('http://www.w3.org/2000/svg', 'ellipse')).attr({
+                class: activeClass, id: 'line-' + i, cx: x1, cy: y1 + 20, rx: 10, ry: 20, "data-from": id1, "data-to": id2, "data-active": active})
+                    .css("stroke-width", "10").css("fill", "none").click(function () {
+                createDataBartQuery(this);
+            });
+            svg.append(circle2);
+        }
+    }
+
+    for (i in dms) {
+        id = dms[i].id;
+        name = dms[i].name;
+        img = "<img src='img/datamart/" + id + ".png' alt = '" + name + "' title = '" + name + "'>";
+        if (typeof dms[i].position[0] !== "undefined") {
+            queries = dms[i].position[0];
+            y = dms[i].position[1];
+            td = table.find("#dm-cell-" + queries + "-" + y).prepend(img);
+            y = Math.floor(td.position().top + Math.floor(td.css("height").replace("px", "")) / 2);
+            queries = Math.floor(td.position().left + Math.floor(td.css("width").replace("px", "")) / 2);
+            var circle = $$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr({cx: queries, cy: y, r: 10})
+                    .css("stroke-width", "1").css("fill", "#fff").css("fill-opacity", "0.01");
+
+            svg.append(circle);
+            var text = $$(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
+            svg.children(":last-child").append(text);
+            svg.children(":last-child").children().text(name);
+        } else {
+            ex = dms[i].position.exception;
+            for (j in ex) {
+                queries = ex[j][0];
+                y = ex[j][1];
+                td = table.find("#dm-cell-" + queries + "-" + y).prepend(img);
+                y = Math.floor(td.position().top + Math.floor(td.css("height").replace("px", "")) / 2);
+                queries = Math.floor(td.position().left + Math.floor(td.css("width").replace("px", "")) / 2);
+                var circle = $$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr({cx: queries, cy: y, r: 10})
+                        .css("stroke-width", "1").css("fill", "#fff").css("fill-opacity", "0.01");
+
+                svg.append(circle);
+                var text = $$(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
+                svg.children(":last-child").append(text);
+                svg.children(":last-child").children().text(name);
+
+            }
+        }
+    }
+
+
+}
+toEnable = [];
+toDisable = [];
+function createDataBartQuery(e) {
+    $this = $$(e);
+    $this.toggleClass("data-mart-active");
+    active = $this.hasClass("data-mart-active");
+    var id = $this.attr("id");
+    var from = parseInt($this.attr("data-from"));
+    var to = parseInt($this.attr("data-to"));
+    var activeOld = parseInt($this.attr("data-active"));
+
+    if (activeOld && active) {
+        delete toDisable[id];
+    } else if (activeOld && !active) {
+        query = "UPDATE datamart_browsing_controls set flag_active_1_to_2 = 0, flag_active_2_to_1 = 0 WHERE (id1 = " + from + " AND id2 =" + to + ") OR (id1 = " + to + " AND id2 =" + from + ");\n";
+        toDisable[id] = query;
+    } else if (!activeOld && active) {
+        query = "UPDATE datamart_browsing_controls set flag_active_1_to_2 = 1, flag_active_2_to_1 = 1 WHERE (id1 = " + from + " AND id2 =" + to + ") OR (id1 = " + to + " AND id2 =" + from + ");\n";
+        toEnable[id] = query;
+    } else if (!activeOld && !active) {
+        delete toEnable[id];
+    }
+    queries = "";
+    for (i in toEnable) {
+        queries += toEnable[i];
+    }
+    for (i in toDisable) {
+        queries += toDisable[i];
+    }
+    $$("#resultZone").text(queries);
+}
+
 
 function flashColor(item, color) {
     var timer = 80;

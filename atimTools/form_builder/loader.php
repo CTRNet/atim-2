@@ -59,7 +59,7 @@ if ($json->type == 'structures') {
                     fr,
                     display_order,
                     use_as_input,
-                    values_max_length, 
+                    values_max_length,
                     (SELECT source
                             FROM structure_value_domains svd
                             WHERE domain_name=\"" . $json->val . "\") source,

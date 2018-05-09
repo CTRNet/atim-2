@@ -74,7 +74,7 @@ function createNew($values, $domainName, $name, $category, $source, $valuesMaxLe
             . " WHERE name = '$name';" . NL . NL;
     if ($svdNew) {
         $return .= "INSERT INTO structure_value_domains (domain_name, override, category, source) values\n"
-                . "('$domainName', '', '', '$source');" . NL . NL;
+                . "('$domainName', 'open', '', '$source');" . NL . NL;
     } elseif ($svdNew == false) {
         $return .= "UPDATE structure_value_domains SET source = '$source' WHERE domain_name = '$domainName';" . NL . NL;
     }

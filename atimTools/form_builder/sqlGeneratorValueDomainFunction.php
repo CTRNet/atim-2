@@ -22,7 +22,6 @@ function createValueDomainVariableQuery() {
     $query = "SELECT * FROM structure_value_domains svd WHERE domain_name=\"$domainName\"";
     $db = getConnection();
     $stmt = $db->prepare($query) or die("Query failed at line " . __LINE__ . " " . $query . " " . $db->error);
-    $row = bindRow($stmt);
     $stmt->execute();
     $res = $stmt->get_result();
 
@@ -46,15 +45,28 @@ function createNew($domainName, $override, $category, $source) {
 }
 
 function edit($domainName, $override, $category, $source) {
-    $return = "start transaction;\n\n";
+    $return = "";
+    if (isChanged($domainName, $override, $category, $source)){
+        $return = "start transaction;\n\n";
 
-    $return .= "UPDATE `structure_value_domains` "
-            . "SET override = '$override', category = '$category', source = '$source'"
-            . "WHETE `domain_name`='$domainName';\n\n";
+        $return .= "UPDATE `structure_value_domains` "
+                . "SET override = '$override', category = '$category', source = '$source'"
+                . "WHERE `domain_name`='$domainName';\n\n";
 
-    $return .= "commit;\n";
+        $return .= "commit;\n";
+    }
     
     return $return;
+}
+
+function isChanged($domainName, $override, $category, $source){
+    $query = "SELECT * FROM structure_value_domains svd WHERE domain_name='$domainName' AND override = '$override' AND category = '$category' AND source = '$source'";
+    $db = getConnection();
+    $stmt = $db->prepare($query) or die("Query failed at line " . __LINE__ . " " . $query . " " . $db->error);
+    $stmt->execute();
+    $res = $stmt->get_result();
+    $row = $res->fetch_assoc();
+    return (empty($row));
 }
 
 function standardize($values) {

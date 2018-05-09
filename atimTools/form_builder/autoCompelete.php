@@ -5,7 +5,7 @@ $data = json_decode($_POST["data"]);
 
 $query = "SELECT " . $data->field . " as value FROM " . $data->table .(isset($data->where)?" where ".$data->where:"") ." ORDER BY " . $data->order;
 $db = getConnection();
-$stmt = $db->prepare($query) or die("Select a database;");
+$stmt = $db->prepare($query) or die("Query failed at line " . __LINE__ . " " . $query . " " . $db->error);
 $stmt->execute();
 $res = $stmt->get_result();
 $row = $res->fetch_assoc();

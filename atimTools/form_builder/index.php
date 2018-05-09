@@ -3,6 +3,8 @@ require_once("../common/myFunctions.php");
 ?>
 <html>
     <head>
+
+
         <link rel="stylesheet" type="text/css" media="screen" href="css/style.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/jsonSuggestME.css" />
         <link rel="stylesheet" type="text/css" media="screen" href="css/cupertino/jquery-ui-1.7.2.custom.css" />
@@ -30,6 +32,7 @@ require_once("../common/myFunctions.php");
         <script type="text/javascript" src="new/js/default-menu.js"></script>
         <script type="text/javascript" src="new/js/default-inventory.js"></script>
         <script type="text/javascript" src="new/js/jstree.min.js"></script>
+        <link rel="shortcut icon" href="img/favicon.ico" />
 
     </head>
     <body>
@@ -80,7 +83,7 @@ require_once("../common/myFunctions.php");
                 <li><a href="#piton5">Auto build</a></li>
                 <li><a href="#tools-menu">Menu builder</a></li>
                 <li><a href="#tools-inventory">Inventory configuration</a></li>
-                <li><a href="#custom-drop-down">Custom drop-down list</a></li>
+                <li><a href="#data-mart">Datamart</a></li>
             </ul>
             <div id="piton4" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
                 <select id='select-value-domain'>
@@ -155,7 +158,7 @@ require_once("../common/myFunctions.php");
                     <tfoot>
                     </tfoot>
                 </table>
-                
+
                 <h3 class="select-value-domain3">Create Function structure value domains</h3>
                 <table class="insert select-value-domain3">
                     <thead class="structure_value_domains_function">
@@ -303,8 +306,8 @@ require_once("../common/myFunctions.php");
 
             </div>
 
-            <div id="custom-drop-down" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
-
+            <div id="data-mart" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
+                Loading...
             </div>
 
 

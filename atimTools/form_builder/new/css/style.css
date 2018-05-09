@@ -40,7 +40,7 @@
     height: 250px;
 }
 
-#tools-menu span.plus, span.minus, span.empty{
+span.plus, span.minus, span.empty{
     cursor: pointer;
     display: inline-block;
     width: 7px;
@@ -63,19 +63,31 @@
     cursor: pointer;
 }
 
-.display-block{
+#tools-inventory .display-block{
     display: block;
 }
 
-.display-none{
+#tools-inventory .display-none{
     display: none;
 }
 
-.display-inline-block{
+#tools-inventory .display-inline-block{
     display: inline-block;
 }
 
-#tools-inventory #out{
+#tools-menu .display-block{
+    display: block;
+}
+
+#tools-menu .display-none{
+    display: none;
+}
+
+#tools-menu .display-inline-block{
+    display: inline-block;
+}
+
+#tools-inventory #out, #data-mart #data-mart-out{
     width: 100%;
     height: 250px;
 }
@@ -128,10 +140,58 @@
     width: 1%;
 }
 
-#piton4 table input{
+#piton4 table input,
+#piton4 table select {
     width: 100%;
 }
 
 .hidden{
     display: none;
+}
+
+.ui-autocomplete {
+    /*height: 250px;*/
+}
+
+.ui-autocomplete {
+    max-height: 250px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+}
+
+#data-mart-svg{
+    position: relative;
+    z-index: 2;
+}
+
+#data-mart-table{
+    position: relative;
+    z-index: 1;
+    border-collapse: collapse;
+}
+
+#data-mart-table td{
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    border-style: ridge;
+    border-color: rgba(127,127,127,.0);
+}
+#data-mart-table tbody tr:nth-child(odd){
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#data-mart .data-mart-active{
+    stroke: rgba(66,121,154, 0.3);
+}
+
+#data-mart line, #data-mart ellipse{
+    stroke: rgba(196,196,196, 0.3);
+    stroke-linecap: round;
+}
+#data-mart, #data-mart-graph{
+    height: 512px!important;
+    width: 100%!important;
+    overflow: hidden!important;
 }
