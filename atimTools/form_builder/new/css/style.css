@@ -190,8 +190,25 @@ span.plus, span.minus, span.empty{
     stroke: rgba(196,196,196, 0.3);
     stroke-linecap: round;
 }
+
+#data-mart line:hover, 
+#data-mart ellipse:hover{
+    cursor: pointer;
+}
+
 #data-mart, #data-mart-graph{
     height: 512px!important;
     width: 100%!important;
     overflow: hidden!important;
 }
+
+#data-mart .data-mart-node{
+    stroke-width: 1;
+    fill: #070;
+    fill-opacity: 0.01;
+}
+
+#data-mart .data-mart-from{
+    fill-opacity: 0.3;
+}
+

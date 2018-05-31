@@ -85,6 +85,8 @@ require_once("../common/myFunctions.php");
                 <li><a href="#tools-inventory">Inventory configuration</a></li>
                 <li><a href="#data-mart">Datamart</a></li>
             </ul>
+            
+            
             <div id="piton4" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
                 <select id='select-value-domain'>
                     <option value = '1' selected>Value Domain (Fix)</option>
@@ -180,6 +182,7 @@ require_once("../common/myFunctions.php");
                 <a href="#" id="generateSQLValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
                 <a href="#" id="clearAutoBuildTableValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
             </div>
+            
             <div id="piton5" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: auto;">
                 <table class="insert ui-widget ui-widget-content">
                     <thead class="custom autoBuild1">
@@ -239,6 +242,7 @@ require_once("../common/myFunctions.php");
                 <a href="#" id="generateSQL" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
                 <a href="#" id="clearAutoBuildTable" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
             </div>
+            
             <div id="tools-menu" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
 
 
@@ -267,6 +271,7 @@ require_once("../common/myFunctions.php");
 
                 </div>
             </div>
+            
             <div id="tools-inventory" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
 
                 <div id='content'>
@@ -309,6 +314,10 @@ require_once("../common/myFunctions.php");
             <div id="data-mart" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
                 Loading...
             </div>
+
+
+            <textarea id="resultZone" style="width: 100%; height: 20%; margin: 0px;"></textarea>
+            <div id="db_select_div_target"></div>
 
 
 
@@ -390,10 +399,6 @@ require_once("../common/myFunctions.php");
 
 
 
-            <textarea id="resultZone" style="width: 100%; height: 20%; margin: 0px;"></textarea>
-            <div id="db_select_div_target"></div>
-
-
             <div id="confirmDialog">
                 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>
                     WARNING: You currently have items in the auto build form. If you proceed, they will be removed.</p>
@@ -420,5 +425,6 @@ require_once("../common/myFunctions.php");
                 </ul>
                 <textarea cols=90" rows="13"></textarea>
             </div>
+    
     </body>
 </html>

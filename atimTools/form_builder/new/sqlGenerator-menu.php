@@ -18,9 +18,9 @@ foreach ($json as $node) {
     $row = $res->fetch_assoc();
     if (!empty($row)) {
         if (!$row['flag_active'] && $node->flag_active == "true") {
-            $toDisable[] = $node->id;
-        } else if ($row['flag_active'] && $node->flag_active == "false") {
             $toEnable[] = $node->id;
+        } else if ($row['flag_active'] && $node->flag_active == "false") {
+            $toDisable[] = $node->id;
         }
         if ($row['display_order'] != $node->display_order) {
             $toSorted[] = "UPDATE menus SET display_order=".$node->display_order." WHERE id = '".$node->id."';\n";
@@ -42,4 +42,3 @@ if (count($toSorted)) {
        echo $query; 
     }
 }
-

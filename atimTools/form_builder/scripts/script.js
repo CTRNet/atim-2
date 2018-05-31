@@ -814,6 +814,12 @@ function drawDataMartDiagram(dms, dmbc) {
     div.html("");
     div.append("<table id='data-mart-table'>");
     div.append("<svg>");
+    div.prepend('<a href="#" id="refresh-data-mart" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Refresh Datamart</span></a>');
+    div.find("#refresh-data-mart").click(function(){
+        div.html("Loading...");
+        $$("#resultZone").text("");
+        dataBrowser();
+    });
     var table = $$(div.find("table"));
     var svg = $$(div.find("svg"));
     var i, j;
@@ -913,13 +919,15 @@ function drawDataMartDiagram(dms, dmbc) {
         name = dms[i].name;
         img = "<img src='img/datamart/" + id + ".png' alt = '" + name + "' title = '" + name + "'>";
         if (typeof dms[i].position[0] !== "undefined") {
-            queries = dms[i].position[0];
+            x = dms[i].position[0];
             y = dms[i].position[1];
-            td = table.find("#dm-cell-" + queries + "-" + y).prepend(img);
+            td = table.find("#dm-cell-" + x + "-" + y).prepend(img);
             y = Math.floor(td.position().top + Math.floor(td.css("height").replace("px", "")) / 2);
-            queries = Math.floor(td.position().left + Math.floor(td.css("width").replace("px", "")) / 2);
-            var circle = $$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr({cx: queries, cy: y, r: 10})
-                    .css("stroke-width", "1").css("fill", "#fff").css("fill-opacity", "0.01");
+            x = Math.floor(td.position().left + Math.floor(td.css("width").replace("px", "")) / 2);
+            var circle = $$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr({cx: x + 5, cy: y + 5, r: 10, class: "data-mart-node"})
+                    .click(function () {
+                        addEdge(this);
+                    });
 
             svg.append(circle);
             var text = $$(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
@@ -928,13 +936,15 @@ function drawDataMartDiagram(dms, dmbc) {
         } else {
             ex = dms[i].position.exception;
             for (j in ex) {
-                queries = ex[j][0];
+                x = ex[j][0];
                 y = ex[j][1];
-                td = table.find("#dm-cell-" + queries + "-" + y).prepend(img);
+                td = table.find("#dm-cell-" + x + "-" + y).prepend(img);
                 y = Math.floor(td.position().top + Math.floor(td.css("height").replace("px", "")) / 2);
-                queries = Math.floor(td.position().left + Math.floor(td.css("width").replace("px", "")) / 2);
-                var circle = $$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr({cx: queries, cy: y, r: 10})
-                        .css("stroke-width", "1").css("fill", "#fff").css("fill-opacity", "0.01");
+                x = Math.floor(td.position().left + Math.floor(td.css("width").replace("px", "")) / 2);
+                var circle = $$(document.createElementNS('http://www.w3.org/2000/svg', 'circle')).attr({cx: x + 5, cy: y + 5, r: 10, class: "data-mart-node"})
+                        .click(function () {
+                            addEdge(this);
+                        });
 
                 svg.append(circle);
                 var text = $$(document.createElementNS('http://www.w3.org/2000/svg', 'title'));
@@ -947,6 +957,23 @@ function drawDataMartDiagram(dms, dmbc) {
 
 
 }
+
+function addEdge(e) {
+    $this = $$(e);
+    if ($this.hasClass("data-mart-from")) {
+        $this.removeClass("data-mart-from")
+    } else {
+        $from = $("#data-mart .data-mart-from");
+        if (typeof $form == 'undefined') {
+            $this.addClass("data-mart-from");
+        }
+
+
+    }
+}
+
+
+
 toEnable = [];
 toDisable = [];
 function createDataBartQuery(e) {
@@ -969,12 +996,15 @@ function createDataBartQuery(e) {
     } else if (!activeOld && !active) {
         delete toEnable[id];
     }
-    queries = "";
+    var queries = "";
     for (i in toEnable) {
         queries += toEnable[i];
     }
     for (i in toDisable) {
         queries += toDisable[i];
+    }
+    if (queries.length != 0) {
+        queries = "start transaction;\n" + queries + "commit;\n\n";
     }
     $$("#resultZone").text(queries);
 }
