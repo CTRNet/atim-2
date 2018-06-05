@@ -248,7 +248,6 @@ $(function () {
         });
     });
 
-
     $("#generateSQLValueDomain").click(function () {
         selectedMenu = $("#select-value-domain").val();
         if (selectedMenu == "1") {
@@ -972,8 +971,6 @@ function addEdge(e) {
     }
 }
 
-
-
 toEnable = [];
 toDisable = [];
 function createDataBartQuery(e) {
@@ -1008,7 +1005,6 @@ function createDataBartQuery(e) {
     }
     $$("#resultZone").text(queries);
 }
-
 
 function flashColor(item, color) {
     var timer = 80;
@@ -1267,4 +1263,3 @@ function autoCompelete() {
 
     });
 }
-

@@ -6,6 +6,8 @@ if (strtolower($data) == 'sample') {
     echo InventoryConfiguration::sampleControl();
 } elseif (strtolower($data) == 'aliquot') {
     echo InventoryConfiguration::aliquotControl();
+} elseif (strtolower($data) == 'samplelist') {
+    echo InventoryConfiguration::sampleListControl();
 }
 
 class InventoryConfiguration {
@@ -48,7 +50,7 @@ class InventoryConfiguration {
                 $display = (!$parent) ? "display-block" : "display-none";
                 $checked = ($flagActive) ? "checked" : "";
                 $parentId = ($parent) ? $parent : -1;
-                $return .= "<li data-id = '$id' class = 'no-bull-li $display' data-row-id = '$rowId' data-parent-id = '$parentId'>";
+                $return .= "<li data-id = '$id' class = 'no-bull-li $display sample-li' data-row-id = '$rowId' data-parent-id = '$parentId'>";
                 if (in_array($id, $parentsId) === false) {
                     $tempRespons = self::sampleControl($id, $parentsId);
                 }
@@ -57,19 +59,22 @@ class InventoryConfiguration {
                 $minusDisplay = "display-none";
                 $undoDisplay = "display-none";
                 $deleteDisplay = "display-inline-block";
+                $addDisplay = "display-inline-block";
+//                $trashDisplay = "display-inline-block";
                 $emptyDisplay = ($plusDisplay == "display-none") ? "display-inline-block" : "display-none";
 
                 $return .= "
-                        <span class = 'minus ui-icon ui-icon-minusthick $minusDisplay'></span>
-                        <span class = 'plus ui-icon ui-icon-plusthick $plusDisplay'></span>
+                        <span class = 'minus ui-icon ui-icon-caret-1-s $minusDisplay'></span>
+                        <span class = 'plus ui-icon ui-icon-caret-1-e $plusDisplay'></span>
                         <span class = 'empty ui-icon ui-icon-blank $emptyDisplay'></span>
                     ";
 
                 $return .= "<input class = 'check-box' type = 'checkbox' " . $checked . " data-id = '$id'>";
                 $return .= "<div class = 'display-inline-block aliquot-display-hover' >$title</div>";
                 $return .= "<span class = 'delete ui-icon ui-icon-closethick $deleteDisplay'></span>
-                            <span class = 'undo ui-icon ui-icon-arrowreturnthick-1-w $undoDisplay'></span>
-                        ";
+                            <span class = 'undo ui-icon ui-icon-arrowreturnthick-1-w $undoDisplay'></span>";
+//                $return .= ($parentId==-1)?"":"<span class = 'trash ui-icon ui-icon-trash $trashDisplay'></span>";
+                $return .= "<span class = 'add ui-icon ui-icon-plusthick $addDisplay'></span>";
                 if (in_array($id, $parentsId) === false) {
                     $return .= $tempRespons;
                 }
@@ -81,6 +86,50 @@ class InventoryConfiguration {
         }
         $stmt->close();
         return $return;
+    }
+
+    static function sampleListControl() {
+        $return = array();
+        $query = "
+                SELECT 
+                    id,
+                    sample_type, 
+                    sample_category,
+                    detail_form_alias,
+                    detail_tablename,
+                    databrowser_label
+                FROM 
+                    sample_controls
+                ORDER BY sample_type ASC        
+            ";
+        $db = getConnection();
+        $stmt = $db->prepare($query) or die("Select a database;");
+
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        if ($row) {
+            while ($row) {
+                $id = $row['id'];
+                $title = $row['sample_type'];
+                $sampleCategory = $row['sample_category'];
+                $detailFormAlias = $row['detail_form_alias'];
+                $detailTablename= $row['detail_tablename'];
+                $databrowserLabel = $row['databrowser_label'];
+                $return[$title] = array(
+                    'id' => $id, 
+                    'title' => $title,
+                    'sampleCategory' => $sampleCategory,
+                    'detailFormAlias' => $detailFormAlias,
+                    'detailTablename' => $detailTablename,
+                    'databrowserLabel' => $databrowserLabel,
+                    'listed' => ($sampleCategory == 'specimen') ? false : true
+                );
+                $row = $res->fetch_assoc();
+            }
+        }
+        $stmt->close();
+        return json_encode($return);
     }
 
     static function aliquotControl() {

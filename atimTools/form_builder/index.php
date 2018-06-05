@@ -15,23 +15,24 @@ require_once("../common/myFunctions.php");
 
 
         <script type="text/javascript" src="../common/js/jquery-1.7.1.min.js"></script>
+        <script> var $ = jQuery.noConflict(true); </script>
+
+        <script type="text/javascript" src="new/js/jquery-1.12.4.js"></script>
+        <script> var $$ = jQuery.noConflict(true); </script>
+        
+        <script> jQuery = $; </script>
+        
         <script type="text/javascript" src="scripts/jquery.jsonSuggestME.js"></script>
         <script type="text/javascript" src="scripts/jquery.color.js"></script>
         <script type="text/javascript" src="scripts/jquery-ui-1.7.2.custom.min.js"></script>
         <script type="text/javascript" src="scripts/jquery.tablesorter.min.js"></script>
         <script type="text/javascript" src="scripts/script.js"></script>
-        <script>
-            var $ = jQuery.noConflict(true);
-        </script>
-
-        <script type="text/javascript" src="new/js/jquery-1.12.4.js"></script>
-        <script>
-            var $$ = jQuery.noConflict(true);
-        </script>
+        
         <script type="text/javascript" src="new/js/jquery-ui.js"></script>
         <script type="text/javascript" src="new/js/default-menu.js"></script>
         <script type="text/javascript" src="new/js/default-inventory.js"></script>
         <script type="text/javascript" src="new/js/jstree.min.js"></script>
+        
         <link rel="shortcut icon" href="img/favicon.ico" />
 
     </head>
@@ -179,8 +180,8 @@ require_once("../common/myFunctions.php");
                     </tfoot>
                 </table>
 
-                <a href="#" id="generateSQLValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
-                <a href="#" id="clearAutoBuildTableValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
+                <a href="javascript:void(0)" id="generateSQLValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
+                <a href="javascript:void(0)" id="clearAutoBuildTableValueDomain" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
             </div>
             
             <div id="piton5" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: auto;">
@@ -239,8 +240,8 @@ require_once("../common/myFunctions.php");
                     <tfoot>
                     </tfoot>
                 </table>
-                <a href="#" id="generateSQL" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
-                <a href="#" id="clearAutoBuildTable" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
+                <a href="javascript:void(0)" id="generateSQL" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
+                <a href="javascript:void(0)" id="clearAutoBuildTable" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Clear table</span></a>
             </div>
             
             <div id="tools-menu" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
@@ -282,11 +283,20 @@ require_once("../common/myFunctions.php");
                         </fieldset>
                     </div>
 
-                    <div>
-                        <fieldset>
-                            <legend>Aliquots + Realiquoting</legend>
-                            <div id="aliquot-sample"></div>
-                        </fieldset>
+                    <div id="tools-inventory-middle">
+                        <div id = "tools-inventory-realiquoting">
+                            <fieldset>
+                                <legend>Aliquots + Realiquoting</legend>
+                                <div id="aliquot-sample"></div>
+                            </fieldset>
+                        </div>
+                        
+                        <div id = "tools-inventory-aliases">
+                            <fieldset>
+                                <legend>Aliases</legend>
+                                <div id="inventory-aliases"></div>
+                            </fieldset>
+                        </div>
                     </div>
 
                     <div id="preview">
@@ -297,24 +307,21 @@ require_once("../common/myFunctions.php");
                     </div>
                 </div>
 
-                <button id="create-query">Query</button>
-                <button id ="copy-queries" disabled>Copy</button>
+                <a href="javascript:void(0)" id="tools-inventory-create-query" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>
+                <a href="javascript:void(0)" id="tools-inventory-copy-queries" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-copy"></span><span>Copy Queries</span></a>
 
                 <fieldset>
                     <legend>Queries</legend>
-                    <textarea id="out"></textarea>
+                    <textarea id="tools-inventory-out"></textarea>
                 </fieldset>
                 <div id="aliquot" style="display: none">
                 </div>
-
-
 
             </div>
 
             <div id="data-mart" class="structure_value_domainsDiv create" style="border-style: solid; white-space: normal; overflow: scroll;">
                 Loading...
             </div>
-
 
             <textarea id="resultZone" style="width: 100%; height: 20%; margin: 0px;"></textarea>
             <div id="db_select_div_target"></div>

@@ -35,13 +35,31 @@
     cursor: not-allowed;
 }
 
+#tools-menu .display-block{
+    display: block;
+}
+
+#tools-menu .display-none{
+    display: none;
+}
+
+#tools-menu .display-inline-block{
+    display: inline-block;
+}
+
 #tools-menu textarea{
     width: 100%;
     height: 250px;
 }
 
-span.plus, span.minus, span.empty{
+span.plus, span.minus{
     cursor: pointer;
+    display: inline-block;
+    width: 7px;
+    padding: 1px 5px;
+}
+
+span.plus, span.minus, span.empty{
     display: inline-block;
     width: 7px;
     padding: 1px 5px;
@@ -56,7 +74,12 @@ span.plus, span.minus, span.empty{
     list-style-type: none;
 }
 
+#tools-inventory span.save-alias, 
+#tools-inventory span.remove-alias, 
+#tools-inventory span.add-alias, 
 #tools-inventory span.plus, 
+#tools-inventory span.add, 
+#tools-inventory span.trash, 
 #tools-inventory span.minus, 
 #tools-inventory span.delete,
 #tools-inventory span.undo{
@@ -67,6 +90,23 @@ span.plus, span.minus, span.empty{
     display: block;
 }
 
+#tools-inventory .delete-for-ever{
+    display: none!important;
+    /*opacity: 0.3;*/
+}
+#tools-inventory .delete-for-ever div{
+    text-decoration: line-through!important;
+}
+    
+#tools-inventory .div-alias-name{
+    display: inline-block;
+}
+
+#tools-inventory .new-sample{
+    color: #0A0;
+    font-weight: bold;
+}
+
 #tools-inventory .display-none{
     display: none;
 }
@@ -75,19 +115,8 @@ span.plus, span.minus, span.empty{
     display: inline-block;
 }
 
-#tools-menu .display-block{
-    display: block;
-}
 
-#tools-menu .display-none{
-    display: none;
-}
-
-#tools-menu .display-inline-block{
-    display: inline-block;
-}
-
-#tools-inventory #out, #data-mart #data-mart-out{
+#tools-inventory-out, #data-mart #data-mart-out{
     width: 100%;
     height: 250px;
 }
@@ -96,6 +125,11 @@ span.plus, span.minus, span.empty{
     padding-left: 20px;
 }
 
+
+#tools-inventory #tools-inventory-middle{
+    display: flex;
+    flex-direction: column;
+}
 #tools-inventory #content{
     display: flex;
     flex-direction: row;
