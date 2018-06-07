@@ -13,8 +13,14 @@ if($json->fetching == "model"){
 }else if($json->fetching == "plugin"){
 	$query = "SELECT plugin FROM structure_fields WHERE plugin LIKE '%".$json->val."%' 
 			GROUP BY plugin ORDER BY plugin";
-}else if($json->fetching == "tablename"){
+}else if($json->fetching == "tablenamelist"){
 	$query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='".$db_schema."' AND TABLE_NAME LIKE '%".$json->val."%'  AND TABLE_NAME NOT LIKE '%_revs' LIMIT 15";
+}else if($json->fetching == "domain-value"){
+	$query = "SELECT DISTINCT domain_name FROM structure_value_domains WHERE  domain_name LIKE '%".$json->val."%' ORDER BY domain_name LIMIT 15";
+}else if($json->fetching == "tablenamelist"){
+	$query = "SELECT DISTINCT domain_name FROM structure_value_domains WHERE  domain_name LIKE '%".$json->val."%' ORDER BY domain_name LIMIT 15";
+}else if($json->fetching == "structure"){
+	$query = "SELECT DISTINCT alias FROM structures WHERE  alias LIKE '%".$json->val."%' ORDER BY alias LIMIT 15";
 }
 $result = $db->query($query) or die('[{"id" : "error", "text":"querry failed"}]');
 echo("[");

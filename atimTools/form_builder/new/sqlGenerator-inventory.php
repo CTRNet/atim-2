@@ -56,6 +56,7 @@ $stmt = $db->prepare($query) or die("prep 1 failed");
 $row = bindRow($stmt);
 $toDisable = array();
 $toEnable = array();
+$toChangeVolumeUnit = array();
 
 foreach ($json->aliquot as $node) {
     if ($node->id!=-1){
@@ -70,6 +71,9 @@ foreach ($json->aliquot as $node) {
         } else if ($row['flag_active'] && $node->flag_active == false) {
             $toDisable[] = $node->id;
         }
+        if ($node->volume_unit !=$row['volume_unit']){
+            $toChangeVolumeUnit[] = "UPDATE aliquot_controls SET volume_unit = '" . $node->volume_unit."' WHERE id = ".$node->id;
+        }
     }
 }
 if (count($toDisable)) {
@@ -77,6 +81,9 @@ if (count($toDisable)) {
 }
 if (count($toEnable)) {
     echo "UPDATE aliquot_controls SET flag_active=true WHERE id IN('", implode("', '", $toEnable), "');\n";
+}
+if (count($toChangeVolumeUnit)) {
+    echo implode(";\n", $toChangeVolumeUnit), ";\n";
 }
 
 

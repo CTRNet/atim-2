@@ -104,7 +104,7 @@ $(function () {
                 css += " readonly ";
             }
             if ($(this).hasClass("autoincrement")) {
-                autoincrement = '<a href="#" class="autoincrementButton">[+]</a>';
+                autoincrement = '<a href="javascript:void(0)" class="autoincrementButton">[+]</a>';
             }
             if ($(this).hasClass("notEmpty")) {
                 css += " notEmpty ";
@@ -119,7 +119,7 @@ $(function () {
             result += '<td><input id="' + prefix + "_" + $(this).html() + '" ' + inputTypeNValueNSize + ' class="' + css + '" ' + readonly + '/>' + autoincrement + '</td>';
         });
         result += "</tr>";
-        $(this).children("tfoot").html(result + '<tr><td colspan="30" class="scrollingButtons"><a href="#" class="add ui-state-default ui-corner-all button_link ' + $(this).children("thead").attr("class") + '" name="' + $(this).children("thead").attr("class") + '"><span class="button_icon ui-icon ui-icon-plus"></span><span>Add</span></a></td></tr>');
+        $(this).children("tfoot").html(result + '<tr><td colspan="30" class="scrollingButtons"><a href="javascript:void(0)" class="add ui-state-default ui-corner-all button_link ' + $(this).children("thead").attr("class") + '" name="' + $(this).children("thead").attr("class") + '"><span class="button_icon ui-icon ui-icon-plus"></span><span>Add</span></a></td></tr>');
     });
 
     //update structure value domain functions
@@ -135,8 +135,17 @@ $(function () {
         $(this).click(function () {
             //load value domain
             var command = {type: "value_domains", as: "json", val: $("#structure_value_domains_domain_name").val()};
+            var $this=$(this);
+            $this.siblings(".fix-variable").remove();
             $.post("loader.php", command, function (data) {
                 data = $.parseJSON(data);
+                $table = $(".select-value-domain1").eq(3);
+                var obj = data.reduce(function(acc, cur, i) {
+                  acc[cur.language_alias] = {fr: cur.fr, en: cur.en};
+                  return acc;
+                }, {});
+                $table.data('translate', obj);
+                
                 if (data.length == 0) {
                     $("#noDataValueDomainDialog").dialog('open');
                 } else {
@@ -151,9 +160,48 @@ $(function () {
                         html += "<tr><td>" + deleteLine + "</td>" + mTd + line.value + "</td>" + mTd + line.language_alias + "</td>" + mTd + line.display_order + "</td><td>" + line.flag_active + "</td><td>" + line.structure_permissible_value_id + "</td></tr>";
                     }
                     $("#piton4 table:eq(1) tbody").html(html);
+                    
+                    if ($this.siblings(".fix-variable").length === 0) {
+                        $this.after('<a href="javascript:void(0)" class="fix-variable ui-state-default ui-corner-all button_link structure_value_domains" name="fix-variable"><span>Fix --> Variable</span></a>');
+                        $(".fix-variable").on("click", function () {
+                            var domainValues=[];
+                            domainName = $("#structure_value_domains_domain_name").val();
+                            if (domainName == "") {
+                                alert("Should not be empty");
+                            } else {
+                                domainValues['domainName'] = domainName;
+                                domainValues['override'] = $("#structure_value_domains_override").val();
+                                domainValues['category'] = $("#structure_value_domains_category").val();
+                                $table = $(".select-value-domain1").eq(3);
+                                domainValues['values'] = [];
+                                
+                                var $tr, tds, en, fr, languageAlias;
+                                var i18n = $table.data('translate');
+                                $table.find("tbody").find("tr").each(function () {
+                                    $tr = $(this);
+                                    tds = $tr.find("td");
+                                    languageAlias = $(tds[2]).text();
+                                    en = (typeof i18n[languageAlias]!=='undefined')?i18n[languageAlias]['en']:"";
+                                    fr = (typeof i18n[languageAlias]!=='undefined')?i18n[languageAlias]['fr']:"";
+                                    domainValues['values'].push({
+                                        value: $(tds[1]).text(),
+                                        languageAlias: $(tds[2]).text(),
+                                        displayOrder: $(tds[3]).text(),
+                                        flagActive: $(tds[4]).find("input[type='checkbox']").prop('checked'),
+                                        structurePossibleValueId: $(tds[5]).text(),
+                                        en: en, 
+                                        fr: fr
+                                    });
+                                });
+                                $$( "#select-value-domain" ).val(2).selectmenu("refresh").trigger("selectmenuchange");
+                                fixToVariable(domainValues);
+                            }
+                        });
+                    }
                 }
             });
         });
+        
         $("#piton4 table:eq(1) a.add").click(function () {
             var html = "<tr><td>" + deleteLine + "</td>";
             $("#piton4 table:eq(1) tfoot tr:first input").each(function () {
@@ -161,11 +209,11 @@ $(function () {
                     html += '<td><input type="checkbox" ' + ($(this).prop("checked") ? 'checked="checked"' : "") + "/></td>";
                 } else if ($(this).attr("type") != "hidden") {
                     html += '<td class="clickable editable">' + $(this).val() + "</td>";
-
                 }
             });
             html += "<td></td></tr>";
             $("#piton4 table:eq(1) tbody").append(html);
+            
             return false;
         });
 
@@ -250,6 +298,7 @@ $(function () {
 
     $("#generateSQLValueDomain").click(function () {
         selectedMenu = $("#select-value-domain").val();
+        $("#resultZone").val("");
         if (selectedMenu == "1") {
             if ($("#structure_value_domains_domain_name").val().length == 0) {
                 flashColor($("#structure_value_domains_domain_name"), "#f00");
@@ -278,7 +327,9 @@ $(function () {
         } else if (selectedMenu == "2") {
             if ($("#structure_value_domains_variable_domain_name").val().length == 0) {
                 flashColor($("#structure_value_domains_variable_domain_name"), "#f00");
-            } else {
+            }else if ($("#structure_value_domains_variable_name").val()==""){
+                flashColor($("#structure_value_domains_variable_name"), "#f00");
+            }else {
                 var toSend = new Object();
                 toSend.domain_name = $("#structure_value_domains_variable_domain_name").val();
                 toSend.name = $("#structure_value_domains_variable_name").val();
@@ -330,8 +381,8 @@ $(function () {
         return false;
     });
     $(".add.autoBuild2").parent().append(
-            '&nbsp;<a href="#" class="ui-state-default ui-corner-all button_link ignoreButton" style="display: none;"><span class="button_icon ui-icon ui-icon-arrowreturn-1-w"></span><span>Ignore changes</span></a>&nbsp;'
-            + '<a href="#" class="ui-state-default ui-corner-all button_link deleteButton" style="display: none;"><span class="button_icon ui-icon ui-icon-close"></span><span>Delete</span></a>'
+            '&nbsp;<a href="javascript:void(0)" class="ui-state-default ui-corner-all button_link ignoreButton" style="display: none;"><span class="button_icon ui-icon ui-icon-arrowreturn-1-w"></span><span>Ignore changes</span></a>&nbsp;'
+            + '<a href="javascript:void(0)" class="ui-state-default ui-corner-all button_link deleteButton" style="display: none;"><span class="button_icon ui-icon ui-icon-close"></span><span>Delete</span></a>'
             );
 
     $("a.autoBuild1").each(function () {
@@ -582,6 +633,32 @@ $(function () {
             }
     );
 
+    $('#autoBuild2_structure_value_domain').jsonSuggest(function (text, wildCard, caseSensitive, notCharacter) {},
+            {type: 'GET',
+                url: 'suggest.php',
+                dataName: "json",
+                ajaxResults: true,
+                minCharacters: 1,
+                width: 240,
+                format: function (inputTxt) {
+                    return '{"val" : "' + inputTxt + '", "fetching" : "domain-value" }';
+                }
+            }
+    );
+
+    $('#autoBuild2_tablename').jsonSuggest(function (text, wildCard, caseSensitive, notCharacter) {},
+            {type: 'GET',
+                url: 'suggest.php',
+                dataName: "json",
+                ajaxResults: true,
+                minCharacters: 1,
+                width: 240,
+                format: function (inputTxt) {
+                    return '{"val" : "' + inputTxt + '", "fetching" : "tablenamelist" }';
+                }
+            }
+    );
+
     $("#structure_fields_type").jsonSuggest(structureTypes);
     $("#autoBuild2_type").jsonSuggest(structureTypes);
 
@@ -666,20 +743,23 @@ $(function () {
 
     calculateAutoBuild2LeftMargin();
 
-    $$("#select-value-domain").selectmenu({
-        width: 200,
-        change: function (event, ui) {
-            options = $$("#select-value-domain option");
-            for (var i = 0; i < options.length; i++) {
-                var val = options[i].value;
+    $$("#select-value-domain").on("selectmenuchange", function (event) {
+        options = $$("#select-value-domain option");
+        for (var i = 0; i < options.length; i++) {
+            var val = options[i].value;
 
-                if (val == ui.item.value) {
-                    $(".select-value-domain" + val).show();
-                } else {
-                    $(".select-value-domain" + val).hide();
-                }
+            if (val == event.target.value) {
+                $(".select-value-domain" + val).show();
+            } else {
+                $(".select-value-domain" + val).hide();
             }
-        }});
+        }
+    });
+    
+    
+    $$("#select-value-domain").selectmenu({
+        width: 200
+    });
 
     $(document).delegate("#createAll", "click", function () {
         var toIgnore = ["id", "created", "created_by", "modified", "modified_by", "deleted"];
@@ -713,6 +793,33 @@ $(function () {
 });
 var dmbc = [];
 var dms = [];
+
+function fixToVariable(domainValues){
+    var tds = $("table.select-value-domain2:eq(0) td");
+    $(tds[0]).find("input").val(domainValues['domainName']);
+    $(tds[1]).find("input").val("");
+    $(tds[2]).find("input").val(domainValues['category']);
+    $(tds[3]).find("input").val("");
+    $(tds[4]).find("input").prop("checked", true);
+
+    var $newTr = $('<tr><td><a href="#no" class="deleteLine">(x)</a></td><td class="clickable editable"></td><td class="clickable editable"></td><td class="clickable editable"></td><td class="clickable editable"></td><td><input type="checkbox"></td><td></td></tr>');
+    var $table = $("table.select-value-domain2:eq(1) tbody");
+    var tds, $currentTr, value;
+    $("table.select-value-domain2:eq(1) tbody tr").remove();
+
+    for (var i=0; i<domainValues["values"].length; i++){
+        $table.append($newTr.clone());
+        $currentTr = $table.children("tr:last");
+        value = domainValues["values"][i];
+        tds = $currentTr.find("td");
+        $(tds[1]).text(value['value']);
+        $(tds[2]).text(value['en']);
+        $(tds[3]).text(value['fr']);
+        $(tds[4]).text(value['displayOrder']);
+        $(tds[5]).find("input[type='checkbox']").prop("checked", value['flagActive']);
+        $(tds[6]).text("");
+    }
+}
 
 function dataBrowser() {
     idModel = [
@@ -813,7 +920,7 @@ function drawDataMartDiagram(dms, dmbc) {
     div.html("");
     div.append("<table id='data-mart-table'>");
     div.append("<svg>");
-    div.prepend('<a href="#" id="refresh-data-mart" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Refresh Datamart</span></a>');
+    div.prepend('<a href="javascript:void(0)" id="refresh-data-mart" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-refresh"></span><span>Refresh Datamart</span></a>');
     div.find("#refresh-data-mart").click(function(){
         div.html("Loading...");
         $$("#resultZone").text("");
@@ -834,7 +941,7 @@ function drawDataMartDiagram(dms, dmbc) {
     svg.attr("height", "502");
     svg.attr("width", "1042");
 
-    generateQuery = '<a href="#" id="generateSQLDataMart" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>';
+    generateQuery = '<a href="javascript:void(0)" id="generateSQLDataMart" class="ui-state-default ui-corner-all button_link custom" name="custom autoBuild1"><span class="button_icon ui-icon ui-icon-play"></span><span>Generate SQL</span></a>';
     div.append(generateQuery);
 
     for (i in dmbc) {
@@ -1003,7 +1110,7 @@ function createDataBartQuery(e) {
     if (queries.length != 0) {
         queries = "start transaction;\n" + queries + "commit;\n\n";
     }
-    $$("#resultZone").text(queries);
+    $$("#resultZone").val(queries);
 }
 
 function flashColor(item, color) {

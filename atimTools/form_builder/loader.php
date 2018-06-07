@@ -11,8 +11,6 @@ if ($_POST) {
 }
 $query = "";
 if ($json->type == 'structures') {
-
-
     if (is_numeric($json->val)) {
         $query = "SELECT alias FROM structures WHERE id='" . $json->val . "'";
         $result = $db->query($query) or die("Query failed " . $db->error);
@@ -47,8 +45,9 @@ if ($json->type == 'structures') {
     $query = "SELECT * FROM structure_value_domains AS svd
 				INNER JOIN structure_value_domains_permissible_values AS svdpv ON svd.id=svdpv.structure_value_domain_id
 				INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id				
+				INNER JOIN i18n ON i18n.id=spv.language_alias				
 				WHERE (domain_name = '" . $json->val . "' OR svd.id='" . $json->val . "')";
-} else if ($json->type == 'value_domains_variable') {
+    } else if ($json->type == 'value_domains_variable') {
     $query = "SELECT 
                     value,
                     sc.id control_id, 

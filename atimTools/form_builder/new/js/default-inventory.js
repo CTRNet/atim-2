@@ -103,8 +103,12 @@ $$(function () {
     function showRealiquoting($this){
         id = $this.siblings("input.check-box").attr("data-id");
         aliquot = $$("#aliquot").find("li.sample[data-id ='" + id + "']").eq(0).clone();
+        aliquot.find("li[data-volume-unit]").each(function(){
+            $(this).children("select").val($(this).attr('data-volume-unit'));
+        });
         $$("#aliquot-sample").html("");
         $$("#aliquot-sample").append(aliquot);
+        
         show("#aliquot-sample");
     }
 
@@ -408,132 +412,144 @@ $$(function () {
                 }
             });
         });
+        
+        $scope.find(".sample").find("select").change(function (){
+            var $this = $(this);
+            var $li = $this.closest("li");
+            var id, aliquot;
+                id = $li.data('id');
+            aliquot = $$("#aliquot").find("li[data-id='"+id+"'].aliquot");
+            aliquot.each(function(){
+                $(this).attr("data-volume-unit",$this.val());
+            });
+        });
     }
 
     function preview(scope, scopePreview) {
-            scope = $$(scope);
-            scopePreview = $$(scopePreview);
-            scopePreview.html("<div></div>");
-            scopePreview.children("div").eq(0).html(scope.children("ul").clone());
-            scopePreview.find("input[type=checkbox]:not(:checked)").closest("li").remove();
-            scopePreview.find("input[type=checkbox]:not(:checked)").closest("li").remove();
-            scopePreview.find(".delete, .undo, input[type=checkbox], .plus, .minus, .empty, .add, .trash").remove();
-            scopePreview.find("li.delete-for-ever").remove();
-            scopePreview.find("input").remove();
-//            scopePreview.find("div[style*='line-through']").closest("li").remove();
-            scopePreview.find("li").css("display", "list-item");
-            scopePreview.find("li").removeClass('display-none');
-            scopePreview.children("div").eq(0).find("div").each(function () {
-                $this = $$(this);
-                $this.replaceWith($this.text());
-            });
-            scopePreview.children("div").eq(0).jstree();
-        }
+        scope = $$(scope);
+        scopePreview = $$(scopePreview);
+        scopePreview.html("<div></div>");
+        scopePreview.children("div").eq(0).html(scope.children("ul").clone());
+        scopePreview.find("input[type=checkbox]:not(:checked)").closest("li").remove();
+        scopePreview.find("input[type=checkbox]:not(:checked)").closest("li").remove();
+        scopePreview.find(".delete, .undo, input[type=checkbox], .plus, .minus, .empty, .add, .trash").remove();
+        scopePreview.find("li.delete-for-ever").remove();
+        scopePreview.find("input").remove();
+        scopePreview.find("div[style*='line-through']").closest("li").remove();
+        scopePreview.find("li").css("display", "list-item");
+        scopePreview.find("li").removeClass('display-none');
+        scopePreview.children("div").eq(0).find("div").each(function () {
+            $this = $$(this);
+            $this.replaceWith($this.text());
+        });
+        scopePreview.children("div").eq(0).jstree();
+    }
 
     function sqlHelper(scope) {
-            $$("div#sql-helper").remove();
-            scopePreview = $$("<div class = 'display-none' id='sql-helper'></div>");
-            $$("body").append(scopePreview);
+        $$("div#sql-helper").remove();
+        scopePreview = $$("<div class = 'display-none' id='sql-helper'></div>");
+        $$("body").append(scopePreview);
 
-            scope = $$(scope);
-            scopePreview.html(scope.children("ul").clone());
-            scopePreview.find("input[type=checkbox]:not(:checked)").closest("li").remove()
-            scopePreview.find(".delete, .undo, input[type=checkbox], .plus, .minus, .empty").remove();
-            scopePreview.find("div[style*='line-through']").closest("li").remove();
-            scopePreview.find("li").css("display", "list-item");
-            scopePreview.find("li").removeClass('display-none');
-            scopePreview.find("div").each(function () {
-                $this = $$(this);
-                $this.replaceWith($this.text());
-            });
-        }
+        scope = $$(scope);
+        scopePreview.html(scope.children("ul").clone());
+        scopePreview.find("input[type=checkbox]:not(:checked)").closest("li").remove()
+        scopePreview.find(".delete, .undo, input[type=checkbox], .plus, .minus, .empty").remove();
+        scopePreview.find("div[style*='line-through']").closest("li").remove();
+        scopePreview.find("li").css("display", "list-item");
+        scopePreview.find("li").removeClass('display-none');
+        scopePreview.find("div").each(function () {
+            $this = $$(this);
+            $this.replaceWith($this.text());
+        });
+    }
 
     function createQuery() {
-            var sample = new Array();
-            var aliquot = new Array();
-            var realiquot = new Array();
-            var sampleControl = new Array();
+        var sample = new Array();
+        var aliquot = new Array();
+        var realiquot = new Array();
+        var sampleControl = new Array();
 
-            $$("#sample li").each(function () {
-                $this = $$(this);
+        $$("#sample li").each(function () {
+            $this = $$(this);
 
-            if ($this.hasClass("delete-for-ever")){
-                checked = 2;
-            }else{
-                checked = ($this.children("input[type='checkbox']").is(':checked') && $this.children("div[style*='line-through']").length === 0)?1:0;
-            }
+        if ($this.hasClass("delete-for-ever")){
+            checked = 2;
+        }else{
+            checked = ($this.children("input[type='checkbox']").is(':checked') && $this.children("div[style*='line-through']").length === 0)?1:0;
+        }
 
-            id = $this.attr('data-row-id');
-            parentId = $this.attr('data-parent-id');
-            derivatedId = $this.attr('data-id');
+        id = $this.attr('data-row-id');
+        parentId = $this.attr('data-parent-id');
+        derivatedId = $this.attr('data-id');
 
-            sample.push(
+        sample.push(
+                '{' +
+                '"id": ' + id +
+                ', "parent_id": ' + parentId +
+                ', "children_id": ' + derivatedId +
+                ', "flag_active": ' + checked +
+                '}'
+                );
+        });
+
+        $$("#aliquot li.aliquot").each(function () {
+            $this = $$(this);
+            checked = !$this.hasClass("disable");
+            id = $this.attr("data-id");
+            volumeUnit = $this.attr("data-volume-unit");
+            aliquot.push(
                     '{' +
                     '"id": ' + id +
-                    ', "parent_id": ' + parentId +
-                    ', "children_id": ' + derivatedId +
+                    ', "flag_active": ' + checked +
+                    ', "volume_unit": "' + volumeUnit + '"'+
+                    '}'
+                    );
+        });
+
+        $$("#aliquot li.re-aliquot").each(function () {
+            $this = $$(this);
+            checked = !$this.hasClass("disable");
+            id = $this.attr("data-id");
+            realiquot.push(
+                    '{' +
+                    '"id": ' + id +
                     ', "flag_active": ' + checked +
                     '}'
                     );
-            });
+        });
 
-            $$("#aliquot li.aliquot").each(function () {
-                $this = $$(this);
-                checked = !$this.hasClass("disable");
-                id = $this.attr("data-id");
-                aliquot.push(
-                        '{' +
-                        '"id": ' + id +
-                        ', "flag_active": ' + checked +
-                        '}'
-                        );
-            });
-
-            $$("#aliquot li.re-aliquot").each(function () {
-                $this = $$(this);
-                checked = !$this.hasClass("disable");
-                id = $this.attr("data-id");
-                realiquot.push(
-                        '{' +
-                        '"id": ' + id +
-                        ', "flag_active": ' + checked +
-                        '}'
-                        );
-            });
-            
-            for (var key in samples){
-                var value = samples[key];
-                if (typeof value["detailFormAliasTemp"] !=='undefined' && value["detailFormAliasTemp"]!=value["detailFormAlias"]){
-                    sampleControl.push(                        
-                        '{' +
-                        '"id": ' + value["id"] +
-                        ', "detail_form_alias": "' + value["detailFormAliasTemp"]+'"' +
-                        '}'
-                    );
-                }
+        for (var key in samples){
+            var value = samples[key];
+            if (typeof value["detailFormAliasTemp"] !=='undefined' && value["detailFormAliasTemp"]!=value["detailFormAlias"]){
+                sampleControl.push(                        
+                    '{' +
+                    '"id": ' + value["id"] +
+                    ', "detail_form_alias": "' + value["detailFormAliasTemp"]+'"' +
+                    '}'
+                );
             }
-
-            sample = sample.filter(function (item, pos) {
-                return sample.indexOf(item) === pos;
-            });
-            json = '{' +
-                    '"sample": [' + sample.join(', ') + '],' +
-                    '"aliquot": [' + aliquot.join(', ') + '],' +
-                    '"realiquot": [' + realiquot.join(', ') + '],' +
-                    '"sampleControls": [' + sampleControl.join(', ') + ']' +
-                    '}';
-
-            $$.post("new/sqlGenerator-inventory.php", "json=" + json, function (data) {
-                $$("#tools-inventory #tools-inventory-out").val(data);
-                if (data !== "") {
-                    $$("#tools-inventory #copy-queries").removeAttr("disabled");
-                } else {
-                    $$("#tools-inventory #copy-queries").attr("disabled", "disabled");
-                }
-            });
-
-
         }
+
+        sample = sample.filter(function (item, pos) {
+            return sample.indexOf(item) === pos;
+        });
+        json = '{' +
+                '"sample": [' + sample.join(', ') + '],' +
+                '"aliquot": [' + aliquot.join(', ') + '],' +
+                '"realiquot": [' + realiquot.join(', ') + '],' +
+                '"sampleControls": [' + sampleControl.join(', ') + ']' +
+                '}';
+
+        $$.post("new/sqlGenerator-inventory.php", "json=" + json, function (data) {
+            $$("#tools-inventory #tools-inventory-out").val(data);
+            if (data !== "") {
+                $$("#tools-inventory #copy-queries").removeAttr("disabled");
+            } else {
+                $$("#tools-inventory #copy-queries").attr("disabled", "disabled");
+            }
+        });
+
+    }
 
     function initialAliquots(scope) {
         $scope = $$(scope);
@@ -551,6 +567,16 @@ $$(function () {
         $$.get('new/samples.php', {data: 'aliquot'}, function (data) {
             $$("#aliquot").html(data);
             initialAliquots("#aliquot");
+            $$.get('new/samples.php', {data: 'valueUnit'}, function (data) {
+                var volumeUnitValues =$$.parseJSON(data);
+                $volumeUnitSelect =$$("<select class='volume-unit-aliquot'></select>");
+                for (var i=0; i<volumeUnitValues.length; i++){
+                    $volumeUnitSelect.append("<option val = '"+volumeUnitValues[i]['val']+"'>"+volumeUnitValues[i]['text']+"</option>");
+                }
+                $$("#aliquot").find("li[data-volume-unit]").each(function(){
+                    $(this).children("div").after($volumeUnitSelect.clone().val($(this).attr('data-volume-unit')));
+                });
+            });
         });
     }
 

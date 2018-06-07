@@ -85,3 +85,7 @@ th.headerSortDown {
 	margin-bottom: 27px;
 }
 
+.fix-variable{
+    display: inline-block;
+    float: right;
+}

@@ -8,7 +8,7 @@ echo createValueDomainVariableQuery();
 function createValueDomainVariableQuery() {
 
     $data = standardize($_POST);
-//print_r($data); 
+
     unset($_POST);
     $values = isset($data['rows']) ? $data['rows'] : array();
 
@@ -16,7 +16,7 @@ function createValueDomainVariableQuery() {
     $name = isset($data['name']) ? $data['name'] : "";
     $category = isset($data['category']) ? $data['category'] : "";
     $source = sprintf("StructurePermissibleValuesCustom::getCustomDropdown(\'%s\')", $name);
-    $valuesMaxLength = isset($data['values_max_length']) ? $data['values_max_length'] : "";
+    $valuesMaxLength = !empty($data['values_max_length']) ? $data['values_max_length'] : 0;
     $flag_active = isset($data['flag_active']) ? $data['flag_active'] : 0;
     $control_id = isset($data['control_id']) ? $data['control_id'] : 0;
 
@@ -32,12 +32,70 @@ function createValueDomainVariableQuery() {
     $res = $stmt->get_result();
 
     $row = $res->fetch_assoc();
+    
     $nameTemp = substr($row['source'], strpos($row['source'], "'") + 1, -2);
-    if (!$row || $nameTemp != $name) {
+    $isNameUnique = isNameUnique($name);
+    if ($row && empty($row['source'])){
+        if (!$isNameUnique){
+            return "Error: This name ($name) is already choosen";
+        }
+        return fix2Variable($values, $domainName, $name, $category, $source, $valuesMaxLength, $flag_active);
+    }elseif (!$row || $nameTemp != $name) {
+        if (!$isNameUnique){
+            return "Error: This name ($name) is already choosen";
+        }
         return createNew($values, $domainName, $name, $category, $source, $valuesMaxLength, $flag_active, !$row);
     } else {
         return edit($values, $name, $category, $valuesMaxLength, $flag_active, $control_id);
     }
+}
+
+function fix2Variable($values, $domainName, $name, $category, $source, $valuesMaxLength, $flag_active){
+
+    $return = "start transaction;\n";
+
+    $return .= "INSERT INTO structure_permissible_values_custom_controls \n(name, flag_active, values_max_length, category) VALUES\n";
+    $return .= "('$name', $flag_active, $valuesMaxLength, '$category');" . NL . NL;
+
+    $return .= "SET @control_id = (SELECT id FROM structure_permissible_values_custom_controls WHERE name = '$name');" . NL . NL;
+
+    $return .= "SET @user_id = 2;" . NL . NL;
+
+    $return .= "INSERT INTO structure_permissible_values_customs \n(`value`, `en`, `fr`, `display_order`, `use_as_input`, `control_id`, `modified`, `created`, `created_by`, `modified_by`) VALUES\n";
+
+    $maxLen = 0;
+    $valueAsIputCounter = 0;
+    $query = array();
+    foreach ($values as $value) {
+        if ($value['use_as_input']) {
+            $valueAsIputCounter++;
+        }
+        $query[] = '("' . $value['value'] . '", "' . $value['en'] . '", "' . $value['fr'] . '", "' . $value['display_order'] . '", "' . $value['use_as_input'] . '", @control_id, NOW(), NOW(), @user_id, @user_id)';
+
+        if ($maxLen < strlen($value['value'])) {
+            $maxLen = strlen($value['value']);
+        }
+    }
+
+    $return .= implode(", \n", $query) . ";" . NL . NL;
+
+    if ($maxLen>$valuesMaxLength){
+        $return.="\n\n-- Attention: one or more 'VALUE' length exceed $valuesMaxLength.\n\n";
+    }
+    
+    $return .= "UPDATE structure_permissible_values_custom_controls \n"
+            . " SET values_used_as_input_counter = $valueAsIputCounter, values_counter = " . count($values)
+            . " WHERE name = '$name';" . NL . NL;
+
+    $return .= "UPDATE structure_value_domains SET source = '$source' WHERE domain_name = '$domainName';" . NL . NL;
+
+    $return .= "SET @id = (SELECT id FROM structure_value_domains WHERE domain_name = '$domainName');" . NL . NL;
+    
+    $return.= "UPDATE structure_value_domains_permissible_values SET flag_active = 0 WHERE structure_value_domain_id = @id;" . NL . NL;
+
+    $return .= "commit;\n";
+    return $return;
+
 }
 
 function createNew($values, $domainName, $name, $category, $source, $valuesMaxLength, $flag_active, $svdNew) {
@@ -61,15 +119,23 @@ function createNew($values, $domainName, $name, $category, $source, $valuesMaxLe
             $valueAsIputCounter++;
         }
         $query[] = '("' . $value['value'] . '", "' . $value['en'] . '", "' . $value['fr'] . '", "' . $value['display_order'] . '", "' . $value['use_as_input'] . '", @control_id, NOW(), NOW(), @user_id, @user_id)';
-        if ($maxLen < max(strlen($value['value']), strlen($value['en']), strlen($value['fr']))) {
-            $maxLen = max(strlen($value['value']), strlen($value['en']), strlen($value['fr']));
+//        if ($maxLen < max(strlen($value['value']), strlen($value['en']), strlen($value['fr']))) {
+//            $maxLen = max(strlen($value['value']), strlen($value['en']), strlen($value['fr']));
+//        }
+        if ($maxLen < strlen($value['value'])) {
+            $maxLen = strlen($value['value']);
         }
     }
 
     $return .= implode(", \n", $query) . ";" . NL . NL;
 
+    if ($maxLen>$valuesMaxLength){
+        $return.="\n\n-- Attention: one or more 'VALUE' length exceed $valuesMaxLength.\n\n";
+    }
+    
     $return .= "UPDATE structure_permissible_values_custom_controls \n"
-            . "SET values_max_length = IF($valuesMaxLength<$maxLen, $maxLen, $valuesMaxLength),"
+//            . "SET values_max_length = IF($valuesMaxLength<$maxLen, $maxLen, $valuesMaxLength),"
+            . "SET values_max_length = $valuesMaxLength,"
             . " values_used_as_input_counter = $valueAsIputCounter, values_counter = " . count($values)
             . " WHERE name = '$name';" . NL . NL;
     if ($svdNew) {
@@ -117,20 +183,30 @@ function edit($values, $name, $category, $valuesMaxLength, $flag_active, $contro
                             . "`value` = '" . $value['value'] . "', `en` = '" . $value['en'] . "', `fr` = '" . $value['fr'] . "', `use_as_input` = '" . $value['use_as_input'] . "', `control_id` = $control_id, `modified` = NOW() \n"
                             . "WHERE id = " . $value['id'] . ";";
                 }
-                if ($maxLen < max(strlen($value['value']), strlen($value['en']), strlen($value['fr']))) {
-                    $maxLen = max(strlen($value['value']), strlen($value['en']), strlen($value['fr']));
+//                if ($maxLen < max(strlen($value['value']), strlen($value['en']), strlen($value['fr']))) {
+//                    $maxLen = max(strlen($value['value']), strlen($value['en']), strlen($value['fr']));
+//                }
+                if ($maxLen < strlen($value['value'])) {
+                    $maxLen = strlen($value['value']);
                 }
             }
-
+            
+            if ($maxLen>$valuesMaxLength){
+                $return.="\n\n-- Attention: one or more 'VALUE' length exceed $valuesMaxLength.\n\n";
+            }
+            
             if (!empty($insertQuery)) {
                 $return .= $insert . implode(", \n", $insertQuery) . ";" . NL . NL;
             }
+            
             if (!empty($updateQuery)) {
                 $return .= implode(", \n", $updateQuery) . NL . NL;
             }
+            
 
             $return .= "UPDATE structure_permissible_values_custom_controls \n"
-                    . "SET values_max_length = IF($valuesMaxLength<$maxLen, $maxLen, $valuesMaxLength),"
+//                    . "SET values_max_length = IF($valuesMaxLength<$maxLen, $maxLen, $valuesMaxLength),"
+                    . "SET values_max_length = $valuesMaxLength,"
                     . " values_used_as_input_counter = $valueAsIputCounter, values_counter = " . count($values)
                     . " WHERE id = '$control_id';" . NL . NL;
 
@@ -144,6 +220,17 @@ function edit($values, $name, $category, $valuesMaxLength, $flag_active, $contro
         $return = "start transaction;\n" . $return . "commit;\n";
     }
     return $return;
+}
+
+function isNameUnique($name){
+    $query = "SELECT * FROM structure_permissible_values_custom_controls svd WHERE name=\"$name\"";
+    $db = getConnection();
+    $stmt = $db->prepare($query) or die("Query failed at line " . __LINE__ . " " . $query . " " . $db->error);
+    $stmt->execute();
+    $res = $stmt->get_result();
+
+    $row = $res->fetch_assoc();
+    return empty($row);
 }
 
 function isStructure_permissible_values_custom_controlsChanged($flag_active, $valuesMaxLength, $category, $name) {

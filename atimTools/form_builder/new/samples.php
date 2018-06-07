@@ -8,10 +8,40 @@ if (strtolower($data) == 'sample') {
     echo InventoryConfiguration::aliquotControl();
 } elseif (strtolower($data) == 'samplelist') {
     echo InventoryConfiguration::sampleListControl();
+} elseif (strtolower($data) == 'valueunit') {
+    echo InventoryConfiguration::valueUnit();
 }
 
 class InventoryConfiguration {
 
+    static function valueUnit(){
+        $return = [];
+        $query = "
+            SELECT * FROM structure_value_domains AS svd
+            INNER JOIN structure_value_domains_permissible_values AS svdpv ON svd.id=svdpv.structure_value_domain_id
+            INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id				
+            INNER JOIN i18n ON i18n.id=spv.language_alias				
+            WHERE (domain_name = 'aliquot_volume_unit' OR svd.id='aliquot_volume_unit')
+        ";
+
+        $db = getConnection();
+        $stmt = $db->prepare($query) or die("Error in file:". __FILE__.", line:".__LINE__);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $row = $res->fetch_assoc();
+        while ($row) {
+            $value = $row['value'];
+            $en = $row['en'];
+            $return[]=array(
+                "val" => $value,
+                "text" => $en
+            );
+        $row = $res->fetch_assoc();
+        }
+
+        return json_encode($return);
+    }
+    
     static function sampleControl($parent = null, $parentsId = array()) {
         $return = "";
         $parentsId[] = $parent;
@@ -145,7 +175,8 @@ class InventoryConfiguration {
                 ac2.aliquot_type child_aliquot,
                 re.child_aliquot_control_id child_id, 
                 ac1.id parent_id, 
-                re.flag_active re_flag_active
+                re.flag_active re_flag_active,
+                ac1.volume_unit vu
             FROM  realiquoting_controls re
             INNER JOIN aliquot_controls ac2 on ac2.id=re.child_aliquot_control_id
             RIGHT JOIN aliquot_controls ac1 on ac1.id=re.parent_aliquot_control_id
@@ -160,8 +191,6 @@ class InventoryConfiguration {
         $row = $res->fetch_assoc();
         if ($row) {
             $sampleId = -1;
-//            $parents = array();
-//            $children = array();
             $return .= "<ul id = 'aliquot-list'>";
             while ($row) {
                 $id = $row['id'];
@@ -172,22 +201,10 @@ class InventoryConfiguration {
                 $childAliquot = $row['child_aliquot'];
                 $childId = $row['child_id'];
                 $reFlagActive = $row['re_flag_active'];
+                $volumeUnit = $row['vu'];
                 if ($sampleId != $row['sample_id']) {
                     $parentId = $row['parent_id'];
-//                    if (!empty(array_diff($children, $parents))) {
-//                        $return .= "</ul>";
-//                        $return .= "</li>";
-//                        $diff = array_diff($children, $parents);
-//                        foreach ($diff as $v => $p) {
-//                            $vs = explode(", ", $p);
-//                            $disable = ($vs[1] == 0)?"disable":"";
-//                            $return .= "<li class = 'aliquot $disable' data-id='$v'>";
-//                            $return .= "<div>$vs[0]</div>";
-//                            $return .= "</li>";
-//                        }
-//                        $return .= "</ul>";
-//                        $return .= "</li>";
-//                    } else
+
                     if ($sampleId != -1) {
                         $return .= "</ul>";
                         $return .= "</li>";
@@ -199,7 +216,7 @@ class InventoryConfiguration {
                     $return .= "<div>$sampleType</div>";
                     $return .= "<ul>";
                     $disable = ($acFlagActiveP == 0) ? "disable" : "";
-                    $return .= "<li class = 'aliquot $disable' data-id='$parentId'>";
+                    $return .= "<li class = 'aliquot $disable' data-id='$parentId' data-volume-unit='$volumeUnit'>";
                     $return .= "<div>$parentAliquot</div>";
                     $reAliquotExists = ($id) ? '' : 'no-display';
                     $return .= "<ul class = '$reAliquotExists'>";
@@ -207,15 +224,14 @@ class InventoryConfiguration {
                     $return .= "<li class='re-aliquot $disable' data-child-id = '$childId' data-id='$id'>\n";
                     $return .= "<div>$childAliquot</div>";
                     $return .= "</li>";
-//                    $parents = array($parentId => implode(", ",array($parentAliquot, $acFlagActiveP)));
-//                    $children = array($childId => implode(", ",array($childAliquot, $acFlagActiveC)));
+
                 } else {
                     if ($parentId != $row['parent_id'] || !$parentId) {
                         $parentId = $row['parent_id'];
                         $return .= "</ul>";
                         $return .= "</li>";
                         $disable = ($acFlagActiveP == 0) ? "disable" : "";
-                        $return .= "<li class = 'aliquot $disable' data-id='$parentId'>";
+                        $return .= "<li class = 'aliquot $disable' data-id='$parentId' data-volume-unit='$volumeUnit'>";
                         $return .= "<div>$parentAliquot</div>";
                         $reAliquotExists = ($id) ? '' : 'no-display';
                         $return .= "<ul class = '$reAliquotExists'>";
@@ -224,12 +240,7 @@ class InventoryConfiguration {
                     $return .= "<li class='re-aliquot $disable' data-child-id = '$childId' data-id='$id'>\n";
                     $return .= "<div>$childAliquot</div>";
                     $return .= "</li>";
-//                    if (!in_array($parentId, array_keys($parents))) {
-//                        $parents[$parentId] = implode(", ",array($parentAliquot, $acFlagActiveP));
-//                    }
-//                    if (!in_array($childId, array_keys($children))) {
-//                        $children[$childId] = implode(", ",array($childAliquot, $acFlagActiveC));
-//                    }
+
                 }
 
                 $row = $res->fetch_assoc();
