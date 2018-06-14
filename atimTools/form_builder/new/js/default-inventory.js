@@ -18,7 +18,8 @@ $$(function () {
 
         preview("#sample", "#preview-sample");
 
-        $$("#tools-inventory").tooltip({show: {delay: 1000}});
+//        $$("#tools-inventory").tooltip({show: {delay: 1000}});
+        $$("body").tooltip({show: {delay: 1000}});
 
         $$("div.aliquot-display-hover").hover(function () {
             var $this = $$(this);
@@ -179,7 +180,6 @@ $$(function () {
                             "<p>For redoing this changing after run the query to database, should click on " + addButton + " button</p><br>"+
                             "<p>Are you sure to delete?</p>"+
                         "</div>";
-
                 $$(deleteDialogue).dialog({
                     closeOnEscape: true, 
                     modal: true,
@@ -220,7 +220,6 @@ $$(function () {
                         "All the " + text + " will be deleted, but you can undo this action by clicking on " + undoButton + " Button.<br><br>"+
                         "Are you sure to delete?"+
                     "</div>";
-
             $$(deleteDialogue).dialog({
                 closeOnEscape: true, 
                 modal: true,

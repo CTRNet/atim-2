@@ -104,7 +104,7 @@ class InventoryConfiguration {
                 $return .= "<span class = 'delete ui-icon ui-icon-closethick $deleteDisplay'></span>
                             <span class = 'undo ui-icon ui-icon-arrowreturnthick-1-w $undoDisplay'></span>";
 //                $return .= ($parentId==-1)?"":"<span class = 'trash ui-icon ui-icon-trash $trashDisplay'></span>";
-                $return .= "<span class = 'add ui-icon ui-icon-plusthick $addDisplay'></span>";
+                $return .= "<span class = 'add ui-icon ui-icon-plusthick $addDisplay' title='Add sub sample'></span>";
                 if (in_array($id, $parentsId) === false) {
                     $return .= $tempRespons;
                 }
@@ -138,25 +138,23 @@ class InventoryConfiguration {
         $stmt->execute();
         $res = $stmt->get_result();
         $row = $res->fetch_assoc();
-        if ($row) {
-            while ($row) {
-                $id = $row['id'];
-                $title = $row['sample_type'];
-                $sampleCategory = $row['sample_category'];
-                $detailFormAlias = $row['detail_form_alias'];
-                $detailTablename= $row['detail_tablename'];
-                $databrowserLabel = $row['databrowser_label'];
-                $return[$title] = array(
-                    'id' => $id, 
-                    'title' => $title,
-                    'sampleCategory' => $sampleCategory,
-                    'detailFormAlias' => $detailFormAlias,
-                    'detailTablename' => $detailTablename,
-                    'databrowserLabel' => $databrowserLabel,
-                    'listed' => ($sampleCategory == 'specimen') ? false : true
-                );
-                $row = $res->fetch_assoc();
-            }
+        while ($row) {
+            $id = $row['id'];
+            $title = $row['sample_type'];
+            $sampleCategory = $row['sample_category'];
+            $detailFormAlias = $row['detail_form_alias'];
+            $detailTablename= $row['detail_tablename'];
+            $databrowserLabel = $row['databrowser_label'];
+            $return[$title] = array(
+                'id' => $id, 
+                'title' => $title,
+                'sampleCategory' => $sampleCategory,
+                'detailFormAlias' => $detailFormAlias,
+                'detailTablename' => $detailTablename,
+                'databrowserLabel' => $databrowserLabel,
+                'listed' => ($sampleCategory == 'specimen') ? false : true
+            );
+            $row = $res->fetch_assoc();
         }
         $stmt->close();
         return json_encode($return);

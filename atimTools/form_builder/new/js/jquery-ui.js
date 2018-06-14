@@ -18222,7 +18222,9 @@ $.widget( "ui.tooltip", {
 	version: "1.12.1",
 	options: {
 		classes: {
-			"ui-tooltip": "ui-corner-all ui-widget-shadow"
+//			"ui-tooltip": "ui-corner-all ui-widget-shadow"  
+/*Yaser*/
+			"ui-tooltip": "ui-corner-all"
 		},
 		content: function() {
 
