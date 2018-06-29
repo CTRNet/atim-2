@@ -608,6 +608,19 @@ $(function () {
             }
     );
 
+    $('#autoBuild2_language_label, #struct_val_domain_language_alias').jsonSuggest(function (text, wildCard, caseSensitive, notCharacter) {},
+            {type: 'GET',
+                url: 'suggest.php',
+                dataName: "json",
+                ajaxResults: true,
+                minCharacters: 1,
+                width: 500,
+                format: function (inputTxt) {
+                    return '{"val" : "' + inputTxt + '", "fetching" : "language" }';
+                }
+            }
+    );
+
     $('#autoBuild2_model').jsonSuggest(function (text, wildCard, caseSensitive, notCharacter) {},
             {type: 'GET',
                 url: 'suggest.php',
