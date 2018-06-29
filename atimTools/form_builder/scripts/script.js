@@ -608,7 +608,7 @@ $(function () {
             }
     );
 
-    $('#autoBuild2_language_label, #struct_val_domain_language_alias').jsonSuggest(function (text, wildCard, caseSensitive, notCharacter) {},
+    $('#autoBuild2_language_label, #struct_val_domain_language_alias, #autoBuild2_language_tag, #autoBuild2_language_help, #autoBuild2_language_heading').jsonSuggest(function (text, wildCard, caseSensitive, notCharacter) {},
             {type: 'GET',
                 url: 'suggest.php',
                 dataName: "json",

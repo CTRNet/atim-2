@@ -22,7 +22,7 @@ if($json->fetching == "model"){
 }else if($json->fetching == "structure"){
 	$query = "SELECT DISTINCT alias FROM structures WHERE  alias LIKE '%".$json->val."%' ORDER BY alias LIMIT 15";
 }else if($json->fetching == "language"){
-	$query = "SELECT DISTINCT en FROM i18n WHERE en LIKE '%".$json->val."%' ORDER BY en LIMIT 15";
+	$query = "SELECT DISTINCT id FROM i18n WHERE id LIKE '%".$json->val."%' ORDER BY id LIMIT 15";
 }
 $result = $db->query($query) or die('[{"id" : "error", "text":"query failed"}]');
 echo("[");
