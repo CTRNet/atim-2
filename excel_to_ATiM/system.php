@@ -369,6 +369,12 @@ function customInsertRecord($tables_data) {
 	$main_table_data = array();
 	$details_tables_data = array();
 //TODO: Add control on detail table based on _control_id
+	foreach($tables_data as &$sub_table) {
+	    $sub_table = array_filter($sub_table, function($var){
+	        return (!($var == '' || is_null($var)));
+	    });
+	}
+	array_filter($tables_data);
 	if($tables_data) {
 		$tables_data_keys = array_keys($tables_data);
 		//Flush empty field
@@ -528,7 +534,13 @@ function updateTableData($id, $tables_data) {
 			$table_data = $tables_data[$main_or_master_tablename];
 			unset($tables_data[$main_or_master_tablename]);
 			$set_sql_strings = array();
-			foreach(array_merge($table_data, array('modified' => $import_date, 'modified_by' => $imported_by))  as $key => $value) $set_sql_strings[] = "`$key` = \"$value\"";
+			foreach(array_merge($table_data, array('modified' => $import_date, 'modified_by' => $imported_by))  as $key => $value) {
+			    if(!is_null($value) && strlen($value)) {
+			        $set_sql_strings[] = "`$key` = \"$value\"";
+			    } else {
+			        "`$key` = null";
+			    }
+			}
 			$query = "UPDATE `$table_name` SET ".implode(', ', $set_sql_strings)." WHERE `id` = $id;";
 			customQuery($query);
 			//Detail or SpecimenDetail/DerivativeDetail Table Update
@@ -537,7 +549,13 @@ function updateTableData($id, $tables_data) {
 			foreach($tables_data as $table_name => $table_data) {
 				if(!empty($table_data)) {
 					$set_sql_strings = array();
-					foreach($table_data  as $key => $value) $set_sql_strings[] = "`$key` = \"$value\"";
+					foreach($table_data  as $key => $value) {
+					    if(!is_null($value) && strlen($value)) {
+					        $set_sql_strings[] = "`$key` = \"$value\"";
+					    } else {
+					        "`$key` = null";
+					    }
+					}
 					$query = "UPDATE `$table_name` SET ".implode(', ', $set_sql_strings)." WHERE `$foreaign_key` = $id;";
 					customQuery($query);
 					if(!in_array($table_name, array('specimen_details', 'derivative_details'))) $tmp_detail_tablename = $table_name;
@@ -698,7 +716,11 @@ function validateAndGetStructureDomainValue($value, $domain_name, $summary_secti
 		if(array_key_exists(strtolower($value), $domains_values[$domain_name])) {
 			$value = $domains_values[$domain_name][strtolower($value)];	//To set the right case
 		} else {
-			recordErrorAndMessage($summary_section_title, '@@ERROR@@', "Wrong '$domain_name' Value".(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in), "Value '$value' is not a value of the '$domain_name' Structure Domain. The value will be erased.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]")); 
+		    $domain_name_values = "<br><i>Allowed Values : [".implode("] & [", $domains_values[$domain_name])."]";
+		    $str_limit = 300;
+		    if(strlen($domain_name_values) > $str_limit) $domain_name_values = substr($domain_name_values, 0, $str_limit).'...';
+		    $domain_name_values.= "</i>";
+			recordErrorAndMessage($summary_section_title, '@@ERROR@@', "Wrong '$domain_name' Value".(empty($summary_title_add_in)? '' : ' - '.$summary_title_add_in).$domain_name_values, "Value '$value' is not a value of the '$domain_name' Structure Domain. The value will be erased.".(empty($summary_details_add_in)? '' : " [$summary_details_add_in]")); 
 			$value = '';
 		}
 	}
@@ -733,7 +755,7 @@ function validateAndGetExcelValueFromList($value, $values_matches, $str_to_lower
 // ---- DATE & DATETIME ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 global $empty_date_time_values;
-$empty_date_time_values = array('-', 'n/a', 'x', '??', 'nd');
+$empty_date_time_values = array('-', 'n/a', 'x', '??', 'nd', 'na');
 
 /**
  * Test excel value is a date and return the formatted date for database and the accuracy.
@@ -886,7 +908,7 @@ function validateAndGetDecimal($decimal_value, $summary_section_title, $summary_
 	global $import_summary;
 	global $empty_number_values;
 	$decimal_value = str_replace(array(' ', ','), array('', '.'), $decimal_value);
-	if(strlen($decimal_value)) {
+	if(strlen($decimal_value) && !preg_match('/^((na)|(u)|(unknown))$/i', $decimal_value)) {
 		if(preg_match('/^[0-9]+([\.,][0-9]+){0,1}$/', $decimal_value)) {
 			return $decimal_value;
 		} else {
@@ -912,7 +934,7 @@ function validateAndGetInteger($integer_value, $summary_section_title, $summary_
 	global $import_summary;
 	global $empty_number_values;
 	$integer_value = str_replace(array(' '), array(''), $integer_value);
-	if(strlen($integer_value)) {
+	if(strlen($integer_value) && !preg_match('/^((na)|(u)|(unknown))$/i', $integer_value)) {
 		if(preg_match('/^[0-9]+$/', $integer_value)) {
 			return $integer_value;
 		} else {
