@@ -44,7 +44,10 @@ function valueToQueryWherePart($value, $where = true){
 		if($where){
 			$q_result = "=";
 		}	
-		if(strpos(strtoupper($value), "SELECT") > 0){
+		//NL Comment on 2018-04-10
+		//Replaced if(strpos(strtoupper($value), "SELECT") > 0){ by following condtion
+		//to fix bug when the structure value domain name contains a 'select' (ex: 'participant_selection_options')
+        if(preg_match("/SELECT.*FROM/", strtoupper($value))){
 			$q_result .= $value." ";
 		}else{
 			$q_result .= "(SELECT id FROM structure_value_domains WHERE domain_name='".$value."') ";

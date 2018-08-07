@@ -81,7 +81,7 @@ require_once("../common/myFunctions.php");
         <div id="queryBuilder" style="width: 100%; margin-right: 10px; position: relative; left: -3px; margin: 0px; padding: 0px;">
             <ul>
                 <li><a href="#piton4">Value domain</a></li>
-                <li><a href="#piton5">Auto build</a></li>
+                <li><a href="#piton5">Form builder</a></li>
                 <li><a href="#tools-menu">Menu builder</a></li>
                 <li><a href="#tools-inventory">Inventory configuration</a></li>
                 <li><a href="#data-mart">Datamart</a></li>
