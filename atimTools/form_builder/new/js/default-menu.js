@@ -32,6 +32,13 @@ function initial() {
 
     $$("#tools-menu #right-menu .content").toggle();
     $$("#tools-menu #left-menu .content").toggle();
+    
+    $$("#tools-menu .minus").each(function(){
+            $currentMinus = $(this);
+            if ($currentMinus.css("display")!="none"){
+                    $currentMinus.trigger("click");
+        }
+    });    
 }
 
 function createQuery() {
