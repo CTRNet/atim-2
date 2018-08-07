@@ -528,47 +528,7 @@ if(empty($missing_details)){
 }else{
 	echo "<ul><li>",implode("</li><li>", $missing_details),"</li></ul>";
 }
-?>
 
-<h1>Databrowser Relations Links Summary</h1>
-
-<table>
-	<thead>
-		<tr>
-			<th>Model 1</th>
-			<th>Model 2</th>
-			<th>Used Field</th>
-			<th>Status</th>
-			<th>Query to change status</th>
-		</tr>
-	</thead>
-	<tbody>
-	<?php
-	$query = "
-		SELECT str1.model AS model_1, str2.model AS model_2, use_field, 'active' AS 'status'
-		FROM datamart_browsing_controls ctrl, datamart_structures str1, datamart_structures str2 
-		WHERE str1.id = ctrl.id1 AND str2.id = ctrl.id2 AND (ctrl.flag_active_1_to_2 = 1 OR ctrl.flag_active_2_to_1 = 1)
-		UNION ALL
-		SELECT str1.model AS model_1, str2.model AS model_2, use_field, 'disable' AS 'status'
-		FROM datamart_browsing_controls ctrl, datamart_structures str1, datamart_structures str2 
-		WHERE str1.id = ctrl.id1 AND str2.id = ctrl.id2 AND (ctrl.flag_active_1_to_2 = 0 OR ctrl.flag_active_2_to_1 = 0)";
-	$result = $db->query($query) or die("ERR AT LINE ".__LINE__.": ".$db->error);
-	while($row = $result->fetch_assoc()){
-		printf("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>UPDATE datamart_browsing_controls SET flag_active_1_to_2 = '%s', flag_active_2_to_1 = '%s' WHERE id1 = (SELECT id FROM datamart_structures WHERE model = '%s') AND id2 = (SELECT id FROM datamart_structures WHERE model = '%s');</td></tr>", 
-			$row['model_1'], 
-			$row['model_2'], 
-			$row['use_field'], 
-			"<FONT COLOR='".(($row['status'] == 'active')? 'green': 'red')."'>".$row['status']."</FONT>",
-			(($row['status'] == 'active')? '0': '1'),
-			(($row['status'] == 'active')? '0': '1'),
-			$row['model_1'], 
-			$row['model_2']);
-	}
-	$result->free();
-	?>
-	</tbody>
-</table>
-<?php
 $reports = array();
 ?>
 <h1>Reports</h1>

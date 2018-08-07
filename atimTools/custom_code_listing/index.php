@@ -44,10 +44,10 @@ body{
 			}
 		}
 		if(empty($atim_dir_names)) {
-			$error_msg = 'Your server document root does not contain atim source code.';
+			$error_msg = "Your server document [$server_dir_path] root does not contain atim source code.";
 		}
 	} else {
-		$error_msg = 'Your server document root is not a directory. See config.php.';
+		$error_msg = "Your server document [$server_dir_path] is not a directory. See config.php.";
 	}
 	if($error_msg) die("<FONT COLOR='red'>$error_msg</FONT><br>");
 	?>
