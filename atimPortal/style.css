@@ -51,7 +51,7 @@ ul.installLinks li a{
 	border: 0px;
 	color: #fff;
 	text-decoration: none;
-	padding: 10px 20px;
+	padding: 10px 10px;
 	text-shadow: 2px 2px 1px #000;
 	display: inline-block;
 }
@@ -81,4 +81,29 @@ div.oldIe{
 	background-color: #FFCCCC;
 	color: red;
 	line-height: 30px;
+}
+
+.logo-image{
+	display: inline-block;
+}
+
+h1.main-header{
+	/* display: inline-block; */
+}
+
+div.navbar-header{
+	width: 100%;
+}
+
+a.navbar-brand{
+	width: 100%;
+}
+
+@media (max-width: 768px){
+	div.navbar-header{
+		width: auto;
+	}	
+	a.navbar-brand{
+		width: auto;
+	}
 }

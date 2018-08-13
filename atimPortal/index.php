@@ -19,6 +19,10 @@ if(!empty($matches)){
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="shortcut icon" href="./images/favicon.ico"/>
 		<link rel="stylesheet" type="text/css" href="style.css" />		
+		<link rel="stylesheet" type="text/css" href="lib/bootstrap.min.css" />		
+		<link rel="stylesheet" type="text/css" href="lib/bootstrap-theme.min.css"/>		
+		<script src="lib/jquery.min.js"></script>
+		<script src="lib/bootstrap.min.js"></script>
 		<title>Portail ATiM</title>
 	</head>
 	<body>
@@ -27,13 +31,10 @@ if(!empty($matches)){
 				<?php 
 				$template = '<img src="./images/%s" alt="%s"  class="Logo"/>';
 				foreach($main_logos as $main_logo){
-					if($main_logo['url']) printf('<a href="%s">', $main_logo['url']);
+					if($main_logo['url']) printf('<a class = "logo-image" href="%s">', $main_logo['url']);
 					printf($template, $main_logo['src'], $main_logo['alt']);
 					if($main_logo['url']) printf('</a>');
 				} 
-				?>
-				<h1>ATiM Portal / Portail ATiM</h1>
-				<?php 
 				if($is_old_ie){
 					$template = '<a href="%s">%s</a>';
 					$line_parts = array();
@@ -43,14 +44,38 @@ if(!empty($matches)){
 					echo "<p>",implode(" | ", $line_parts),"</p>";
 				}else{
 				?>
-				<ul class="installLinks">
-					<?php 
-					$template = '<li><a href="%s">%s</a></li>';
-					foreach($install_links as $name => $url){
-						printf($template, $url, $name);
-					}
-					?>
-				</ul>
+<nav class="navbar navbar-default">
+<div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="<?=$_SERVER['REQUEST_URI'];?>">ATiM Portal / Portail ATiM</a>
+    </div>
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+<?php
+foreach($install_links as $name => $url){
+?>
+        <li class="dropdown">
+          <a href="<?=$url;?>" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"><?=$name;?></span></a>
+          <ul class="dropdown-menu">
+            <li><a target="_blank" href="<?=$url;?>">Prod</a></li>
+            <li role="separator" class="divider"></li>
+            <li class = "atim-test"><a target="_blank" href="<?=$url."Test";?>">Test</a></li>
+          </ul>
+        </li>
+<?php
+}
+?>
+      </ul>
+    </div>
+  </div>
+</nav>				
 				<?php 
 				}
 				?>
@@ -93,5 +118,6 @@ if(!empty($matches)){
 				?>
 			</div>
 		</div>
+		<script src="script.js"></script>
 	</body>
 </html>
