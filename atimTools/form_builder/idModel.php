@@ -2,7 +2,7 @@
 
 require_once("../common/myFunctions.php");
 
-$query = "SELECT id , model, display_name FROM `datamart_structures` ORDER BY id";
+$query = "SELECT id , model, display_name, plugin FROM `datamart_structures` ORDER BY id";
 $db = getConnection();
 $stmt = $db->prepare($query) or die("Query failed at line " . __LINE__ . " " . $query . " " . $db->error);
 $stmt->execute();
@@ -12,7 +12,7 @@ $response = array();
 $dms = array();
 if ($row) {
     while ($row) {
-        $response[] = array('id' => $row['id'], 'model' => $row['model']);
+        $response[] = array('plugin' => $row['plugin'], 'model' => $row['model']);
         $dms[] = array('id' => $row['id'], 'name' => $row['display_name']);
         $row = $res->fetch_assoc();
     }
