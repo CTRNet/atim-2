@@ -835,43 +835,50 @@ function fixToVariable(domainValues){
 }
 
 function dataBrowser() {
-    
     idModel = [
-        {plugin: 'InventoryManagement', model: 'ViewAliquot'},
-        {plugin: 'InventoryManagement', model: 'ViewCollection'},
-        {plugin: 'StorageLayout', model: 'NonTmaBlockStorage'},
-        {plugin: 'ClinicalAnnotation', model: 'Participant'},
-        {plugin: 'InventoryManagement', model: 'ViewSample'},
-        {plugin: 'ClinicalAnnotation', model: 'MiscIdentifier'},
-        {plugin: 'InventoryManagement', model: 'ViewAliquotUse'},
-        {plugin: 'ClinicalAnnotation', model: 'ConsentMaster'},
-        {plugin: 'ClinicalAnnotation', model: 'DiagnosisMaster'},
-        {plugin: 'ClinicalAnnotation', model: 'TreatmentMaster'},
-        {plugin: 'ClinicalAnnotation', model: 'FamilyHistory'},
-        {plugin: 'ClinicalAnnotation', model: 'ParticipantMessage'},
-        {plugin: 'InventoryManagement', model: 'QualityCtrl'},
-        {plugin: 'ClinicalAnnotation', model: 'EventMaster'},
-        {plugin: 'InventoryManagement', model: 'SpecimenReviewMaster'},
-        {plugin: 'Order', model: 'OrderItem'},
-        {plugin: 'Order', model: 'Shipment'},
-        {plugin: 'ClinicalAnnotation', model: 'ParticipantContact'},
-        {plugin: 'ClinicalAnnotation', model: 'ReproductiveHistory'},
-        {plugin: 'ClinicalAnnotation', model: 'TreatmentExtendMaster'},
-        {plugin: 'InventoryManagement', model: 'AliquotReviewMaster'},
-        {plugin: 'Order', model: 'Order'},
-        {plugin: 'StorageLayout', model: 'TmaSlide'},
-        {plugin: 'StorageLayout', model: 'TmaBlock'},
-        {plugin: 'Study', model: 'StudySummary'},
-        {plugin: 'Order', model: 'OrderLine'},
-        {plugin: 'StorageLayout', model: 'TmaSlideUse'}
+        {id: 1, plugin: 'InventoryManagement', model: 'ViewAliquot', 'position':[2, 3]},
+        {id: 2, plugin: 'InventoryManagement', model: 'ViewCollection', 'position':[2, 6]},
+        {id: 3, plugin: 'StorageLayout', model: 'NonTmaBlockStorage', 'position':[2, 2]},
+        {id: 4, plugin: 'ClinicalAnnotation', model: 'Participant', 'position':[2, 7]},
+        {id: 5, plugin: 'InventoryManagement', model: 'ViewSample', 'position':[1, 5]},
+        {id: 6, plugin: 'ClinicalAnnotation', model: 'MiscIdentifier', 'position':[0, 8]},
+        {id: 7, plugin: 'InventoryManagement', model: 'ViewAliquotUse', 'position':[0, 2]},
+        {id: 8, plugin: 'ClinicalAnnotation', model: 'ConsentMaster', 'position':[0, 7]},
+        {id: 9, plugin: 'ClinicalAnnotation', model: 'DiagnosisMaster', 'position':[4, 7]},
+        {id: 10, plugin: 'ClinicalAnnotation', model: 'TreatmentMaster', 'position':[4, 6]},
+        {id: 11, plugin: 'ClinicalAnnotation', model: 'FamilyHistory', 'position':[2, 9]},
+        {id: 12, plugin: 'ClinicalAnnotation', model: 'ParticipantMessage', 'position':[1, 9]},
+        {id: 13, plugin: 'InventoryManagement', model: 'QualityCtrl', 'position':[4, 4]},
+        {id: 14, plugin: 'ClinicalAnnotation', model: 'EventMaster', 'position':[4, 8]},
+        {id: 15, plugin: 'InventoryManagement', model: 'SpecimenReviewMaster', 'position':[0, 5]},
+        {id: 16, plugin: 'Order', model: 'OrderItem', 'position':[3, 2]},
+        {id: 17, plugin: 'Order', model: 'Shipment', 'position':[4, 2]},
+        {id: 18, plugin: 'ClinicalAnnotation', model: 'ParticipantContact', 'position':[4, 9]},
+        {id: 19, plugin: 'ClinicalAnnotation', model: 'ReproductiveHistory', 'position':[3, 9]},
+        {id: 20, plugin: 'ClinicalAnnotation', model: 'TreatmentExtendMaster', 'position':[4, 5]},
+        {id: 21, plugin: 'InventoryManagement', model: 'AliquotReviewMaster', 'position':[0, 3]},
+        {id: 22, plugin: 'Order', model: 'Order', 'position':[4, 1]},
+        {id: 23, plugin: 'StorageLayout', model: 'TmaSlide', 'position':[1, 1]},
+        {id: 24, plugin: 'StorageLayout', model: 'TmaBlock', 'position':[1, 2]},
+        {id: 25, plugin: 'Study', model: 'StudySummary', 'position':{'exception': [[0, 1], [4, 0], [1, 4], [0, 6], [0, 9]]}},
+        {id: 26, plugin: 'Order', model: 'OrderLine', 'position':[3, 1]},
+        {id: 27, plugin: 'StorageLayout', model: 'TmaSlideUse', 'position':[1, 0]}
     ];
 
     $$.ajax({url: "idModel.php", type: "POST", success: function (data) {
             try {
                 data = JSON.parse(data);
-                a = JSON.stringify(idModel);
-                b = JSON.stringify(data['idModel']);
-                dms = data['dms'];
+                a = idModel.map(function(item){return {plugin: item['plugin'], model: item['model']};});
+                b = data['idModel'].map(function(item){return {plugin: item['plugin'], model: item['model']};});
+                a.sort(function(x, y){
+                    return x["plugin"].localeCompare(y["plugin"]);
+                });
+                b.sort(function(x, y){
+                    return x["plugin"].localeCompare(y["plugin"]);
+                });
+                a = JSON.stringify(a);
+                b = JSON.stringify(b);
+                dms = data['idModel'];
                 addPosition(dms);
                 dmbc = data['dmbc'];
                 if (a != b) {
@@ -885,51 +892,37 @@ function dataBrowser() {
 }
 
 function addPosition(dms) {
-    dms[0]['position'] = [2, 3];
-    dms[1]['position'] = [2, 6];
-    dms[2]['position'] = [2, 2];
-    dms[3]['position'] = [2, 7];
-    dms[4]['position'] = [1, 5];
-    dms[5]['position'] = [0, 8];
-    dms[6]['position'] = [0, 2];
-    dms[7]['position'] = [0, 7];
-    dms[8]['position'] = [4, 7];
-    dms[9]['position'] = [4, 6];
-    dms[10]['position'] = [2, 9];
-    dms[11]['position'] = [1, 9];
-    dms[12]['position'] = [4, 4];
-    dms[13]['position'] = [4, 8];
-    dms[14]['position'] = [0, 5];
-    dms[15]['position'] = [3, 2];
-    dms[16]['position'] = [4, 2];
-    dms[17]['position'] = [4, 9];
-    dms[18]['position'] = [3, 9];
-    dms[19]['position'] = [4, 5];
-    dms[20]['position'] = [0, 3];
-    dms[21]['position'] = [4, 1];
-    dms[22]['position'] = [1, 1];
-    dms[23]['position'] = [1, 2];
-    dms[24]['position'] = {'exception': [[0, 1], [4, 0], [1, 4], [0, 6], [0, 9]]};
-    dms[25]['position'] = [3, 1];
-    dms[26]['position'] = [1, 0];
+    dms.forEach(function(dmsItem, i, dmsItems){
+        var idModelItem = idModel.find(function(item){ return (item.plugin == dmsItem.plugin && item.model == dmsItem.model);});
+        dmsItems[i]['position'] = idModelItem['position'];
+        dmsItems[i]['id1'] = idModelItem['id'];
+    });
 }
 
-function makeExceptions() {
+function makeExceptions(dms) {
     exception = [];
-    exception['25-27'] = [0, 1];
-    exception['25-23'] = [0, 1];
-    exception['25-7'] = [0, 1];
-    exception['25-26'] = [4, 0];
-    exception['25-22'] = [4, 0];
-    exception['25-1'] = [1, 4];
-    exception['25-8'] = [0, 6];
-    exception['25-6'] = [0, 9];
+    exception.push({'e1': [25, 27], 'e2': [0, 1]});
+    exception.push({'e1': [25, 23], 'e2': [0, 1]});
+    exception.push({'e1': [25, 7], 'e2': [0, 1]});
+    exception.push({'e1': [25, 26], 'e2': [4, 0]});
+    exception.push({'e1': [25, 22], 'e2': [4, 0]});
+    exception.push({'e1': [25, 1], 'e2': [1, 4]});
+    exception.push({'e1': [25, 8], 'e2': [0, 6]});
+    exception.push({'e1': [25, 6], 'e2': [0, 9]});
+    
+    exceptions = [];
 
-    return exception;
+    exception.forEach(function(ex){
+        x1 = dms.find(function(item){return ex.e1[0] == item.id1;});
+        x2 = dms.find(function(item){return ex.e1[1] == item.id1;});
+        exceptions[x1.id+'-'+x2.id ] = ex.e2;
+    });
+
+    return exceptions;
 }
 
 function drawDataMartDiagram(dms, dmbc) {
-    var exceptions = makeExceptions();
+    var exceptions = makeExceptions(dms);
     var div = $$("#data-mart");
     div.html("");
     div.append("<table id='data-mart-table'>");
@@ -964,10 +957,10 @@ function drawDataMartDiagram(dms, dmbc) {
         var active = dmbc[i][2];
         if (typeof exceptions[id1 + "-" + id2] === 'undefined' && typeof exceptions[id2 + "-" + id1] === 'undefined') {
             dmsTemp1 = dms.find(function (item) {
-                return item.id == id1
+                return item.id == id1;
             });
             dmsTemp2 = dms.find(function (item) {
-                return item.id == id2
+                return item.id == id2;
             });
             x1 = dmsTemp1.position[0];
             y1 = dmsTemp1.position[1];

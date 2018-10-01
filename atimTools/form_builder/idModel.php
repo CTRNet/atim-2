@@ -12,8 +12,7 @@ $response = array();
 $dms = array();
 if ($row) {
     while ($row) {
-        $response[] = array('plugin' => $row['plugin'], 'model' => $row['model']);
-        $dms[] = array('id' => $row['id'], 'name' => $row['display_name']);
+        $response[] = array('id' => $row['id'], 'plugin' => $row['plugin'], 'model' => $row['model'], 'name' => $row['display_name']);
         $row = $res->fetch_assoc();
     }
 }
@@ -34,4 +33,4 @@ if ($row) {
 }
 
 
-echo json_encode(array('idModel' => $response, 'dmbc' => $dmbc, 'dms' => $dms));
+echo json_encode(array('idModel' => $response, 'dmbc' => $dmbc));
