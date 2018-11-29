@@ -25,6 +25,7 @@ $usefull_links_and_data = array(
 		"Team / Équipe" => array(
 			"Nicolas Luc (CTRNet - IT ATiM)" => "514-890-9000 # 25493 (nicol.luc@gmail.com)",
 			"Yaser Naderi (CTRNet - IT ATiM)" => "514-890-9000 # 31290 (yasernaderi5980@gmail.com)",
+			"Marie Goursolas (CTRNet - IT ATiM)" => "514-890-9000 # 31290 (mgoursolas.atim@gmail.com)",
 			"Rebecca Barnes (CTRNet - Program Leader)" => "n/a (rebecca.barnes@ctrnet.ca )"
 		) 
 	)
