@@ -45,7 +45,7 @@ if ($json->type == 'structures') {
     $query = "SELECT * FROM structure_value_domains AS svd
 				INNER JOIN structure_value_domains_permissible_values AS svdpv ON svd.id=svdpv.structure_value_domain_id
 				INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id				
-				INNER JOIN i18n ON i18n.id=spv.language_alias				
+				LEFT JOIN i18n ON i18n.id=spv.language_alias				
 				WHERE (domain_name = '" . $json->val . "' OR svd.id='" . $json->val . "')";
     } else if ($json->type == 'value_domains_variable') {
     $query = "SELECT 
@@ -76,7 +76,7 @@ if ($json->type == 'structures') {
                             WHERE domain_name=\"" . $json->val . "\") temp
                         )";
 } else if ($json->type == 'value_domains_function') {
-    $query = "SELECT * FROM `structure_value_domains` WHERE `source` IS NOT NULL AND `source` NOT LIKE '%(%)%' AND domain_name ='".$json->val."';";
+    $query = "SELECT * FROM `structure_value_domains` WHERE (`source` IS NOT NULL && `source` <> '') AND `source` NOT LIKE '%(%)%' AND domain_name ='".$json->val."';";
 } else {
     $query = "SELECT 'error'";
 }

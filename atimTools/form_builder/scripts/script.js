@@ -1351,9 +1351,9 @@ function fieldToggle(field) {
 
 function autoCompelete() {
     ids = [
-        {id: "#structure_value_domains_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "source is NULL"},
+        {id: "#structure_value_domains_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "source is NULL || source = ''"},
         {id: "#structure_value_domains_variable_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "source LIKE '%(%)%'"},
-        {id: "#structure_value_domains_function_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "source IS NOT NULL AND source NOT LIKE '%(%)%'"},
+        {id: "#structure_value_domains_function_domain_name", table: "structure_value_domains", field: "domain_name", order: "domain_name", where: "(source IS NOT NULL AND source <> '') AND source NOT LIKE '%(%)%'"},
         {id: "#structure_value_domains_function_plugin", table: "acos", field: "alias", order: "alias", where: "parent_id='1'"},
         {id: "#autoBuild1_alias", table: "structures", field: "alias", order: "alias"}
     ];
