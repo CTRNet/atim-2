@@ -40,7 +40,8 @@ if($json->type == 'autoBuildData'){
 		."INNER JOIN structure_formats AS sfo ON s.id=sfo.structure_id "
 		."INNER JOIN structure_fields AS sfi ON sfo.structure_field_id=sfi.id "
 		."LEFT JOIN structure_value_domains AS svd ON sfi.structure_value_domain=svd.id "
-		."WHERE s.alias='".$json->val."'";
+		."WHERE s.alias='".$json->val."' "
+                ."order by sfo.display_order";
 	$result = $db->query($query) or die("<tr><td>Query failed #2".$db->error."</td></tr>");
 	$checbox = '<input type="checkbox"%s/>';
 	while($row = $result->fetch_assoc()){

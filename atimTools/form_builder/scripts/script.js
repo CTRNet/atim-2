@@ -421,7 +421,7 @@ $(function () {
                                 data = data.substr(data.indexOf("<tr>"));
                             }
                             $("#autoBuild2").children("tbody").children("tr").remove();
-                            $("#autoBuild2").children("tbody").append(data).find("td:nth-child(1)").prepend('<a href="#no" class="deleteLine">(x)</a> ');
+                            $("#autoBuild2").children("tbody").append(data).find("td:nth-child(1)").prepend('<a href="#no" class="deleteLine">(x)</a> <a href="javascript:void(0)" class="copyLine">(+)</a> ');
                             $("#autoBuild2 tbody td:first-child").addClass("first_td");
                             $("#autoBuild2 tbody td:not(.first_td)").addClass("clickable").addClass("editable");
                             $("#autoBuild2").children("tbody").find("input[type=checkbox]").click(function (e) {
@@ -789,6 +789,24 @@ $(function () {
         event.stopPropagation();
     }).delegate(".deleteLine", "click", function (event) {
         $(this).parents("tr:first").remove();
+        event.stopPropagation();
+        return false;
+    }).delegate(".copyLine", "click", function (event) {
+        $this = $(this);
+        var tds = $this.closest("tr").children("td");
+        var $firstField = $("#autoBuild2_field");
+
+        var i=1;
+        for (i=1; i<tds.length-2; i++){
+                $td = $(tds[i]);
+                if ($td.children("input[type='checkbox']").length==0)
+                {
+                        $firstField.parent().siblings().eq(i-1).children("input").val ($td.text());
+            }else{
+                        checked = $td.children("input[type='checkbox']").is(":checked");
+                        $firstField.parent().siblings().eq(i-1).children("input[type='checkbox']").prop('checked', checked);
+            }
+        }
         event.stopPropagation();
         return false;
     });
