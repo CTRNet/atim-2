@@ -725,7 +725,7 @@ $(function () {
                         fieldVal = $(fieldsArr[i]).html();
                         if (i == 0) {
                             //remove delete
-                            fieldVal = fieldVal.substr(41);
+                            fieldVal = fieldVal.substr(95);
                         }
                     }
                     fields += ' "' + $(headerArr[i]).data("name") + '" : "' + fieldVal + '", ';
@@ -1286,7 +1286,7 @@ function addLine() {
     if (valid) {
         var table = $(".add.autoBuild2").closest("table");
         $(table).children("tbody").append(line);
-        $(table).find("tbody tr:last td:first").removeClass("clickable").removeClass("editable").prepend('<a href="#no" class="deleteLine">(x)</a> ');
+        $(table).find("tbody tr:last td:first").removeClass("clickable").removeClass("editable").prepend('<a href="#no" class="deleteLine">(x)</a> <a href="javascript:void(0)" class="copyLine">(+)</a> ');
         $(table).find("tfoot tr:first td").each(function () {
             var field = $(this).children("input");
             if ($(field).hasClass("autoBuildIncrement")) {
