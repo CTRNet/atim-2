@@ -1,0 +1,9 @@
+Participant;;;;;;;Diagnosis;;;;;Treatment;;;;
+Banque Nbr;Names;Date Of Birth;Sex;Vital Status;Hospital Number;Prostate - Bank#;Diangosis Date;Diagnosis;Nature;Grade;Laterlaity;Treatment type;Start Date;Finish Date;Completed;Reponse
+B#009;James Bond;1945-01-02;Male;alive;CHUM8493;PR948;2017-05-02;Breast;Malignant;1;Right;Chemo;juin-18;sept-18;Yes;Positif
+B#009;James Bond;1945-01-02;Male;alive;CHUM8493;PR948;2017-05-02;Breast;Malignant;1;Right;Chemo;2019;;No;Perfect
+B#009;Wonder Woman;1945-01-02;Male;alive;CHUM8493;PR948;2019-05-48;Breast;Benin;1;Right;Radio;2019 Mars;;Unknown;Wrong Value
+B#009;James Bond;1945-01-02;Male;alive;CHUM8493;PR948;2017-05-02;Breast;Malignant;1;Right;;févr-17;;Yes;
+B#002;Captaine Igloo;1945-02-07 12:57;Unedtermined;Died;CHUM7362;PR741;1905-06-23;Breast5;Malignant;4;Left;chemo;2017-04-18;;;Negatif
+B#002;Captaine Igloo;1945-02-07 12:57;Unedtermined;Died;CHUM7362;PR948;1905-06-23;Breast5;Malignant;4;Left/Right;chemo;2015-05-06;;No;
+B#009;James Bond;1945-01-02;Male;alive;CHUM8493;PR948;2019-05-48;Breast;Benin;1;Right;chemo;2011;2014;No;Unknown
