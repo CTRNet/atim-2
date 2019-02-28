@@ -539,8 +539,10 @@ function updateTableData($id, $tables_data) {
 			foreach(array_merge($table_data, array('modified' => $import_date, 'modified_by' => $imported_by))  as $key => $value) {
 			    if(!is_null($value) && strlen($value)) {
 			        $set_sql_strings[] = "`$key` = \"$value\"";
-			    } else {
+			    } elseif(!is_null($value)) {
 			        $set_sql_strings[] = "`$key` = ''";
+			    } else {
+			        $set_sql_strings[] = "`$key` = NULL";
 			    }
 			}
 			$query = "UPDATE `$table_name` SET ".implode(', ', $set_sql_strings)." WHERE `id` = $id;";
@@ -554,9 +556,11 @@ function updateTableData($id, $tables_data) {
 					foreach($table_data  as $key => $value) {
 					    if(!is_null($value) && strlen($value)) {
 					        $set_sql_strings[] = "`$key` = \"$value\"";
-					    } else {
-					        $set_sql_strings[] = "`$key` = ''";
-					    }
+					    } elseif(!is_null($value)) {
+        			        $set_sql_strings[] = "`$key` = ''";
+        			    } else {
+        			        $set_sql_strings[] = "`$key` = NULL";
+        			    }
 					}
 					$query = "UPDATE `$table_name` SET ".implode(', ', $set_sql_strings)." WHERE `$foreaign_key` = $id;";
 					customQuery($query);
