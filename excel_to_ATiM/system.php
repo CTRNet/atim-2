@@ -291,7 +291,7 @@ function dislayErrorAndMessage($commit = false, $title = 'Migration Summary') {
 		mysqli_commit($db_connection);
 		$ccl = '& Commited';
 	} else {
-		$ccl = 'But Not Commited';
+		$ccl = '</FONT><FONT COLOR=\"red\"><b>But Not Commited</b></FONT><FONT COLOR=\"blue\">';
 	}
 	echo "<br><FONT COLOR=\"blue\">
 		=====================================================================<br>
@@ -378,11 +378,12 @@ function customInsertRecord($tables_data) {
 	if($tables_data) {
 		$tables_data_keys = array_keys($tables_data);
 		//Flush empty field
-		foreach($tables_data as $table_name => $table_fields_and_data) {
-			foreach($table_fields_and_data as $field => $data) {
-				if(!strlen($data)) unset($tables_data[$table_name][$field]);
-			}
-		}
+		//Should be done above
+		//foreach($tables_data as $table_name => $table_fields_and_data) {
+		//	foreach($table_fields_and_data as $field => $data) {
+		//		if(!strlen($data)) unset($tables_data[$table_name][$field]);
+		//	}
+		//}
 		//--1-- Check data
 		switch(sizeof($tables_data)) {
 			case '1':
@@ -501,11 +502,12 @@ function updateTableData($id, $tables_data) {
 		$tables_data_keys = array_keys($tables_data);
 		$to_update = false;
 		//Flush empty field
-		foreach($tables_data as $table_name => $table_fields_and_data) {
-			foreach($table_fields_and_data as $field => $data) {
-				if(!strlen($data)) unset($tables_data[$table_name][$field]);
-			}
-		}
+		//Should not be done in case we want to erase a data
+		//foreach($tables_data as $table_name => $table_fields_and_data) {
+		//	foreach($table_fields_and_data as $field => $data) {
+		//		if(!strlen($data)) unset($tables_data[$table_name][$field]);
+		//	}
+		//}
 		//Check data passed in args
 		$main_or_master_tablename = null;
 		switch(sizeof($tables_data)) {
@@ -538,7 +540,7 @@ function updateTableData($id, $tables_data) {
 			    if(!is_null($value) && strlen($value)) {
 			        $set_sql_strings[] = "`$key` = \"$value\"";
 			    } else {
-			        "`$key` = null";
+			        $set_sql_strings[] = "`$key` = ''";
 			    }
 			}
 			$query = "UPDATE `$table_name` SET ".implode(', ', $set_sql_strings)." WHERE `id` = $id;";
@@ -553,7 +555,7 @@ function updateTableData($id, $tables_data) {
 					    if(!is_null($value) && strlen($value)) {
 					        $set_sql_strings[] = "`$key` = \"$value\"";
 					    } else {
-					        "`$key` = null";
+					        $set_sql_strings[] = "`$key` = ''";
 					    }
 					}
 					$query = "UPDATE `$table_name` SET ".implode(', ', $set_sql_strings)." WHERE `$foreaign_key` = $id;";
