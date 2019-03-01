@@ -9,14 +9,29 @@
 
 global $ids;
 $ids = 1;
+
+
+// ==========================================================
+//   ================== Import Parameters ==================
+// ==========================================================
 global $config;
 $config = array(
+    "is_server" => false,
+    "file_name" => "ATiM.csv",
+    "file_path" => "C:\wamp64\www\scripts\\",
+    "file_path_server" => "/ch06chuma6134/",
     "warning" => "print",   // Options: print, save
     "error" => "print",     // Options: print, save
     "report" => "print",    // Options: print, save
+    "reportDev" => "save",    // Options: print, save
     "idUserImport" => 1,
     "nowDatetime" => date("Y-m-d H:i:s"),
     "nowDate" => date("Y-m-d"),
+    "format" => array("last_modification" => array("Y-m-d H:i:s" => ""),               // http://php.net/manual/en/datetime.createfromformat.php: doc to build the allowed formats
+                      "dx_date" => array(   "Y-m-d" => "c", 
+                                            "M Y" => "d", 
+                                            "Y" => "y") 
+                      ),    // *** accuracy date: y, m, d, c  // *** accuracy datetime: y, m, d, h, i, c // If no accuracy = leave empty string ("") 
     "headerLine" => 1,      // From top of the file: starts at 0
     "dataLine" => 2,        // From top of the file: starts at 0
     "identifier" => "Id Excel",
@@ -38,14 +53,13 @@ $config = array(
 // Config
 //==============================================================================================
 
-$is_server = false;
 // Database
 
 $db_user 		= "root";
 $db_pwd			= "";
 $db_schema		= "atim_m";
 
-if($is_server) {
+if($config["is_server"]) {
     $db_user 		= "root";
     $db_pwd			= "";
     $db_schema		= "atim_m";
@@ -53,22 +67,9 @@ if($is_server) {
 
 // File
 
-$file_name = "ATiM.csv";
-
-//$file_name = array("ATiM.csv","ATiM.csv","ATiM.csv");
-
-$file_path = "C:\wamp64\www\scripts";
-
-if($is_server) {
-    $file_name = "ATiM.csv";
-    $file_path = "/ch06chuma6134/";
+if($config["is_server"]) {
+    $config["file_name"] = $config["file_path_server"].$config["file_name"];
 }
-
-
-// ==========================================================
-//   ================== Import Parameters ==================
-// ==========================================================
-
 
 
 //==========================================================
@@ -92,6 +93,12 @@ if(!mysqli_set_charset($db_connection, $db_charset)){
 mysqli_autocommit ($db_connection , false);
 
 
+$query = mysqli_query($db_connection, "CREATE TABLE IF NOT EXISTS `__import_report` ( `id` INT NOT NULL AUTO_INCREMENT , `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `file` VARCHAR(50) NOT NULL , `type` VARCHAR(20) NOT NULL , `message` VARCHAR(1000) NOT NULL , `deleted` TINYINT(3) NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = MyISAM;");
+mysqli_commit($db_connection);
+
+messageToUser("reportDev", "Import beginning");
+
+
 foreach($config["tables"] as $table){
     $query = mysqli_query($db_connection, "DROP TABLE IF EXISTS __temp_".$table);
     mysqli_commit($db_connection);
@@ -105,110 +112,109 @@ foreach($config["tables"] as $table){
 //==========================================================
 //   =============== Open and treat file ===============
 //==========================================================
-if (($handle = fopen($file_name, "r")) !== FALSE) {
-   
-    $header = NULL;
-    $numLine = 0;
-    $dataTemp = "";
-    $infosRequete = array();
-    $data = array();
-    
-    
-    if (($handle = fopen($file_name, 'r')) !== FALSE)
-    {
-        
-        // ==========================================================
-        //   ============= Test separator for csv files ===========
-        // ==========================================================
-        $separator1 = ";";
-        $separator2 = ",";
-        
-        $row = fgetcsv($handle, 1000, $separator1);
+
+$header = NULL;
+$numLine = 0;
+$dataTemp = "";
+$infosRequete = array();
+$data = array();
+
+if (($handle = fopen($config["file_name"], 'r')) !== FALSE)
+{
+
+    // ==========================================================
+    //   ============= Test separator for csv files ===========
+    // ==========================================================
+    $separator1 = ";";
+    $separator2 = ",";
+
+    $row = fgetcsv($handle, 1000, $separator1);
+    if (sizeof($row) > 1){
+        $separator = $separator1;
+    } else {
+        $row = fgetcsv($handle, 1000, $separator2);
         if (sizeof($row) > 1){
-            $separator = $separator1;
+            $separator = $separator2;
         } else {
-            
-            $row = fgetcsv($handle, 1000, $separator2);
-            if (sizeof($row) > 1){
-                $separator = $separator2;
-            } else {
-                messageToUser("error", "This file is not a CSV");
-            }
-        }
-        // ========= /!\ Put the cursor back to the beginning of the file /!\ =========
-        fseek($handle, 0);
-        
-        
-        // ====================================================================
-        //   ============= Get header and datas according to params =========
-        // ====================================================================
-        while (($row = fgetcsv($handle, 1000, $separator)) !== FALSE)
-        {
-            $separators = "";
-            
-            if($config["headerLine"] == $numLine){
-                $header = $row;
-                
-                if(sizeof($config["map"]) != sizeof($header)){
-                    messageToUser("error","There is a mismatch between the columns in the paramaters and those in the file to import. Did you make changes to your file format?<br />The columns listed in the parameters are: ".implode(", ", array_keys($config["map"])));
-                }
-            }
-            else if ($numLine >= $config["dataLine"]){
-            
-                $dataTemp = array_combine($header, $row);  
-                foreach($config["map"] as $key=>$field){
-                    
-                    if (!array_key_exists($key,$config["map"])){
-                        messageToUser("error","The column \"".$key."\ was not defined in the parameters.");
-                        continue;           // Skip to the next field
-                    }
-                    
-                    // ==================== This field is not in the data extrated form the file ====================
-                    if (!array_key_exists($key,$dataTemp)){
-                        messageToUser("error","The value for the \"".$key."\" column is missing on the line with the \"".$config["identifier"]."\" equals to  \"".$dataTemp[$config["identifier"]]."\"");
-                        continue;           // Skip to the next field
-                    }
-                    
-                    if (preg_match_all("/{{(.*?)}}/", $field, $matches)){       // ------ Multiple fields in one ------
-                        preg_match_all("/}}(.*?){{/", $field, $separators);
-                        
-                        $fields = $matches[1];
-                        $separatorsList = $separators[1];
-                        foreach($fields as $fieldDb){
-                            $fieldTemp = explode(".",$fieldDb);
-                            
-                            if (sizeof($separatorsList)>0){            
-                                if (strpos($dataTemp[$key], $separatorsList[0])){ 
-                                    $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = substr($dataTemp[$key], 0, strpos($dataTemp[$key], $separatorsList[0]));
-                                    // ------ Remove used string form field ------
-                                    $dataTemp[$key] = str_replace($requestTemp[$fieldTemp[0]][$fieldTemp[1]].$separatorsList[0], "", $dataTemp[$key]);
-                                    // ------ Remove used separator ------
-                                    unset($separatorsList[0]);
-                                    $separatorsList = array_values($separatorsList);
-                                } else {
-                                  $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = $dataTemp[$key];
-                                }
-                            } else {
-                                  $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = $dataTemp[$key];
-                            }
-                        }
-                    } elseif (sizeof(explode(".",$field)) > 1) {                // ------ One field in one ------
-                        $fieldTemp = explode(".",$field);
-                        $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = $dataTemp[$key];
-                    } else {                                                    // ------ Fields temp waiting for treatment ------
-                        $requestTemp[$field] = $dataTemp[$key];
-                    }
-                }
-                $request[$dataTemp[$config["identifier"]]] = customizeBeforeInsert($requestTemp);
-                insertEntry($request[$dataTemp[$config["identifier"]]]);
-            }
-            $numLine++;
+            messageToUser("error", "This file is not a CSV");
         }
     }
-    fclose($handle);
-    
-    mysqli_close($db_connection);
+    // ========= /!\ Put the cursor back to the beginning of the file /!\ =========
+    fseek($handle, 0);
+
+
+    // ====================================================================
+    //   ============= Get header and datas according to params =========
+    // ====================================================================
+    while (($row = fgetcsv($handle, 1000, $separator)) !== FALSE)
+    {
+        $separators = "";
+
+        if($config["headerLine"] == $numLine){
+            $header = $row;
+
+            if(sizeof($config["map"]) != sizeof($header)){
+                messageToUser("error","There is a mismatch between the columns in the paramaters and those in the file to import. Did you make changes to your file format?<br />The columns listed in the parameters are: ".implode(", ", array_keys($config["map"])));
+            }
+        }
+        else if ($numLine >= $config["dataLine"]){
+
+            $dataTemp = array_combine($header, $row);  
+            foreach($config["map"] as $key=>$field){
+
+                if (!array_key_exists($key,$config["map"])){
+                    messageToUser("error","The column \"".$key."\ was not defined in the parameters.");
+                    continue;           // Skip to the next field
+                }
+
+                // ==================== This field is not in the data extrated form the file ====================
+                if (!array_key_exists($key,$dataTemp)){
+                    messageToUser("error","The value for the \"".$key."\" column is missing on the line with the \"".$config["identifier"]."\" equals to  \"".$dataTemp[$config["identifier"]]."\"");
+                    continue;           // Skip to the next field
+                }
+
+                if (preg_match_all("/{{(.*?)}}/", $field, $matches)){       // ------ Multiple fields in one ------
+                    preg_match_all("/}}(.*?){{/", $field, $separators);
+
+                    $fields = $matches[1];
+                    $separatorsList = $separators[1];
+                    foreach($fields as $fieldDb){
+                        $fieldTemp = explode(".",$fieldDb);
+
+                        if (sizeof($separatorsList)>0){            
+                            if (strpos($dataTemp[$key], $separatorsList[0])){ 
+                                $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = substr($dataTemp[$key], 0, strpos($dataTemp[$key], $separatorsList[0]));
+                                // ------ Remove used string form field ------
+                                $dataTemp[$key] = str_replace($requestTemp[$fieldTemp[0]][$fieldTemp[1]].$separatorsList[0], "", $dataTemp[$key]);
+                                // ------ Remove used separator ------
+                                unset($separatorsList[0]);
+                                $separatorsList = array_values($separatorsList);
+                            } else {
+                              $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = $dataTemp[$key];
+                            }
+                        } else {
+                              $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = $dataTemp[$key];
+                        }
+                    }
+                } elseif (sizeof(explode(".",$field)) > 1) {                // ------ One field in one ------
+                    $fieldTemp = explode(".",$field);
+                    $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = $dataTemp[$key];
+                } else {                                                    // ------ Fields temp waiting for treatment ------
+                    $requestTemp[$field] = $dataTemp[$key];
+                }
+            }
+            $request[$dataTemp[$config["identifier"]]] = customizeBeforeInsert($requestTemp);
+            insertEntry($request[$dataTemp[$config["identifier"]]]);
+        }
+        $numLine++;
+    }
 }
+fclose($handle);
+
+messageToUser("reportDev", "Import end: ".$ids." inserts in temp tables");
+
+mysqli_close($db_connection);
+
 
 
 
@@ -251,16 +257,25 @@ function customizeBeforeInsert($line){
  
 
 // ====================================================================================
-//   ===================== Function to treat messages to users =====================
+//   ===================== Function to give messages to users =====================
 // ====================================================================================
 function messageToUser($type,$message){
     global $config;
+    global $db_connection;
     
-    if ($config[$type] == "print"){
+    if ($config[$type] == "print"){                 // Echo in the nav the message
         echo $type.": ".$message."<br /><br />";
         
+    } elseif ($config[$type] == "save") {           // Put message in db
+        $file = addslashes($config["file_path"].$config["file_name"]);
+        if($config["is_server"]) {
+            $file = $config["file_path_server"].$config["file_name"];
+        }
+
+        $query = mysqli_query($db_connection, "INSERT INTO `__import_report` (file, type, message) VALUES (\"".$file."\", \"".$type."\", '".$message."')");
+        mysqli_commit($db_connection);
     } else {
-        // Put message in db
+        // Do nothing?
         
     }
     
@@ -291,32 +306,43 @@ function validateStructureBeforeInsert($key,$field){
                 }
             }
                 
+            $sucess = false;
+            if ($row["Type"]=="datetime" || $row["Type"]=="date"){
                 
-            if ($row["Type"]=="datetime"){
-                echo $key." - ".$row["Field"]." - ".$row["Type"]."<br />";
-                if (strlen($field[$row["Field"]]) == 4){
-                    
+                //echo $key." - ".$row["Field"]." - ".$row["Type"]."<br />";
+                foreach($config["format"][$row["Field"]] as $format => $accuracy){
+                    $date = DateTime::createFromFormat($format, $field[$row["Field"]]);
+                    if (is_a($date, "DateTime")){
+                        $sucess = true;
+                        
+                        // ========== Format for date ==========
+                        if ($row["Type"]=="date"){
+                            $field[$row["Field"]] = $date->format('Y-m-d');
+                        }
+                        
+                        // ========== Format for datetime ==========
+                        if ($row["Type"]=="datetime"){
+                            $field[$row["Field"]] = $date->format('Y-m-d H:i:s');
+                        }
+                        
+                        // ========== Get accuracy form config ==========
+                        if ($accuracy !== ""){
+                            $field[$row["Field"]."_accuracy"] = $accuracy;
+                        }
+                        break;
+                    }
                 }
-                
-                
-                if (strlen($field[$row["Field"]]) == 4){
-                    
-                }
-                
-            }
-
-            if ($row["Type"]=="date"){
-                echo $key." - ".$row["Field"]." - ".$row["Type"]."<br />";
-            }
-                
-                
-            
+                if ($sucess == false){
+                    messageToUser("error", "Field \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                }                
+            } 
             //var_dump($row["Type"]);
             
         } elseif ($row["Null"] == "NO" && is_null($row["Default"])) {   // ========== Value is missing ==========
             messageToUser("error", "Field \"".$row["Field"]."\" is missing for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
         }
     }
+    return $field;
 }
 
 
@@ -331,7 +357,6 @@ function insertEntry($line){
     
     $order = array();
     
-    echo "<pre>";
     // ========== Add Id if none given ==========
      foreach($line as $key=>$field){
         
@@ -341,7 +366,7 @@ function insertEntry($line){
         } 
     } 
     
-    // ========== Add foreign Ids to other tables ==========    
+    // ========== Add foreign Ids to other tables according to config tablesLinks ==========    
     foreach($line as $key=>$field){
         if (array_key_exists($key.".id",$config["tablesLinks"]) && sizeof($config["tablesLinks"][$key.".id"])>0){
             foreach($config["tablesLinks"][$key.".id"] as $tableForeignId=>$foreignId){
@@ -354,12 +379,9 @@ function insertEntry($line){
     }
 
     foreach($line as $key=>$field){
-        validateStructureBeforeInsert($key,$field);
-
+        $field = validateStructureBeforeInsert($key,$field);
         $query = "INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")";
-        //var_dump($query);
+        messageToUser("reportDev", "INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
         mysqli_query($db_connection, $query);
     }
-    echo "</pre>";
-    
 }
