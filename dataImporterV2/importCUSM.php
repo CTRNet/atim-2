@@ -16,6 +16,11 @@ $ids = 1;
 // ==========================================================
 global $config;
 $config = array(
+    "db_user" => "root",
+    "db_pwd" => "",
+    "db_schema" => "atim_m",
+    "db_ip" => "localhost",
+    "db_charset" => "utf8",
     "is_server" => false,
     "file_name" => "ATiM.csv",
     "file_path" => "C:\wamp64\www\scripts\\",
@@ -23,7 +28,7 @@ $config = array(
     "warning" => "print",   // Options: print, save
     "error" => "print",     // Options: print, save
     "report" => "print",    // Options: print, save
-    "reportDev" => "save",    // Options: print, save
+    "reportDev" => "save",  // Options: print, save
     "idUserImport" => 1,
     "nowDatetime" => date("Y-m-d H:i:s"),
     "nowDate" => date("Y-m-d"),
@@ -49,22 +54,6 @@ $config = array(
 );
 
 
-//==============================================================================================
-// Config
-//==============================================================================================
-
-// Database
-
-$db_user 		= "root";
-$db_pwd			= "";
-$db_schema		= "atim_m";
-
-if($config["is_server"]) {
-    $db_user 		= "root";
-    $db_pwd			= "";
-    $db_schema		= "atim_m";
-}
-
 // File
 
 if($config["is_server"]) {
@@ -76,20 +65,17 @@ if($config["is_server"]) {
 //  ========= Database Connection & Reset tables =========
 //==========================================================
 
-$db_ip			= "localhost";
-$db_port 		= "";
-$db_charset		= "utf8";
 
 global $db_connection;
 $db_connection = @mysqli_connect(
-	$db_ip.(!empty($db_port)? ":".$db_port : ''),
-	$db_user,
-	$db_pwd
-) or importDie("DB connection: Could not connect to MySQL [".$db_ip.(!empty($db_port)? ":".$db_port : '')." / $db_user]", false);
-if(!mysqli_set_charset($db_connection, $db_charset)){
+	$config["db_ip"].(!empty($config["db_port"])? ":".$config["db_port"] : ''),
+	$config["db_user"],
+	$config["db_pwd"]
+) or importDie("DB connection: Could not connect to MySQL [".$db_ip.(!empty($config["db_user"])? ":".$config["db_port"] : '')." / ".$config["db_user"]."]", false);
+if(!mysqli_set_charset($db_connection, $config["db_charset"])){
 	importDie("DB connection: Invalid charset", false);
 }
-@mysqli_select_db($db_connection, $db_schema) or importDie("DB connection: DB selection failed [$db_schema]", false);
+@mysqli_select_db($db_connection, $config["db_schema"]) or importDie("DB connection: DB selection failed [".$config["db_schema"]."]", false);
 mysqli_autocommit ($db_connection , false);
 
 
