@@ -40,7 +40,7 @@ $db_connection = @mysqli_connect(
 if(!mysqli_set_charset($db_connection, $config["db"]["charset"])){
 	importDie("DB connection: Invalid charset", false);
 }
-mysqli_select_db($db_connection, $config["db"]["schema"]) or die("DB connection: DB selection failed [".$config["db"]["schema"]."]", false);
+mysqli_select_db($db_connection, $config["db"]["schema"]) or die("DB connection: DB selection failed [".$config["db"]["schema"]."]");
 mysqli_autocommit ($db_connection , false);
 
 
@@ -120,7 +120,6 @@ if (($handle = fopen($config["file"]["fileName"], 'r')) !== FALSE)
                     messageToUser("error","The column \"".$key."\ was not defined in the parameters.");
                     continue;           // Skip to the next field
                 }
-
                 // ==================== This field is not in the data extrated form the file ====================
                 if (!array_key_exists($key,$dataTemp)){
                     messageToUser("error","The value for the \"".$key."\" column is missing on the line with the \"".$config["file"]["identifier"]."\" equals to  \"".$dataTemp[$config["file"]["identifier"]]."\"");
@@ -223,7 +222,9 @@ function validateStructureBeforeInsert($key,$field){
                 
             $sucess = false;
             if ($row["Type"]=="datetime" || $row["Type"]=="date"){
-                                
+                     
+                $fieldNameForFormat = "";
+                
                 // ========== Format for field ==========
                 if (array_key_exists($row["Field"], $config["format"])){
                     $fieldNameForFormat = $row["Field"];
@@ -232,6 +233,11 @@ function validateStructureBeforeInsert($key,$field){
                 // ========== Format for field of a specific table ==========
                 if (array_key_exists($key.".".$row["Field"], $config["format"])){
                     $fieldNameForFormat = $key.".".$row["Field"];
+                }
+                
+                if ($fieldNameForFormat == ""){
+                    messageToUser("error", "Field \"".$row["Field"]."\" does not have a format in the config file.");
+                    die;
                 }
                 
                 foreach($config["format"][$fieldNameForFormat] as $format => $accuracy){
