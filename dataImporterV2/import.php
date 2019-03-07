@@ -15,7 +15,7 @@ $ids = 1;
 //   ================== Import Parameters ==================
 // ==========================================================
 
-$params = array("params.ini");
+$params = array("paramsCUSM.ini");
 
 $config = parse_ini_file($params[0], true);
 $config["general"]["nowDatetime"] = date("Y-m-d H:i:s");
@@ -40,7 +40,7 @@ $db_connection = @mysqli_connect(
 if(!mysqli_set_charset($db_connection, $config["db"]["charset"])){
 	importDie("DB connection: Invalid charset", false);
 }
-@mysqli_select_db($db_connection, $config["db"]["schema"]) or importDie("DB connection: DB selection failed [".$config["db"]["schema"]."]", false);
+mysqli_select_db($db_connection, $config["db"]["schema"]) or die("DB connection: DB selection failed [".$config["db"]["schema"]."]", false);
 mysqli_autocommit ($db_connection , false);
 
 
@@ -108,6 +108,7 @@ if (($handle = fopen($config["file"]["fileName"], 'r')) !== FALSE)
 
             if(sizeof($config["map"]) != sizeof($header)){
                 messageToUser("error","There is a mismatch between the columns in the paramaters and those in the file to import. Did you make changes to your file format?<br />The columns listed in the parameters are: ".implode(", ", array_keys($config["map"])));
+                die;
             }
         }
         else if ($numLine >= $config["file"]["dataLine"]){
@@ -259,7 +260,6 @@ function validateStructureBeforeInsert($key,$field){
                     messageToUser("error", "Field \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }                
             } 
-            //var_dump($row["Type"]);
             
         } elseif ($row["Null"] == "NO" && is_null($row["Default"])) {   // ========== Value is missing ==========
             messageToUser("error", "Field \"".$row["Field"]."\" is missing for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
@@ -295,7 +295,6 @@ function insertEntry($line){
             foreach($config["tablesLinks"][$key.".id"] as $tableForeignId=>$foreignId){
                 if (array_key_exists($tableForeignId,$line)){
                     $line[$tableForeignId][$foreignId] = $field["id"];
-                    //var_dump($line);
                 }
             }
         }
@@ -307,4 +306,22 @@ function insertEntry($line){
         messageToUser("reportDev", "INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
         mysqli_query($db_connection, $query);
     }
+}
+
+
+// ====================================================================================
+//   ================ Function to insert an entry into the temp db  ================
+// ====================================================================================
+function findInDatabase($field, $table, $conditions){
+    global $db_connection;
+    
+    $r = mysqli_query($db_connection, "SELECT ".$field." FROM ".$table." WHERE ".$conditions);
+    
+    while($row = mysqli_fetch_array($r)){
+        echo "<pre>";
+        var_dump($row);
+    }
+    
+    return mysqli_fetch_array($r);
+
 }
