@@ -31,31 +31,31 @@ if($config["file"]["isServer"] == "true") {
 //==========================================================
 
 
-global $db_connection;
-$db_connection = @mysqli_connect(
+global $dbConnection;
+$dbConnection = @mysqli_connect(
 	$config["db"]["ip"].(!empty($config["db"]["port"])? ":".$config["db"]["port"] : ''),
 	$config["db"]["user"],
 	$config["db_pwd"]
 ) or importDie("DB connection: Could not connect to MySQL [".$config["db"]["ip"].(!empty($config["db"]["user"])? ":".$config["db"]["port"] : '')." / ".$config["db"]["user"]."]", false);
-if(!mysqli_set_charset($db_connection, $config["db"]["charset"])){
+if(!mysqli_set_charset($dbConnection, $config["db"]["charset"])){
 	importDie("DB connection: Invalid charset", false);
 }
-mysqli_select_db($db_connection, $config["db"]["schema"]) or die("DB connection: DB selection failed [".$config["db"]["schema"]."]");
-mysqli_autocommit ($db_connection , false);
+mysqli_select_db($dbConnection, $config["db"]["schema"]) or die("DB connection: DB selection failed [".$config["db"]["schema"]."]");
+mysqli_autocommit ($dbConnection , false);
 
 
-$query = mysqli_query($db_connection, "CREATE TABLE IF NOT EXISTS `__import_report` ( `id` INT NOT NULL AUTO_INCREMENT , `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `file` VARCHAR(50) NOT NULL , `type` VARCHAR(20) NOT NULL , `message` VARCHAR(1000) NOT NULL , `deleted` TINYINT(3) NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = MyISAM;");
-mysqli_commit($db_connection);
+$query = mysqli_query($dbConnection, "CREATE TABLE IF NOT EXISTS `__import_report` ( `id` INT NOT NULL AUTO_INCREMENT , `created` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP , `file` VARCHAR(50) NOT NULL , `type` VARCHAR(20) NOT NULL , `message` VARCHAR(1000) NOT NULL , `deleted` TINYINT(3) NOT NULL DEFAULT '0' , PRIMARY KEY (`id`)) ENGINE = MyISAM;");
+mysqli_commit($dbConnection);
 
 messageToUser("reportDev", "Import beginning");
 
 
 foreach($config["tables"] as $table){
-    $query = mysqli_query($db_connection, "DROP TABLE IF EXISTS __temp_".$table);
-    mysqli_commit($db_connection);
+    $query = mysqli_query($dbConnection, "DROP TABLE IF EXISTS __temp_".$table);
+    mysqli_commit($dbConnection);
 
-    $query = mysqli_query($db_connection, "CREATE TABLE __temp_".$table." AS (SELECT * FROM ".$table." WHERE 1=2)");
-    mysqli_commit($db_connection);
+    $query = mysqli_query($dbConnection, "CREATE TABLE __temp_".$table." AS (SELECT * FROM ".$table." WHERE 1=2)");
+    mysqli_commit($dbConnection);
         
 }
 
@@ -106,26 +106,27 @@ if (($handle = fopen($config["file"]["fileName"], 'r')) !== FALSE)
         if($config["file"]["headerLine"] == $numLine){
             $header = $row;
 
-            if(sizeof($config["map"]) != sizeof($header)){
+            /*if(sizeof($config["map"]) != sizeof($header)){
                 messageToUser("error","There is a mismatch between the columns in the paramaters and those in the file to import. Did you make changes to your file format?<br />The columns listed in the parameters are: ".implode(", ", array_keys($config["map"])));
                 die;
-            }
+            }*/
         }
         else if ($numLine >= $config["file"]["dataLine"]){
 
-            $dataTemp = array_combine($header, $row);  
+            $dataTemp = array_combine($header, $row);
+            $linesTemp = array();
+            echo "<pre>";
             foreach($config["map"] as $key=>$field){
 
-                if (!array_key_exists($key,$config["map"])){
+                /*if (!array_key_exists($key,$config["map"])){
                     messageToUser("error","The column \"".$key."\ was not defined in the parameters.");
                     continue;           // Skip to the next field
-                }
+                }*/
                 // ==================== This field is not in the data extrated form the file ====================
                 if (!array_key_exists($key,$dataTemp)){
                     messageToUser("error","The value for the \"".$key."\" column is missing on the line with the \"".$config["file"]["identifier"]."\" equals to  \"".$dataTemp[$config["file"]["identifier"]]."\"");
                     continue;           // Skip to the next field
                 }
-
                 if (preg_match_all("/{{(.*?)}}/", $field, $matches)){       // ------ Multiple fields in one ------
                     preg_match_all("/}}(.*?){{/", $field, $separators);
 
@@ -152,6 +153,7 @@ if (($handle = fopen($config["file"]["fileName"], 'r')) !== FALSE)
                 } elseif (sizeof(explode(".",$field)) > 1) {                // ------ One field in one ------
                     $fieldTemp = explode(".",$field);
                     $requestTemp[$fieldTemp[0]][$fieldTemp[1]] = $dataTemp[$key];
+                    
                 } else {                                                    // ------ Fields temp waiting for treatment ------
                     $requestTemp[$field] = $dataTemp[$key];
                 }
@@ -166,7 +168,7 @@ fclose($handle);
 
 messageToUser("reportDev", "Import end: ".$ids." inserts in temp tables");
 
-mysqli_close($db_connection);
+mysqli_close($dbConnection);
 
 
 
@@ -177,7 +179,7 @@ mysqli_close($db_connection);
 // ====================================================================================
 function messageToUser($type,$message){
     global $config;
-    global $db_connection;
+    global $dbConnection;
     
     if ($config["messages"][$type] == "print"){                 // Echo in the nav the message
         echo $type.": ".$message."<br /><br />";
@@ -188,8 +190,8 @@ function messageToUser($type,$message){
             $file = $config["file"]["filePathServer"].$config["file"]["fileName"];
         }
 
-        $query = mysqli_query($db_connection, "INSERT INTO `__import_report` (file, type, message) VALUES (\"".$file."\", \"".$type."\", '".$message."')");
-        mysqli_commit($db_connection);
+        $query = mysqli_query($dbConnection, "INSERT INTO `__import_report` (file, type, message) VALUES (\"".$file."\", \"".$type."\", '".$message."')");
+        mysqli_commit($dbConnection);
     } else {
         // Do nothing?
         
@@ -202,9 +204,14 @@ function messageToUser($type,$message){
 // ====================================================================================
 function validateStructureBeforeInsert($key,$field){
     global $config;
-    global $db_connection;
+    global $dbConnection;
     
-    $r = mysqli_query($db_connection, "DESCRIBE `__temp_".$key."`");
+    $oldKey = $key;
+    preg_match_all("/\[(.*?)\]/", $key, $nameTable);
+    if (sizeof($nameTable[0])>0){
+        $key = str_replace($nameTable[0][0], "", $key);
+    }
+    $r = mysqli_query($dbConnection, "DESCRIBE `__temp_".$key."`");
 
     while($row = mysqli_fetch_array($r)) {
         
@@ -215,7 +222,14 @@ function validateStructureBeforeInsert($key,$field){
             preg_match('/\((.*?)\)/', $row['Type'], $match);
             if (sizeof($match)>0){          
                 $sizeMax = $match[1];
-                if (strlen($field[$row["Field"]]) > $sizeMax){
+                if (is_array($field[$row["Field"]])){
+                    foreach($field[$row["Field"]] as $keyFieldArr=>$valueFieldArr){
+                        if (strlen($valueFieldArr) > $sizeMax){
+                            messageToUser("error", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                        }
+                    }
+                }
+                else if (strlen($field[$row["Field"]]) > $sizeMax){
                     messageToUser("error", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }
             }
@@ -275,13 +289,27 @@ function validateStructureBeforeInsert($key,$field){
 }
 
 
+function test_alter(&$line, $keyTemp, $foreignKey)
+{
+    $oldKey = $keyTemp;
+    preg_match_all("/\[(.*?)\]/", $keyTemp, $nameTable);
+    if (sizeof($nameTable[0])>0){
+        $keyTemp = str_replace($nameTable[0][0], "", $keyTemp);
+    }
+
+    if ($keyTemp == $foreignKey[0]){
+        $line[$foreignKey[1]] = $foreignKey[2];
+    }
+}
+
+
 
 // ====================================================================================
 //   ================ Function to insert an entry into the temp db  ================
 // ====================================================================================
 function insertEntry($line){
     global $config;
-    global $db_connection;
+    global $dbConnection;
     global $ids;
     
     $order = array();
@@ -297,35 +325,52 @@ function insertEntry($line){
     
     // ========== Add foreign Ids to other tables according to config tablesLinks ==========    
     foreach($line as $key=>$field){
+        
+        $oldKey = $key;
+        preg_match_all("/\[(.*?)\]/", $key, $nameTable);
+        if (sizeof($nameTable[0])>0){
+            $key = str_replace($nameTable[0][0], "", $key);
+        }
+        
+                //var_dump($key.".id",$config["tablesLinks"]);
         if (array_key_exists($key.".id",$config["tablesLinks"]) && sizeof($config["tablesLinks"][$key.".id"])>0){
             foreach($config["tablesLinks"][$key.".id"] as $tableForeignId=>$foreignId){
+                
                 if (array_key_exists($tableForeignId,$line)){
                     $line[$tableForeignId][$foreignId] = $field["id"];
                 }
+                array_walk($line, 'test_alter', array($tableForeignId, $foreignId, $field["id"]));
             }
         }
     }
 
-    foreach($line as $key=>$field){
-        $field = validateStructureBeforeInsert($key,$field);
-        $query = "INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")";
-        messageToUser("reportDev", "INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
-        mysqli_query($db_connection, $query);
+    foreach($line as $key=>$fields){
+        
+        $oldKey = $key;
+        preg_match_all("/\[(.*?)\]/", $key, $nameTable);
+        if (sizeof($nameTable[0])>0){
+            $key = str_replace($nameTable[0][0], "", $key);
+        }
+    
+        $fields = validateStructureBeforeInsert($key,$fields);
+        $query = "INSERT INTO __temp_".$key."(".implode(", ", array_keys($fields)).") VALUES (\"".implode("\",\"", $fields)."\")";
+        messageToUser("reportDev", "INSERT INTO __temp_".$key."(".implode(", ", array_keys($fields)).") VALUES (\"".implode("\",\"", $fields)."\")");
+        mysqli_query($dbConnection, $query);
+        
     }
 }
 
 
 // ====================================================================================
-//   ================ Function to insert an entry into the temp db  ================
+//   ================ Function to find datas into the db  ================
 // ====================================================================================
 function findInDatabase($field, $table, $conditions){
-    global $db_connection;
+    global $dbConnection;
     
-    $r = mysqli_query($db_connection, "SELECT ".$field." FROM ".$table." WHERE ".$conditions);
+    $r = mysqli_query($dbConnection, "SELECT ".$field." FROM ".$table." WHERE ".$conditions);
     
     while($row = mysqli_fetch_array($r)){
         echo "<pre>";
-        var_dump($row);
     }
     
     return mysqli_fetch_array($r);
