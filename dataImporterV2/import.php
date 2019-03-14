@@ -206,6 +206,7 @@ function validateStructureBeforeInsert($key,$field){
     global $config;
     global $dbConnection;
     
+    $allowedFields = array();
     $oldKey = $key;
     preg_match_all("/\[(.*?)\]/", $key, $nameTable);
     if (sizeof($nameTable[0])>0){
@@ -214,6 +215,18 @@ function validateStructureBeforeInsert($key,$field){
     $r = mysqli_query($dbConnection, "DESCRIBE `__temp_".$key."`");
 
     while($row = mysqli_fetch_array($r)) {
+        
+    // ========== Add Id if none given ==========
+     /*foreach($line as $key=>$field){
+
+        if (!array_key_exists("id", $field)){
+            $field["id"] = $ids++;
+            $line[$key] = $field;
+        } 
+    } 
+        */
+        
+        $allowedFields[] = $row["Field"];
         
         // ========== Check if we have a value for the field in our datas ==========
         if (array_key_exists($row["Field"], $field)){
@@ -277,19 +290,48 @@ function validateStructureBeforeInsert($key,$field){
                     }
                 }
                 if ($sucess == false){
+                    unset($field[$row["Field"]]);
                     messageToUser("error", "Field \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }                
             } 
             
         } elseif ($row["Null"] == "NO" && is_null($row["Default"])) {   // ========== Value is missing ==========
-            messageToUser("error", "Field \"".$row["Field"]."\" is missing for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+            
+            // Add fields if needed
+            if ($row["Field"] == "created_by" || $row["Field"] == "modified_by" || $row["Field"] == "last_modification"){
+               
+                if ($row["Field"] == "created_by"){
+                    $field["created_by"] = $config["general"]["idUserImport"];
+                }
+
+                if ($row["Field"] == "modified_by"){
+                    $field["modified_by"] = $config["general"]["idUserImport"];
+                }
+
+                if ($row["Field"] == "last_modification"){
+                    $field["last_modification"] = $config["general"]["nowDatetime"];
+                } 
+            } else {
+                messageToUser("error", "Field \"".$row["Field"]."\" is missing for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+            }   
+        }
+    }    
+    // ============ Remove unwanted fields just in case ============
+    foreach($field as $KeyFieldTemp => $fieldTemp){
+        if (!in_array($KeyFieldTemp,$allowedFields)){
+            unset($field[$KeyFieldTemp]);
         }
     }
+    //var_dump($field);
     return $field;
 }
 
 
-function test_alter(&$line, $keyTemp, $foreignKey)
+
+// ====================================================================================
+//   ========== Function to add foreign key to Tables with multiple lines  ===========
+// ====================================================================================
+function multipleLinesForOneTableCase(&$line, $keyTemp, $foreignKey)
 {
     $oldKey = $keyTemp;
     preg_match_all("/\[(.*?)\]/", $keyTemp, $nameTable);
@@ -332,14 +374,13 @@ function insertEntry($line){
             $key = str_replace($nameTable[0][0], "", $key);
         }
         
-                //var_dump($key.".id",$config["tablesLinks"]);
         if (array_key_exists($key.".id",$config["tablesLinks"]) && sizeof($config["tablesLinks"][$key.".id"])>0){
             foreach($config["tablesLinks"][$key.".id"] as $tableForeignId=>$foreignId){
                 
                 if (array_key_exists($tableForeignId,$line)){
                     $line[$tableForeignId][$foreignId] = $field["id"];
                 }
-                array_walk($line, 'test_alter', array($tableForeignId, $foreignId, $field["id"]));
+                array_walk($line, 'multipleLinesForOneTableCase', array($tableForeignId, $foreignId, $field["id"]));
             }
         }
     }
