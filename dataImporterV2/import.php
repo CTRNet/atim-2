@@ -9,6 +9,8 @@
 
 global $ids;
 $ids = 1;
+global $idLine;
+$idLine = 1;
 
 
 // ==========================================================
@@ -238,12 +240,14 @@ function validateStructureBeforeInsert($key,$field){
                 if (is_array($field[$row["Field"]])){
                     foreach($field[$row["Field"]] as $keyFieldArr=>$valueFieldArr){
                         if (strlen($valueFieldArr) > $sizeMax){
+                            messageToUser("reportDev", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert (".$sizeMax."). <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                             messageToUser("error", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                         }
                     }
                 }
                 else if (strlen($field[$row["Field"]]) > $sizeMax){
-                    messageToUser("error", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                    messageToUser("reportDev", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                    messageToUser("error", "Field \"".$row["Field"]."\" is too long for \"".$key."\" with the datas: \"".implode("\",\"", $field)."\"");
                 }
             }
                 
@@ -291,13 +295,13 @@ function validateStructureBeforeInsert($key,$field){
                 }
                 if ($sucess == false){
                     unset($field[$row["Field"]]);
-                    messageToUser("error", "Field \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                    messageToUser("reportDev", "Field \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }                
             } 
             
         } elseif ($row["Null"] == "NO" && is_null($row["Default"])) {   // ========== Value is missing ==========
             
-            // Add fields if needed
+            // ============ Add fields if needed ============
             if ($row["Field"] == "created_by" || $row["Field"] == "modified_by" || $row["Field"] == "last_modification"){
                
                 if ($row["Field"] == "created_by"){
@@ -312,7 +316,7 @@ function validateStructureBeforeInsert($key,$field){
                     $field["last_modification"] = $config["general"]["nowDatetime"];
                 } 
             } else {
-                messageToUser("error", "Field \"".$row["Field"]."\" is missing for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                messageToUser("reportDev", "Field \"".$row["Field"]."\" is missing for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
             }   
         }
     }    

@@ -23,7 +23,7 @@ function customizeBeforeInsert($line){
     foreach($line as $key=>$field){
 
 
-        $oldKey = $key;
+        $keyWithLineNumber = $key;
         preg_match_all("/\[(.*?)\]/", $key, $nameTable);
         if (sizeof($nameTable[0])>0){
             $key = str_replace($nameTable[0][0], "", $key);
@@ -31,7 +31,6 @@ function customizeBeforeInsert($line){
 
         switch ($key) {
             case "participants":
-                unset($field["id_temp"]);           // Remove field when not needed
                 break;
             case "misc_identifiers":
                 $miscIdentifierName = '';
@@ -53,10 +52,20 @@ function customizeBeforeInsert($line){
             case "diagnosis_masters":
                 $field["diagnosis_control_id"] = $diagnosisControls['primary-tumor registry']['id'];
                 break;
+            case "cusm_lung_dxd_tumor_registry":
+                if (strpos($field["lymph_vascular_invasion"], "Lymph-vascular Invasion Present/Identified") !== false || strpos($field["lymph_vascular_invasion"], "1")){
+                    $field["lymph_vascular_invasion"] = "y";
+                }
+                else if (strpos($field["lymph_vascular_invasion"], "Lymph-vascular Invasion Not Present (absent)/Not Identified") !== false || strpos($field["lymph_vascular_invasion"], "0") !== false){
+                    $field["lymph_vascular_invasion"] = "n";
+                } else {
+                    messageToUser("reportDev", "\"".$field["lymph_vascular_invasion"]."\" is not an allowed value for cusm_lung_dxd_tumor_registry.lymph_vascular_invasion.");
+                }
+                break;
 
         }
         // ========= /!\ Reasign the line to the array to return it  /!\ =========
-        $line[$oldKey] = $field;
+        $line[$keyWithLineNumber] = $field;
     }
     return $line;
 }
