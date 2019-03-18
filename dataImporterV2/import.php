@@ -244,14 +244,16 @@ function validateStructureBeforeInsert($keyLine,$key,$field){
                 if (is_array($field[$row["Field"]])){
                     foreach($field[$row["Field"]] as $keyFieldArr=>$valueFieldArr){
                         if (strlen($valueFieldArr) > $sizeMax){
-                            messageToUser("reportDev", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert (".$sizeMax."). <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
-                            messageToUser("error", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                            $columnInData = array_search($key.".".$row["Field"], $config["map"]);
+                            messageToUser("error", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is too long for \"".$key."\" table insert. Size Max: ".$sizeMax." caracter(s).");
+                            messageToUser("reportDev", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. Size Max: ".$sizeMax." caracter(s). <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                         }
                     }
                 }
                 else if (strlen($field[$row["Field"]]) > $sizeMax){
-                    messageToUser("reportDev", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
-                    messageToUser("error", "Field \"".$row["Field"]."\" is too long for \"".$key."\" with the datas: \"".implode("\",\"", $field)."\"");
+                    $columnInData = array_search($key.".".$row["Field"], $config["map"]);
+                    messageToUser("error", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is too long. Size Max: ".$sizeMax." caracter(s).");
+                    messageToUser("reportDev", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. Size Max: ".$sizeMax." caracter(s). <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }
             }
                 
@@ -301,7 +303,7 @@ function validateStructureBeforeInsert($keyLine,$key,$field){
                     unset($field[$row["Field"]]);
                     
                     $columnInData = array_search($key.".".$row["Field"], $config["map"]);
-                    messageToUser("warning", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is not formatted properly. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                    messageToUser("warning", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is not formatted properly.");
                     messageToUser("reportDev", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }                
             } 
