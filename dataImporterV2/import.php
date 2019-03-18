@@ -73,6 +73,8 @@ $numLine = 0;
 $dataTemp = "";
 $infosRequete = array();
 $data = array();
+$idLine = $config["file"]["dataLine"]+1;
+
 
 if (($handle = fopen($config["file"]["fileName"], 'r')) !== FALSE)
 {
@@ -160,8 +162,10 @@ if (($handle = fopen($config["file"]["fileName"], 'r')) !== FALSE)
                     $requestTemp[$field] = $dataTemp[$key];
                 }
             }
-            $request[$dataTemp[$config["file"]["identifier"]]] = customizeBeforeInsert($requestTemp);
-            insertEntry($request[$dataTemp[$config["file"]["identifier"]]]);
+            $request[$dataTemp[$config["file"]["identifier"]]." - Line: ".$idLine] = customizeBeforeInsert($requestTemp);
+            insertEntry($dataTemp[$config["file"]["identifier"]]." - Line: ".$idLine,$request[$dataTemp[$config["file"]["identifier"]]." - Line: ".$idLine]);
+            $idLine++;          
+
         }
         $numLine++;
     }
@@ -204,7 +208,7 @@ function messageToUser($type,$message){
 // ====================================================================================
 //   ============== Function to validate before insertion in temp db ==============
 // ====================================================================================
-function validateStructureBeforeInsert($key,$field){
+function validateStructureBeforeInsert($keyLine,$key,$field){
     global $config;
     global $dbConnection;
     
@@ -295,7 +299,10 @@ function validateStructureBeforeInsert($key,$field){
                 }
                 if ($sucess == false){
                     unset($field[$row["Field"]]);
-                    messageToUser("reportDev", "Field \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                    
+                    $columnInData = array_search($key.".".$row["Field"], $config["map"]);
+                    messageToUser("warning", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is not formatted properly. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
+                    messageToUser("reportDev", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }                
             } 
             
@@ -353,7 +360,7 @@ function multipleLinesForOneTableCase(&$line, $keyTemp, $foreignKey)
 // ====================================================================================
 //   ================ Function to insert an entry into the temp db  ================
 // ====================================================================================
-function insertEntry($line){
+function insertEntry($keyLine, $line){
     global $config;
     global $dbConnection;
     global $ids;
@@ -397,7 +404,7 @@ function insertEntry($line){
             $key = str_replace($nameTable[0][0], "", $key);
         }
     
-        $fields = validateStructureBeforeInsert($key,$fields);
+        $fields = validateStructureBeforeInsert($keyLine,$key,$fields);
         $query = "INSERT INTO __temp_".$key."(".implode(", ", array_keys($fields)).") VALUES (\"".implode("\",\"", $fields)."\")";
         messageToUser("reportDev", "INSERT INTO __temp_".$key."(".implode(", ", array_keys($fields)).") VALUES (\"".implode("\",\"", $fields)."\")");
         mysqli_query($dbConnection, $query);
