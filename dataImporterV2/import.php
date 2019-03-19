@@ -222,16 +222,6 @@ function validateStructureBeforeInsert($keyLine,$key,$field){
 
     while($row = mysqli_fetch_array($r)) {
         
-    // ========== Add Id if none given ==========
-     /*foreach($line as $key=>$field){
-
-        if (!array_key_exists("id", $field)){
-            $field["id"] = $ids++;
-            $line[$key] = $field;
-        } 
-    } 
-        */
-        
         $allowedFields[] = $row["Field"];
         
         // ========== Check if we have a value for the field in our datas ==========
@@ -242,16 +232,17 @@ function validateStructureBeforeInsert($keyLine,$key,$field){
             if (sizeof($match)>0){          
                 $sizeMax = $match[1];
                 if (is_array($field[$row["Field"]])){
+                    var_dump($oldKey.".".$row["Field"]);
                     foreach($field[$row["Field"]] as $keyFieldArr=>$valueFieldArr){
                         if (strlen($valueFieldArr) > $sizeMax){
-                            $columnInData = array_search($key.".".$row["Field"], $config["map"]);
+                            $columnInData = array_search($oldKey.".".$row["Field"], $config["map"]);
                             messageToUser("error", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is too long for \"".$key."\" table insert. Size Max: ".$sizeMax." caracter(s).");
                             messageToUser("reportDev", "Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. Size Max: ".$sizeMax." caracter(s). <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                         }
                     }
                 }
                 else if (strlen($field[$row["Field"]]) > $sizeMax){
-                    $columnInData = array_search($key.".".$row["Field"], $config["map"]);
+                    $columnInData = array_search($oldKey.".".$row["Field"], $config["map"]);
                     messageToUser("error", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is too long. Size Max: ".$sizeMax." caracter(s).");
                     messageToUser("reportDev", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - Field \"".$row["Field"]."\" is too long for \"".$key."\" table insert. Size Max: ".$sizeMax." caracter(s). <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }
@@ -259,9 +250,11 @@ function validateStructureBeforeInsert($keyLine,$key,$field){
                 
             $sucess = false;
             if ($row["Type"]=="datetime" || $row["Type"]=="date"){
+                
+                 //&& ($field[$row["Field"]] !== "0000/00/00" || $field[$row["Field"]] !== "0000-00-00") 
+                
                      
                 $fieldNameForFormat = "";
-                
                 // ========== Format for field ==========
                 if (array_key_exists($row["Field"], $config["format"])){
                     $fieldNameForFormat = $row["Field"];
@@ -277,32 +270,35 @@ function validateStructureBeforeInsert($keyLine,$key,$field){
                     die;
                 }
                 
-                foreach($config["format"][$fieldNameForFormat] as $format => $accuracy){
-                    $date = DateTime::createFromFormat($format, $field[$row["Field"]]);
-                    if (is_a($date, "DateTime")){
-                        $sucess = true;
-                        
-                        // ========== Format for date ==========
-                        if ($row["Type"]=="date"){
-                            $field[$row["Field"]] = $date->format('Y-m-d');
+                if($field[$row["Field"]] !== "0000/00/00" && $field[$row["Field"]] !== "0000-00-00"){
+                
+                    foreach($config["format"][$fieldNameForFormat] as $format => $accuracy){
+                        $date = DateTime::createFromFormat($format, $field[$row["Field"]]);
+                        if (is_a($date, "DateTime")){
+                            $sucess = true;
+
+                            // ========== Format for date ==========
+                            if ($row["Type"]=="date"){
+                                $field[$row["Field"]] = $date->format('Y-m-d');
+                            }
+
+                            // ========== Format for datetime ==========
+                            if ($row["Type"]=="datetime"){
+                                $field[$row["Field"]] = $date->format('Y-m-d H:i:s');
+                            }
+
+                            // ========== Get accuracy form config ==========
+                            if ($accuracy !== ""){
+                                $field[$row["Field"]."_accuracy"] = $accuracy;
+                            }
+                            break;
                         }
-                        
-                        // ========== Format for datetime ==========
-                        if ($row["Type"]=="datetime"){
-                            $field[$row["Field"]] = $date->format('Y-m-d H:i:s');
-                        }
-                        
-                        // ========== Get accuracy form config ==========
-                        if ($accuracy !== ""){
-                            $field[$row["Field"]."_accuracy"] = $accuracy;
-                        }
-                        break;
                     }
                 }
                 if ($sucess == false){
                     unset($field[$row["Field"]]);
                     
-                    $columnInData = array_search($key.".".$row["Field"], $config["map"]);
+                    $columnInData = array_search($oldKey.".".$row["Field"], $config["map"]);
                     messageToUser("warning", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$columnInData."\" is not formatted properly.");
                     messageToUser("reportDev", "Column \"".$columnInData."\" - ".$config["file"]["identifier"].": ".$keyLine." - \"".$row["Field"]."\" is not formatted properly for \"".$key."\" table insert. <br /> -> Data: INSERT INTO __temp_".$key."(".implode(", ", array_keys($field)).") VALUES (\"".implode("\",\"", $field)."\")");
                 }                
@@ -406,7 +402,7 @@ function insertEntry($keyLine, $line){
             $key = str_replace($nameTable[0][0], "", $key);
         }
     
-        $fields = validateStructureBeforeInsert($keyLine,$key,$fields);
+        $fields = validateStructureBeforeInsert($keyLine,$oldKey,$fields);
         $query = "INSERT INTO __temp_".$key."(".implode(", ", array_keys($fields)).") VALUES (\"".implode("\",\"", $fields)."\")";
         messageToUser("reportDev", "INSERT INTO __temp_".$key."(".implode(", ", array_keys($fields)).") VALUES (\"".implode("\",\"", $fields)."\")");
         mysqli_query($dbConnection, $query);
