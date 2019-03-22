@@ -46,7 +46,7 @@ if ($json->type == 'structures') {
 				INNER JOIN structure_value_domains_permissible_values AS svdpv ON svd.id=svdpv.structure_value_domain_id
 				INNER JOIN structure_permissible_values AS spv ON svdpv.structure_permissible_value_id=spv.id				
 				LEFT JOIN i18n ON i18n.id=spv.language_alias				
-				WHERE (domain_name = '" . $json->val . "' OR svd.id='" . $json->val . "')";
+				WHERE (domain_name = '" . $json->val . "' OR svd.id='" . $json->val . "') ORDER BY display_order";
     } else if ($json->type == 'value_domains_variable') {
     $query = "SELECT 
                     value,
